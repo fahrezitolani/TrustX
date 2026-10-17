@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TrustX - Cek Reputasi</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js" defer></script>
+    </head>
+    <body>
+        <div class="app">
+            <header class="site-header">
+                <a class="brand" href="index.html"><span class="logo">
+                    <img src="./assets/images/logo-trustx.svg" alt="TrustX Cek Dulu - ke beranda" width="48" height="48">
+                </span><span><strong>TrustX</strong> <small>Cek Dulu</small></span></a>
+                <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mainNav" aria-label="Buka menu">☰</button>
+                <nav class="header-actions" id="mainNav"><a class="btn btn-light" href="daftar.html">Daftar</a><a class="btn btn-light" href="login.html">Masuk</a></nav>
+            </header>
+            <main>
+                <section class="card hero">
+                    <div><p class="eyebrow">TRANSAKSI LEBIH AMAN</p>
+                        <h1>Cek Reputasi Sebelum Transaksi</h1>
+                        <p>Pastikan akun penjual di X terpercaya, hindari penipuan, dan belanja dengan aman.</p>
+                    </div><span class="hero-art" aria-hidden="true">
+                        <img src="./assets/images/hero-reputasi.svg" alt="Ilustrasi perisai verifikasi reputasi akun" width="160" height="140">
+                    </span></section>
+                <section class="card"><h2>Cek Reputasi Akun</h2>
+                <div class="tabs"><button class="tab active" id="waTab" type="button" aria-pressed="true">Nomor WA</button><button class="tab" id="xTab" type="button" aria-pressed="false">Username X</button></div>
+                <form id="checkForm" novalidate><label class="visually-hidden" for="accountInput">Nomor WA atau Username X</label><input id="accountInput" placeholder="Masukkan nomor WhatsApp..." required><button class="check-btn" type="submit">CEK REPUTASI →</button><p class="message" id="checkMessage" role="status" aria-live="polite"></p></form>
+                </section>
+                <section class="card">
+                            <h3 id="judul-cara">Cara Kerja TrustX</h3>
+                                <p>Mudah, cepat, dan aman.</p>
+                                <div class="steps">
+                                    <article class="step">
+                                        <div class="step-icon" aria-hidden="true">
+                                            <img class="step__icon" src="./assets/images/icon-cari.svg" alt="" width="32" height="32">
+                                        </div>
+                                        <h4>Masukkan Data</h4>
+                                        <p>Ketik nomor WhatsApp atau username yang ingin dicek.</p>
+                                    </article>
+                                    <article class="step">
+                                        <div class="step-icon" aria-hidden="true">
+                                            <img class="step__icon" src="./assets/images/icon-perisai.svg" alt="" width="32" height="32">
+                                        </div>
+                                        <h4>Verifikasi</h4>
+                                        <p>Kami memeriksa rekam jejak dan laporan dari komunitas.</p>
+                                    </article>
+                                    <article class="step">
+                                        <div class="step-icon" aria-hidden="true">
+                                            <img class="step__icon" src="./assets/images/icon-dokumen.svg" alt="" width="32" height="32">
+                                        </div>
+                                        <h4>Hasil</h4>
+                                        <p>Dapatkan informasi reputasi dan tingkat keamanannya.</p>
+                                    </article>
+                                </div>
+                            </section>
+                            <section class="card report">
+                                <div class="megaphone" aria-hidden="true">📢</div>
+
+                            <div class="report-content">
+                                <h3>Temukan Laporan</h3>
+                                <p>Bantu komunitas dengan melaporkan akun yang mencurigakan atau bermasalah.</p>
+                            </div>
+
+                            <a href="login.html" class="btn btn-light">Lapor</a>
+                        </section>
+            </main>
+            <footer class="site-footer">
+                <p>© 2026 TrustX — Cek dulu sebelum transaksi.</p>
+            </footer>
+        </div>
+    </body>
+</html>
