@@ -145,10 +145,99 @@
 
         <section class="review-help">
             <p>Merasa hasil peninjauan belum sesuai?</p>
-            <a href="form-clarify.html" class="btn btn-primary">
-                Ajukan Klarifikasi
-            </a>
+            <button class="btn btn-light" id="bukaKlarifikasi">Ajukan klarifikasi</button>
         </section>
+
+        <div class="clarification-overlay" id="popupKlarifikasi" hidden>
+            <section
+            class="clarification-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="judulKlarifikasi">
+
+            <div class="clarification-modal-header">
+                <div>
+                    <h2 id="judulKlarifikasi">Form Klarifikasi Penjual</h2>
+                    <p>Hak jawab dan bukti sanggahan resmi.</p>
+                </div>
+
+                <button
+                    type="button"
+                    class="clarification-close"
+                    id="tutupKlarifikasi"
+                    aria-label="Tutup popup">
+                    &times;
+                </button>
+            </div>
+
+            <div class="clarification-modal-body">
+                <!-- PINDAHKAN FIELDSET DARI FORM LAMA KE SINI -->
+                <form id="formKlarifikasiPopup">
+                    <fieldset>
+                        <legend>Laporan yang Disanggah</legend>
+
+                        <p><strong>ID Laporan:</strong> LP-8821</p>
+                        <p><strong>Akun:</strong> @seller_gadget_murah</p>
+                        <p><strong>Pelapor:</strong> @buyer123</p>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Kronologi dan Klarifikasi</legend>
+
+                        <label for="kronologiPopup">
+                            Jelaskan kronologi kejadian
+                        </label>
+
+                        <textarea
+                            id="kronologiPopup"
+                            name="kronologi"
+                            rows="5"
+                            maxlength="3000"
+                            required
+                            placeholder="Jelaskan kronologi secara runtut..."></textarea>
+
+                        <small>Maksimal 500 kata.</small>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Unggah Bukti Pendukung</legend>
+
+                        <label for="buktiPopup">
+                            Pilih bukti transaksi
+                        </label>
+
+                        <input
+                            type="file"
+                            id="buktiPopup"
+                            name="bukti"
+                            accept="image/png,image/jpeg"
+                            multiple
+                            required>
+
+                        <small>Minimal 1, maksimal 3 berkas, 5 MB per berkas.</small>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Pernyataan Kebenaran Data</legend>
+
+                        <label class="popup-consent">
+                            <input type="checkbox" required>
+                            Saya menyatakan bahwa data dan bukti yang diberikan benar.
+                        </label>
+                    </fieldset>
+
+                    <button type="submit" class="check-btn">
+                        Kirim Klarifikasi
+                    </button>
+
+                    <p id="pesanKlarifikasiPopup"
+                    class="message"
+                    role="status"
+                    aria-live="polite"></p>
+                </form>
+                </div>
+            </section>
+         </div>
     </main>
 
     <footer class="site-footer">
