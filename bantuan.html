@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bantuan dan Customer Service - TrustX</title>
+</head>
+<body>
+    <header>
+        <img src="assets/images/logo-trustx.svg"
+             alt="Logo TrustX" width="100">
+        <h1>TrustX</h1>
+        <p>Pusat Bantuan dan Layanan Pelanggan</p>
+
+        <nav aria-label="Navigasi utama">
+            <a href="index.html">Kembali ke Beranda</a>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Pusat Bantuan</h2>
+            <p>
+                Kami siap membantu Anda menggunakan TrustX
+                dengan aman dan nyaman.
+            </p>
+        </section>
+
+        <section>
+            <h2>Pertanyaan yang Sering Diajukan</h2>
+
+            <details>
+                <summary>Apa itu TrustX?</summary>
+                <p>
+                    TrustX adalah platform untuk membantu pengguna
+                    memeriksa informasi reputasi akun dan nomor
+                    WhatsApp dalam transaksi jual beli online.
+                </p>
+            </details>
+
+            <details>
+                <summary>Bagaimana cara melaporkan akun mencurigakan?</summary>
+                <p>
+                    Isi formulir pengaduan dengan informasi akun,
+                    nomor WhatsApp jika tersedia, dan kronologi
+                    kejadian yang Anda alami.
+                </p>
+            </details>
+
+            <details>
+                <summary>Apakah hasil pengecekan menjamin akun aman?</summary>
+                <p>
+                    Tidak. Hasil pengecekan merupakan informasi
+                    pendukung dan tidak menjamin bahwa seseorang
+                    bebas dari risiko penipuan.
+                </p>
+            </details>
+
+            <details>
+                <summary>Bagaimana jika saya dituduh melakukan penipuan?</summary>
+                <p>
+                    Anda dapat menghubungi tim bantuan untuk
+                    mengajukan klarifikasi dan memberikan bukti
+                    pendukung.
+                </p>
+            </details>
+        </section>
+
+        <section>
+            <h2>Hubungi Customer Service</h2>
+            <p>
+                Sampaikan pertanyaan, kendala, atau pengaduan
+                Anda melalui formulir berikut.
+            </p>
+
+            <form action="#" method="post">
+                <fieldset>
+                    <legend>Formulir Bantuan</legend>
+
+                    <p>
+                        <label for="nama">Nama lengkap:</label><br>
+                        <input type="text" id="nama" name="nama"
+                               autocomplete="name" required>
+                    </p>
+
+                    <p>
+                        <label for="email">Alamat email:</label><br>
+                        <input type="email" id="email" name="email"
+                               autocomplete="email" required>
+                    </p>
+
+                    <p>
+                        <label for="kategori">Kategori bantuan:</label><br>
+                        <select id="kategori" name="kategori" required>
+                            <option value="">Pilih kategori</option>
+                            <option value="akun">Masalah akun</option>
+                            <option value="laporan">Laporan penipuan</option>
+                            <option value="klarifikasi">Klarifikasi laporan</option>
+                            <option value="teknis">Kendala teknis</option>
+                            <option value="lainnya">Lainnya</option>
+                        </select>
+                    </p>
+
+                    <p>
+                        <label for="pesan">Pesan atau kronologi:</label><br>
+                        <textarea id="pesan" name="pesan"
+                                  rows="6" cols="40"
+                                  placeholder="Jelaskan kendala Anda..."
+                                  required></textarea>
+                    </p>
+
+                    <button type="submit">Kirim Pengaduan</button>
+                    <button type="reset">Reset Formulir</button>
+                </fieldset>
+            </form>
+        </section>
+
+        <section>
+            <h2>Tips Sebelum Menghubungi CS</h2>
+            <ul>
+                <li>Jangan memberikan kata sandi kepada siapa pun.</li>
+                <li>Jangan membagikan kode OTP.</li>
+                <li>Sertakan kronologi yang jelas jika melaporkan penipuan.</li>
+                <li>Hindari mengirimkan data pribadi yang tidak diperlukan.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 TrustX. Pusat Bantuan Pengguna.</p>
+        <a href="keamanan-akun.html">Pelajari Keamanan Akun</a>
+    </footer>
+</body>
+</html>
