@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Masukkan kode OTP 6 digit untuk verifikasi akun pembeli dan validitas laporan.">
+  <title>Konfirmasi OTP - TrustX</title>
+</head>
+<body>
+  <header>
+    <a href="lapor.html"><img src="assets/images/logo-trustx.svg" alt="TrustX - ke beranda" width="48" height="48"></a>
+    <nav aria-label="Navigasi halaman">
+      <ul>
+        <li><a href="lapor.html">Kembali</a></li>
+        <li><a href="bantuan.html">Bantuan</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <h1>Konfirmasi OTP</h1>
+    <section aria-labelledby="judul-otp">
+      <img src="assets/images/icon-gembok.svg" alt="Ikon gembok verifikasi" width="96" height="96">
+      <h2 id="judul-otp">Masukkan Kode Verifikasi OTP</h2>
+      <p>Kami telah mengirimkan kode 6 digit ke nomor WhatsApp: <strong>0812-xxxx-7890</strong></p>
+      <form id="form-otp" action="#" method="post" onsubmit="event.preventDefault(); window.location.href='success.html';">
+        <fieldset>
+          <legend>Kode OTP (6 digit)</legend>
+          <input
+            type="text"
+            id="otp"
+            name="otp"
+            inputmode="numeric"
+            maxlength="6"
+            pattern="[0-9]{6}"
+            autocomplete="one-time-code"
+            placeholder="692841"
+            required
+          >
+        </fieldset>
+        <p>Tidak menerima kode? <a href="bantuan.html">Kirim Ulang (00:45)</a></p>
+        <button type="submit">Konfirmasi &amp; Lanjutkan</button>
+      </form>
+      <p><small>Verifikasi nomor WhatsApp diperlukan untuk menjaga keamanan akun dan validitas laporan, serta mencegah spam dari akun bot.</small></p>
+
+    </main>
+    <footer id="bantuan">
+      <p>&copy; 2026 TrustX</p>
+      <p><a href="bantuan.html">Bantuan / CS</a></p>
+    </footer>
+  </body>
+</html>

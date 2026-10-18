@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Formulir untuk melaporkan transaksi tertipu atau aman.">
+  <title>Formulir Laporan - TrustX Cek Dulu</title>
+</head>
+<body>
+  <header>
+    <a href="index.html"><img src="assets/images/logo-trustx.svg" alt="TrustX Cek Dulu - ke beranda" width="48" height="48"></a>
+    <nav aria-label="Navigasi halaman">
+      <ul>
+        <li><a href="index.html">Kembali</a></li>
+        <li><a href="bantuan.html">Bantuan</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <h1>Formulir Laporan</h1>
+    <p><strong>Ketentuan Laporan:</strong> Laporan palsu/fitnah dapat diproses hukum. Lampirkan bukti riil.</p>
+
+    <form id="form-laporan" action="#" method="post" onsubmit="event.preventDefault(); window.location.href='confirm-otp.html';">
+      <fieldset>
+        <legend>1. Identitas Lawan Transaksi *</legend>
+        <p>
+          <label for="lawan">Username lawan transaksi</label><br>
+          <input type="text" id="lawan" name="lawan" value="@buyer_ticket_f1" required>
+        </p>
+        <dl>
+          <dt>Akun</dt>
+          <dd>@buyer_ticket_f1</dd>
+          <dt>WhatsApp</dt>
+          <dd>0812-4681-7890</dd>
+          <dt>BCA</dt>
+          <dd>5411-xxxx a/n G*** R***</dd>
+        </dl>
+        <p><strong>Terverifikasi Aman:</strong> Tidak ditemukan laporan terkait bukti resi fiktif pada nomor WhatsApp &amp; no rekening ini dalam 7 hari terakhir.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>2. Status Transaksi *</legend>
+        <p>
+          <input type="radio" id="status-scam" name="status" value="scam">
+          <label for="status-scam">Tertipu/Scam</label>
+          <input type="radio" id="status-aman" name="status" value="aman" checked>
+          <label for="status-aman">Aman/Rekomendasi</label>
+        </p>
+      </fieldset>
+
+      <fieldset>
+        <legend>3. Cerita Singkat/Kronologi *</legend>
+        <p><label for="kronologi">Jelaskan kronologi kejadian sebenarnya, konfirmasi nomor resi pengiriman resmi, atau status kesepakatan secara faktual dan transparan.</label></p>
+        <p><textarea id="kronologi" name="kronologi" rows="6" cols="40" maxlength="3000" placeholder="Tulis kronologi secara runtut (contoh: status paket, nomor resi pengiriman, kendala operasional, dan bukti komunikasi)..." required></textarea></p>
+        <p><small>Ditinjau langsung oleh Tim Mediasi TrustX. Maksimal 500 kata.</small></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>4. Upload Bukti Pendukung *</legend>
+        <p><label for="bukti">Pilih atau seret dokumen ke sini. Screenshot percakapan lengkap, resi pengiriman valid, mutasi rekening, atau bukti penyerahan barang.</label></p>
+        <p><input type="file" id="bukti" name="bukti" accept="image/png,image/jpeg" multiple required></p>
+        <p><small>Maks. 3 berkas (PNG, JPG hingga 5MB)</small></p>
+        <p>Berkas terlampir (2/3):</p>
+        <ul>
+          <li>Resi_JNE_Reguler_Valid.jpg &ndash; 1.4 MB, terverifikasi gambar</li>
+          <li>Chat_Konfirmasi_Kirim.png &ndash; 890 KB, lengkap dengan timestamp</li>
+        </ul>
+      </fieldset>
+
+      <fieldset>
+        <legend>Pernyataan Kebenaran Data Transaksi</legend>
+        <p>
+          <input type="checkbox" id="pernyataan" name="pernyataan" required>
+          <label for="pernyataan">Saya menyatakan dengan sungguh-sungguh bahwa data, kronologi, dan dokumen yang saya kirimkan adalah asli berdasarkan transaksi nyata. Penyalahgunaan dokumen palsu dapat diproses hukum.</label>
+        </p>
+      </fieldset>
+      <button type="submit">Lanjutkan ke Verifikasi OTP</button>
+    </form>
+  </main>
+  <footer id="bantuan">
+    <p>TrustX Seller Ecosystem</p>
+    <p><a href="bantuan.html">Bantuan / CS</a></p>
+  </footer>
+</body>
+</html>
