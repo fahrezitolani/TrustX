@@ -45,6 +45,8 @@ TrustX dikembangkan untuk memberikan akses informasi reputasi akun secara lebih 
 - Halaman hasil pencarian.
 - Detail profil dan reputasi akun.
 - Status reputasi berdasarkan laporan dan riwayat transaksi aman.
+- Homepage untuk Role Seller
+- Detail Profile untuk Role Seller
 
 ### 3. Pelaporan Transaksi
 **Penanggung jawab: Muhammad Febriyanto**
