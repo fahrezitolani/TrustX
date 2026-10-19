@@ -1,0 +1,23 @@
+﻿/* Form masuk dan daftar — styles khusus login & daftar (login.html, daftar.html). 
+   Sesuai dengan desain seller.css + buyer.css. */
+.auth-main { min-height: calc(100vh - 125px); align-content: start; justify-items: center; padding-top: clamp(20px, 5vh, 50px); }
+.auth-card { width: min(100%, 540px); padding: clamp(22px, 4vw, 38px); }
+.auth-card h1 { margin: 0 0 8px; color: var(--navy); font-size: clamp(24px, 3vw, 30px); text-align: center; }
+.auth-symbol { margin-bottom: 10px; font-size: 42px; text-align: center; }
+.auth-card .section-intro { margin: 0 0 22px; text-align: center; color: var(--muted); }
+.form-stack { display: grid; gap: 10px; }
+.form-stack label { margin-top: 4px; color: var(--text); font-size: 14px; font-weight: 700; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field input { padding: 12px 14px; border: 1.5px solid #cdd4e4; border-radius: 12px; font: inherit; font-size: 14px; color: var(--text); background: #fff; }
+.field input:focus { border-color: var(--accent); outline: 3px solid rgb(79 107 216/45%); outline-offset: 2px; }
+.password-wrap { position: relative; display: flex; }
+.password-wrap input { padding-right: 95px; }
+.password-toggle { position: absolute; top: 50%; right: 8px; transform: translateY(-50%); padding: 6px 9px; border: 0; border-radius: 5px; color: var(--navy); background: #edf0f7; font-size: 12px; cursor: pointer; }
+.auth-switch { margin: 20px 0 12px; color: var(--muted); font-size: 14px; text-align: center; }
+.auth-switch a { font-weight: 700; }
+.back-link { display: block; color: var(--navy); font-size: 13px; text-align: center; text-decoration: none; }
+.auth-card .check-btn { width: 100%; min-height: 48px; padding: 12px 20px; border: 0; border-radius: 12px; background: var(--navy); color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .15s; }
+.auth-card .check-btn:hover { background: var(--navy-2); }
+@media (max-width: 600px) {
+    .auth-card { padding: 22px 16px; }
+}

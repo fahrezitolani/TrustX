@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Daftar akun TrustX untuk memeriksa reputasi akun, melaporkan transaksi, dan mengelola toko.">
+    <title>Daftar - TrustX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="seller.css">
+    <link rel="stylesheet" href="buyer.css">
+    <script src="script.js" defer></script>
+</head>
+<body class="seller">
+    <main class="auth-main">
+        <div class="auth-card">
+            <div class="auth-symbol">
+                <img src="./assets/images/logo-trustx.svg" alt="Logo TrustX">
+            </div>
+            <h1>Buat Akun TrustX</h1>
+            <p class="section-intro">Daftar sekarang untuk mulai memeriksa reputasi dan melindungi transaksi Anda.</p>
+            <form id="registerForm" class="form-stack" novalidate>
+                <div class="field">
+                    <label for="registerName">Nama Lengkap</label>
+                    <input type="text" id="registerName" name="name" autocomplete="name" required placeholder="Nama lengkap">
+                </div>
+                <div class="field">
+                    <label for="registerEmail">Alamat Email</label>
+                    <input type="email" id="registerEmail" name="email" autocomplete="email" required placeholder="email@example.com">
+                </div>
+                <div class="field">
+                    <label for="registerPassword">Kata Sandi</label>
+                    <div class="password-wrap">
+                        <input type="password" id="registerPassword" name="password" autocomplete="new-password" required placeholder="Min. 8 karakter">
+                        <button type="button" class="password-toggle" data-toggle-password="registerPassword" aria-label="Tampilkan kata sandi">Lihat</button>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="confirmPassword">Ulangi Kata Sandi</label>
+                    <div class="password-wrap">
+                        <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" required placeholder="Ulangi kata sandi">
+                        <button type="button" class="password-toggle" data-toggle-password="confirmPassword" aria-label="Tampilkan kata sandi">Lihat</button>
+                    </div>
+                </div>
+                <p class="err" id="registerMessage" role="alert"></p>
+                <button type="submit" class="check-btn">Daftar</button>
+            </form>
+            <p class="auth-switch">
+                Sudah punya akun? <a href="login.html">Masuk di sini</a>
+            </p>
+        </div>
+    </main>
+</body>
+</html>

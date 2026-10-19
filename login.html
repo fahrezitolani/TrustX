@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk - TrustX</title>
+    <link rel="stylesheet" href="seller.css">
+    <link rel="stylesheet" href="buyer.css">
+    <script src="script.js" defer></script>
+</head>
+<body class="seller">
+    <main class="auth-main">
+        <div class="auth-card">
+            <div class="auth-symbol">
+                <img src="./assets/images/logo-trustx.svg" alt="Logo TrustX">
+            </div>
+            <h1>Masuk ke Akun</h1>
+<form id="loginForm" class="form-stack" novalidate>
+                <div class="field">
+                    <label for="loginEmail">Alamat Email</label>
+                    <input type="email" id="loginEmail" name="email" required placeholder="email@example.com">
+                </div>
+                <div class="field">
+                    <label for="loginPassword">Kata Sandi</label>
+                    <input type="password" id="loginPassword" name="password" required placeholder="Kata sandi">
+                </div>
+                <p class="err" id="loginMessage" role="alert"></p>
+                <button type="submit" class="check-btn">Masuk</button>
+            </form>
+            <p class="auth-switch">
+                Belum punya akun? <a href="daftar.html">Daftar disini</a>
+            </p>
+        </div>
+    </main>
+</body>
+</html>

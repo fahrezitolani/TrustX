@@ -1,7 +1,7 @@
-
-/* Interaksi front-end TrustX.
-   Belum terhubung ke database/backend.
-*/
+﻿#
+# Interaksi front-end TrustX.
+# Belum terhubung ke database/backend.
+#
 "use strict";
 // use strict adalah praktik yang baik untuk menulis JavaScript modern. Ini membantu mencegah beberapa kesalahan umum dan membuat kode lebih aman.
 
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const open = nav.classList.toggle("is-open");
 
             menu.setAttribute("aria-expanded", String(open));
-            menu.textContent = open ? "✕" : "☰";
+            menu.textContent = open ? "\u25C2" : "\u25B2";
             menu.setAttribute(
                 "aria-label",
                 open ? "Tutup menu" : "Buka menu"
@@ -158,9 +158,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            // Login front-end (masa uji) — tanpa backend,
+            // form ini mengarah ke halaman beranda index.html.
             out.textContent =
-                "Validasi formulir berhasil. Login sungguhan " +
-                "memerlukan backend/autentikasi.";
+                "Login berhasil. Mengarah ke halaman beranda...";
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 600);
         });
     }
 
