@@ -1,4 +1,3 @@
-
 const laporanData = {
     "LP-8821": {
         account: "@seller_gadget_murah",
@@ -98,7 +97,12 @@ function tampilkanLaporan(id) {
 }
 
 pilihLaporan.addEventListener("change", function () {
-    tampilkanLaporan(pilihLaporan.value);
+    // Pilih laporan otomatis dari tautan, mis. hasil_peninjauan.html?id=LP-8821
+const idDariUrl = new URLSearchParams(location.search).get("id");
+if (idDariUrl && laporanData[idDariUrl]) {
+    pilihLaporan.value = idDariUrl;
+}
+tampilkanLaporan(pilihLaporan.value);
 });
 
 tampilkanLaporan(pilihLaporan.value);
@@ -141,51 +145,46 @@ document.addEventListener("keydown", function (event) {
 });
 
 
-form.addEventListener("submit", (event) => {
+formPopup.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const files = Array.from(bukti.files);
+    const files = Array.from(buktiPopup.files);
     const formatValid = /\.(png|jpe?g)$/i;
     const ukuranMaksimal = 5 * 1024 * 1024;
+    const jumlahKata = kronologiPopup.value.trim().split(/\s+/).filter(Boolean).length;
 
-    if (!kronologi.value.trim()) {
-        pesan.textContent = "Kronologi kejadian wajib diisi.";
-        kronologi.focus();
+    if (!jumlahKata) {
+        pesanPopup.textContent = "Kronologi kejadian wajib diisi.";
+        kronologiPopup.focus();
+        return;
+    }
+
+    if (jumlahKata > 500) {
+        pesanPopup.textContent = "Kronologi maksimal 500 kata.";
+        kronologiPopup.focus();
         return;
     }
 
     if (files.length < 1 || files.length > 3) {
-        pesan.textContent =
-            "Unggah minimal 1 dan maksimal 3 file bukti.";
-        bukti.focus();
+        pesanPopup.textContent = "Unggah minimal 1 dan maksimal 3 file bukti.";
+        buktiPopup.focus();
         return;
     }
 
     const fileTidakValid = files.some((file) => {
-        return (
-            !formatValid.test(file.name) ||
-            file.size > ukuranMaksimal
-        );
+        return !formatValid.test(file.name) || file.size > ukuranMaksimal;
     });
 
     if (fileTidakValid) {
-        pesan.textContent =
-            "Pastikan semua bukti berformat PNG/JPG " +
-            "dan maksimal 5 MB per file.";
-        bukti.focus();
+        pesanPopup.textContent =
+            "Pastikan semua bukti berformat PNG/JPG dan maksimal 5 MB per file.";
+        buktiPopup.focus();
         return;
     }
 
-    // Tampilkan konfirmasi pengajuan
+    pesanPopup.textContent = "";
     alert("Klarifikasi berhasil diajukan!");
 
-    // Tutup popup
-    popup.hidden = true;
-    document.body.classList.remove("modal-open");
-
-    // Reset formulir
-    form.reset();
-
-    // Kembalikan fokus ke tombol pembuka
-    buka.focus();
+    formPopup.reset();
+    tutupPopup();
 });

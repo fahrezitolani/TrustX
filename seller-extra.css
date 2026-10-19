@@ -1,0 +1,73 @@
+/* TrustX Seller — tambahan untuk beranda & detail profil penjual.
+   Dimuat SETELAH seller.css; memakai variabel warna yang sama (scoped di body.seller). */
+
+/* ===== Beranda: kartu sanggahan ===== */
+.seller .laporbox.sg{flex-wrap:wrap}
+.seller .laporbox.sg .btn{margin-left:66px;gap:6px}
+.seller .laporbox.sg .btn svg{font-size:16px}
+.seller .laporbox .btn svg{font-size:16px}
+.seller .stack{display:grid;gap:12px;align-content:start}
+
+/* ===== Detail: kartu target investigasi ===== */
+.seller .target{display:flex;align-items:center;gap:12px;padding:12px 16px}
+.seller .target-ic{display:grid;place-items:center;width:32px;height:32px;font-size:20px;color:var(--navy)}
+.seller .target div{flex:1;min-width:0}
+.seller .target small{display:block;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.seller .target b{display:block;font-size:17px;color:var(--navy);overflow-wrap:anywhere}
+.seller .ganti{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:10px;background:var(--soft);color:var(--navy);font-size:13px;font-weight:700;text-decoration:none}
+.seller .ganti:hover{background:#e2e7f4}.seller .ganti svg{font-size:14px}
+
+/* ===== Detail: layout ===== */
+.seller .detail-grid{display:grid;gap:16px}
+.seller .col-side,.seller .col-main{display:grid;gap:16px;align-content:start;min-width:0}
+
+/* Banner "Ini akun toko kamu?" */
+.seller .sg-banner{display:flex;align-items:center;gap:12px;padding:16px;border-radius:var(--r);background:linear-gradient(135deg,#2d2a86,#1d1860);color:#fff;box-shadow:var(--sh)}
+.seller .sg-banner>span{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:12px;background:rgb(255 255 255/14%);font-size:22px}
+.seller .sg-banner div{flex:1;min-width:0}
+.seller .sg-banner b{display:block;font-size:15px}.seller .sg-banner small{color:#cfd3f5;font-size:13px}
+.seller .sg-banner a{flex:none;padding:9px 16px;border-radius:10px;background:#fff;color:var(--navy);font-size:13px;font-weight:700;text-decoration:none}
+.seller .sg-banner a:hover{background:#eef1f8}
+
+/* Profil */
+.seller .ident .avatar{position:relative}
+.seller .ident .avatar .shield-mini{position:absolute;right:-6px;bottom:-6px;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--red);color:#fff;font-size:13px;border:2px solid #fff}
+.seller .ident h2 svg{font-size:16px;color:var(--muted);vertical-align:-2px;margin-left:4px}
+.seller .ident dl>div{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.seller .ident dt{display:flex;align-items:center;gap:6px}.seller .ident dt svg{font-size:15px}
+.seller .ident{align-items:flex-start}.seller .ident>div{flex:1;min-width:0}
+.seller .stat small{text-transform:uppercase;letter-spacing:.03em;font-size:11px}
+.seller .stat b small{display:inline;font-size:12px;color:var(--muted);text-transform:none;font-weight:600}
+.seller .stat.star b{color:var(--ink)}.seller .stat.star b span{color:#e0a100}
+.seller .warn h3{text-transform:uppercase;font-size:12px;letter-spacing:.03em}.seller .warn h3 svg{font-size:15px}
+.seller .warn p b{color:var(--red);font-weight:600}
+
+/* Riwayat laporan */
+.seller .rep header strong{display:flex;align-items:center;gap:8px}
+.seller .rdot{width:8px;height:8px;border-radius:50%;background:var(--red);flex:none}
+.seller .rep .chip svg{font-size:14px}
+.seller .chip.red{background:var(--red-bg);color:var(--red);font-weight:700;text-transform:uppercase;font-size:11px}
+.seller .chip.link{text-decoration:none;background:var(--blue-bg);color:var(--blue);font-weight:700}
+.seller .sg-box{margin-top:12px;padding:12px;border:1.5px solid var(--navy);border-radius:12px;background:#f6f7fb}
+.seller .sg-box header{font-size:14px}.seller .sg-box header span:first-child{display:flex;align-items:center;gap:6px}
+.seller .sg-state{display:flex;align-items:center;gap:6px;margin-top:6px;color:var(--blue);font-size:12px;font-weight:500}
+.seller .sg-box p{margin:8px 0 10px;font-style:italic;color:#46506b;font-size:13px}
+.seller .sg-box footer{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.seller .sg-box footer a{display:inline-flex;align-items:center;gap:6px;color:var(--navy);font-weight:600;text-decoration:none}
+.seller .sg-box footer a:hover{text-decoration:underline}
+.seller .rep .badge{font-size:11px;text-transform:uppercase;letter-spacing:.02em}
+
+/* Action bar */
+.seller .actbar .btn{gap:8px}.seller .actbar .btn svg{font-size:18px}
+.seller .actbar .btn.dark{background:#0d1638;color:#fff}.seller .actbar .btn.dark:hover{background:var(--navy-2)}
+.seller .actbar .btn.out{background:#f6f7fb}
+
+@media(max-width:767px){
+.seller .sg-banner{flex-wrap:wrap}
+}
+@media(min-width:960px){
+body.seller[data-page=detail-seller]{padding-bottom:100px}
+.seller .laporbox.sg .btn{margin-left:0}
+.seller .detail-grid{grid-template-columns:380px minmax(0,1fr);gap:20px;align-items:start}
+.seller .actbar{justify-content:center}.seller .actbar .btn{flex:0 0 240px}
+}
