@@ -5,22 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Konfirmasi OTP - TrustX</title>
     <meta name="description" content="Masukkan kode OTP 6 digit untuk melanjutkan laporan.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="seller.css">
-    <link rel="stylesheet" href="buyer.css">
-    <script src="lapor.js" defer></script>
+    <style>
+        /* ===== Konfirmasi OTP - scoped buat halaman ini ===== */
+        .otp .top.auth-top { background: var(--navy); }
+        .otp .top.auth-top h1 { flex: 1; margin: 0; color: #fff; font-size: 17px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+        .otp .top.auth-top .ib { color: #fff; background: rgb(255 255 255 / 14%); }
+        .otp .top.auth-top .ib svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
+        .otp .auth-top-back { display: inline-flex; align-items: center; gap: 6px; width: auto; padding: 8px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; text-decoration: none; }
+        .otp .auth-top-link { display: inline-block; padding: 8px; color: #cdd6f0; font-size: 13px; font-weight: 700; text-decoration: none; }
+        .otp .auth-top-link:hover { color: #fff; text-decoration: underline; }
+
+        .otp .otp-card { text-align: center; }
+        .otp .otp-logo { display: block; width: 56px; height: 56px; margin: 0 auto; }
+        .otp .otp-lock { display: block; width: 64px; height: 64px; margin: 18px auto 0; color: var(--navy); }
+        .otp .otp-title { margin: 16px 0 8px; color: var(--navy); font-size: 20px; font-weight: 800; text-align: center; letter-spacing: -.01em; }
+        .otp .otp-desc { margin: 0 auto 4px; color: var(--muted); font-size: 13px; text-align: center; }
+        .otp .otp-wa { margin: 0 auto 20px; color: var(--ink); font-size: 15px; font-weight: 800; text-align: center; letter-spacing: .02em; }
+
+        .otp .otp-form { display: grid; gap: 14px; }
+        .otp fieldset.otp-fieldset { border: 0; padding: 0; margin: 0; }
+        .otp .otp-input-row { display: flex; gap: 10px; justify-content: center; }
+        .otp .otp-input-row input {
+            width: 48px; height: 58px; border: 1.5px solid #c9d0e0; border-radius: 10px;
+            background: #fff; font: 800 24px Inter, system-ui, sans-serif; text-align: center; color: var(--ink);
+            outline: none; transition: border-color .15s, box-shadow .15s;
+        }
+        .otp .otp-input-row input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgb(22 35 80 / 14%); }
+
+        .otp .otp-error { margin: 6px 0 0; color: var(--red); font-size: 13px; font-weight: 600; min-height: 0; }
+        .otp .otp-error:empty { display: none; }
+
+        .otp .otp-resend-wrap { margin: 12px 0 4px; color: var(--muted); font-size: 13px; text-align: center; }
+        .otp .otp-resend { display: inline-block; margin-top: 4px; border: 0; background: none; color: var(--navy); font: inherit; font-size: 14px; font-weight: 800; text-decoration: underline; cursor: pointer; }
+        .otp .otp-resend:hover { color: var(--accent); }
+
+        .otp .otp-btn { width: 100%; min-height: 54px; border: 0; border-radius: 10px; background: #0f1f47; color: #fff; font: 800 14px Inter, system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; box-shadow: 0 6px 16px rgb(15 31 71 / 35%); transition: filter .15s, transform .1s; }
+        .otp .otp-btn:hover { filter: brightness(1.15); }
+        .otp .otp-btn:active { transform: scale(.98); }
+
+        .otp .otp-note { display: flex; gap: 10px; align-items: flex-start; margin-top: 16px; padding: 12px 14px; border-radius: 10px; background: #f4f6fa; color: #3a4357; font-size: 12px; text-align: left; line-height: 1.5; }
+        .otp .otp-note svg { flex: 0 0 auto; width: 18px; height: 18px; margin-top: 1px; color: var(--muted); }
+
+        @media (max-width: 480px) {
+            .otp .otp-input-row { gap: 8px; }
+            .otp .otp-input-row input { width: 42px; height: 52px; font-size: 21px; }
+        }
+    </style>
 </head>
-<body class="seller">
+<body class="seller otp" data-page="otp">
+    <header class="top auth-top">
+        <a class="ib auth-top-back" href="lapor.html" aria-label="Kembali">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Kembali
+        </a>
+        <h1>Konfirmasi OTP</h1>
+        <a class="ib auth-top-link" href="bantuan.html">[Bantuan]</a>
+    </header>
     <main class="auth-main">
-        <div class="auth-card">
-            <div class="auth-symbol">
-                <img src="./assets/images/logo-trustx.svg" alt="Logo TrustX">
-            </div>
-            <h1>Konfirmasi OTP</h1>
-            <p class="section-intro">
-                Masukkan kode 6 digit yang dikirim ke nomor WhatsApp
-                <strong id="whatsapp-number">0812-xxxx-7890</strong>.
-            </p>
-            <form id="otp-form" class="form-stack" novalidate>
+        <div class="auth-card otp-card">
+            <img class="otp-logo" src="./assets/images/logo-trustx.svg" alt="Logo TrustX">
+
+            <svg class="otp-lock" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1" opacity=".55"/>
+                <rect x="8" y="11" width="8" height="6.5" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M9.6 11V9.2a2.4 2.4 0 0 1 4.8 0V11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+
+            <h1 class="otp-title">Masukkan Kode Verifikasi OTP</h1>
+            <p class="otp-desc">Kami telah mengirimkan kode 6 digit ke nomor WhatsApp:</p>
+            <p class="otp-wa"><strong id="whatsapp-number">0812-xxxx-7890</strong></p>
+
+            <form id="otp-form" class="otp-form" novalidate>
                 <fieldset class="otp-fieldset" aria-label="Kode OTP 6 digit">
                     <legend class="vh">Kode OTP 6 digit</legend>
                     <div class="otp-input-row">
@@ -31,17 +89,19 @@
                         <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 5">
                         <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 6">
                     </div>
-                    <p class="err" id="otp-error" role="alert"></p>
+                    <p class="otp-error" id="otp-error" role="alert"></p>
                 </fieldset>
-                <button type="submit" class="check-btn">Konfirmasi &amp; Kirim Laporan</button>
+                <div class="otp-resend-wrap">
+                    Tidak menerima kode?
+                    <button type="button" class="otp-resend" id="resend-otp">Kirim Ulang (00:45)</button>
+                </div>
+                <button type="submit" class="otp-btn">Konfirmasi &amp; Kirim Laporan</button>
             </form>
-            <p class="auth-switch">
-                Tidak menerima kode?
-                <button type="button" class="link-btn" id="resend-otp">Kirim Ulang</button>
-            </p>
-            <p class="auth-switch">
-                <a href="lapor.html">&larr; Kembali ke formulir laporan</a>
-            </p>
+
+            <div class="otp-note" aria-label="Catatan verifikasi">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg>
+                <span>Verifikasi nomor WhatsApp diperlukan untuk menjaga validitas laporan serta mencegah spam data dari akun bot.</span>
+            </div>
         </div>
     </main>
 </body>
