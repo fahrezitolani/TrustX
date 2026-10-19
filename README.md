@@ -137,7 +137,7 @@ Alternatifnya, jika menggunakan Visual Studio Code, jalankan aplikasi melalui ek
 Desain antarmuka TrustX dibuat menggunakan Figma sebagai acuan implementasi frontend.
 
 - **Figma Wireframe:** [TrustX — VINIX7 Wireframe](https://www.figma.com/design/NGYfGPXtTjBEGQEcs3IkUN/VINIX7_Wireframe_TrustX?node-id=0-1)
-- **Figma Hi-Fi / Prototype:** Tambahkan tautan final apabila tersedia.
+- **Figma Hi-Fi / Prototype:** https://www.figma.com/proto/NGYfGPXtTjBEGQEcs3IkUN/VINIX7_TrustX?node-id=49-296&p=f&t=l7x3GNwXvs7CBrbK-1&scaling=scale-down&content-scaling=fixed&page-id=47%3A3&starting-point-node-id=49%3A296
 
 Implementasi antarmuka mengacu pada rancangan UI/UX yang telah disusun oleh tim, dengan memperhatikan konsistensi komponen, kemudahan navigasi, dan pengalaman pengguna.
 
