@@ -4,153 +4,373 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keamanan Akun - TrustX</title>
-</head>
-<body>
-    <header>
-        <img src="assets/images/logo-trustx.svg"
-             alt="Logo TrustX" width="100">
-        <h1>Keamanan Akun TrustX</h1>
-        <p>Lindungi akun dan transaksi online Anda.</p>
 
-        <nav aria-label="Navigasi utama">
-            <a href="index.html">Kembali ke Beranda</a>
-        </nav>
+    <meta
+        name="description"
+        content="Panduan keamanan akun dan transaksi online dari TrustX."
+    >
+
+    <title>Keamanan Akun - TrustX</title>
+
+    <link rel="stylesheet" href="buyer.css">
+    <script src="keamanan-akun.js" defer></script>
+</head>
+
+<body class="buyer" data-page="keamanan">
+
+    <!-- HEADER -->
+    <header class="top">
+        <div class="acts">
+                <a
+                class="ib"
+                href="index.html"
+                aria-label="Kembali ke beranda"
+                title="Kembali ke beranda"
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M19 12H5"></path>
+                    <path d="m12 19-7-7 7-7"></path>
+                </svg>
+            </a>
+        </div>
+        <a class="brand" href="index.html">
+            <img
+                src="./assets/images/logo-trustx.svg"
+                alt="Logo TrustX"
+                width="40"
+                height="40"
+            >
+            <span>
+                <strong>TrustX</strong>
+                <small>Cek Dulu</small>
+            </span>
+        </a>
+
+        <h1>Keamanan Akun</h1>
+
+        <div class="acts">
+            <a
+                class="ib"
+                href="bantuan.html"
+                aria-label="Pusat bantuan"
+                title="Pusat bantuan"
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.5 9a2.5 2.5 0 0 1 4.8 1c0 2-2.3 2-2.3 4"></path>
+                    <path d="M12 17h.01"></path>
+                </svg>
+            </a>
+        </div>
     </header>
 
-    <main>
-        <section>
-            <h2>Jaga Keamanan Akun Anda</h2>
-            <p>
-                Keamanan akun merupakan bagian penting dalam
-                menggunakan layanan pengecekan reputasi TrustX.
-                Selalu berhati-hati saat melakukan transaksi online.
-            </p>
-            <img src="assets/images/icon-gembok.svg"
-                 alt="Ilustrasi perlindungan akun dan keamanan digital"
-                 width="300">
+    <main class="security-main">
+
+        <!-- HERO -->
+        <section class="security-hero">
+            <div class="security-hero-content">
+                <span class="hero-tag">Tips Keamanan Digital</span>
+
+                <h2>Lindungi akun dan transaksi online kamu</h2>
+
+                <p>
+                    Kenali risiko penipuan, jaga informasi pribadi,
+                    dan lakukan pemeriksaan sebelum bertransaksi.
+                </p>
+
+                <a class="btn pri" href="#securityChecklist">
+                    Periksa Keamanan Saya
+                </a>
+            </div>
+
+            <img
+                class="security-image"
+                src="./assets/images/icon-gembok.svg"
+                alt="Ilustrasi perlindungan akun dan keamanan digital"
+                width="180"
+                height="180"
+            >
         </section>
 
-        <section>
-            <h2>Tips Melindungi Akun</h2>
+        <!-- TIPS -->
+        <section class="security-section" aria-labelledby="tipsTitle">
+            <div class="security-section-heading">
+                <h2 id="tipsTitle">Tips Melindungi Akun</h2>
+                <p>Biasakan melakukan langkah-langkah berikut.</p>
+            </div>
 
-            <article>
-                <h3>1. Gunakan kata sandi yang kuat</h3>
-                <p>
-                    Gunakan kata sandi yang panjang dan unik.
-                    Hindari memakai kata sandi yang sama di
-                    berbagai layanan.
-                </p>
-            </article>
+            <div class="security-tips">
 
-            <article>
-                <h3>2. Jangan bagikan kode OTP</h3>
-                <p>
-                    Jangan memberikan kode OTP, kata sandi,
-                    atau kode pemulihan kepada orang lain,
-                    termasuk pihak yang mengaku sebagai CS.
-                </p>
-            </article>
+                <article class="card security-tip">
+                    <span class="security-number">01</span>
+                    <div>
+                        <h3>Gunakan kata sandi yang kuat</h3>
+                        <p>
+                            Gunakan kata sandi yang panjang dan unik.
+                            Hindari menggunakan kata sandi yang sama
+                            di berbagai layanan.
+                        </p>
+                    </div>
+                </article>
 
-            <article>
-                <h3>3. Periksa reputasi sebelum bertransaksi</h3>
-                <p>
-                    Periksa informasi akun media sosial dan nomor
-                    WhatsApp jika tersedia. Tetap lakukan verifikasi
-                    tambahan sebelum mengirim uang.
-                </p>
-            </article>
+                <article class="card security-tip">
+                    <span class="security-number">02</span>
+                    <div>
+                        <h3>Jangan bagikan kode OTP</h3>
+                        <p>
+                            Jangan memberikan kode OTP, kata sandi,
+                            atau kode pemulihan kepada orang lain,
+                            termasuk pihak yang mengaku sebagai CS.
+                        </p>
+                    </div>
+                </article>
 
-            <article>
-                <h3>4. Waspadai bukti transaksi palsu</h3>
-                <p>
-                    Periksa mutasi rekening atau saldo secara
-                    langsung. Jangan hanya mengandalkan tangkapan
-                    layar bukti transfer.
-                </p>
-            </article>
+                <article class="card security-tip">
+                    <span class="security-number">03</span>
+                    <div>
+                        <h3>Periksa reputasi sebelum bertransaksi</h3>
+                        <p>
+                            Periksa informasi akun media sosial dan
+                            nomor WhatsApp jika tersedia. Lakukan
+                            verifikasi tambahan sebelum mengirim uang.
+                        </p>
+                    </div>
+                </article>
 
-            <article>
-                <h3>5. Hindari tautan mencurigakan</h3>
-                <p>
-                    Jangan membuka tautan atau mengunduh berkas
-                    yang tidak dikenal. Pastikan Anda mengakses
-                    layanan melalui alamat yang benar.
-                </p>
-            </article>
+                <article class="card security-tip">
+                    <span class="security-number">04</span>
+                    <div>
+                        <h3>Waspadai bukti transaksi palsu</h3>
+                        <p>
+                            Periksa mutasi rekening atau saldo secara
+                            langsung. Jangan hanya mengandalkan
+                            tangkapan layar bukti transfer.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="card security-tip">
+                    <span class="security-number">05</span>
+                    <div>
+                        <h3>Hindari tautan mencurigakan</h3>
+                        <p>
+                            Jangan membuka tautan atau mengunduh berkas
+                            yang tidak dikenal. Pastikan alamat layanan
+                            yang kamu akses benar.
+                        </p>
+                    </div>
+                </article>
+
+            </div>
         </section>
 
-        <section>
-            <h2>Tanda-Tanda Aktivitas Mencurigakan</h2>
+        <!-- TANDA AKTIVITAS MENCURIGAKAN -->
+        <section class="card security-warning"
+                 aria-labelledby="warningTitle">
+            <h2 id="warningTitle">Tanda Aktivitas Mencurigakan</h2>
+
             <ul>
-                <li>Ada percobaan masuk yang tidak Anda kenali.</li>
-                <li>Anda menerima kode OTP tanpa memintanya.</li>
-                <li>Ada perubahan data akun tanpa persetujuan Anda.</li>
-                <li>Seseorang meminta uang atau data rahasia
-                    dengan mengaku sebagai petugas TrustX.</li>
+                <li>Ada percobaan masuk yang tidak kamu kenali.</li>
+                <li>Kamu menerima kode OTP tanpa memintanya.</li>
+                <li>Ada perubahan data akun tanpa persetujuanmu.</li>
+                <li>
+                    Seseorang meminta uang atau data rahasia
+                    dengan mengaku sebagai petugas TrustX.
+                </li>
             </ul>
         </section>
 
-        <section>
-            <h2>Laporkan Aktivitas Mencurigakan</h2>
-            <p>
-                Jika menemukan aktivitas mencurigakan atau
-                mengalami masalah keamanan, segera hubungi tim
-                bantuan untuk mendapatkan arahan.
-            </p>
+        <!-- CHECKLIST -->
+        <section class="card security-checklist"
+                 id="securityChecklist"
+                 aria-labelledby="checklistTitle">
 
-            <p>
-                <a href="bantuan.html">Hubungi Customer Service</a>
-            </p>
-        </section>
+            <div class="security-section-heading">
+                <h2 id="checklistTitle">Checklist Keamanan Akun</h2>
+                <p>Centang kebiasaan keamanan yang sudah kamu lakukan.</p>
+            </div>
 
-        <section>
-            <h2>Checklist Keamanan Akun</h2>
-            <form action="#" method="get">
+            <div class="security-progress">
+                <div class="security-progress-label">
+                    <span id="checkProgressText">0 dari 4 selesai</span>
+                    <span id="checkProgressPercent">0%</span>
+                </div>
+
+                <progress id="checkProgress" value="0" max="4">
+                    0 dari 4
+                </progress>
+            </div>
+
+            <form id="securityForm">
                 <fieldset>
-                    <legend>Periksa kebiasaan keamanan Anda</legend>
+                    <legend>Periksa kebiasaan keamananmu</legend>
 
-                    <p>
-                        <input type="checkbox" id="password"
-                               name="keamanan" value="password">
-                        <label for="password">
-                            Saya menggunakan kata sandi yang kuat.
-                        </label>
-                    </p>
+                    <label class="security-check-item" for="password">
+                        <input
+                            type="checkbox"
+                            id="password"
+                            name="keamanan"
+                            value="password"
+                        >
+                        <span>
+                            <strong>Kata sandi kuat</strong>
+                            <small>
+                                Saya menggunakan kata sandi yang kuat
+                                dan unik.
+                            </small>
+                        </span>
+                    </label>
 
-                    <p>
-                        <input type="checkbox" id="otp"
-                               name="keamanan" value="otp">
-                        <label for="otp">
-                            Saya tidak membagikan kode OTP.
-                        </label>
-                    </p>
+                    <label class="security-check-item" for="otp">
+                        <input
+                            type="checkbox"
+                            id="otp"
+                            name="keamanan"
+                            value="otp"
+                        >
+                        <span>
+                            <strong>Perlindungan OTP</strong>
+                            <small>
+                                Saya tidak membagikan kode OTP kepada
+                                siapa pun.
+                            </small>
+                        </span>
+                    </label>
 
-                    <p>
-                        <input type="checkbox" id="transaksi"
-                               name="keamanan" value="transaksi">
-                        <label for="transaksi">
-                            Saya memeriksa informasi sebelum bertransaksi.
-                        </label>
-                    </p>
+                    <label class="security-check-item" for="transaksi">
+                        <input
+                            type="checkbox"
+                            id="transaksi"
+                            name="keamanan"
+                            value="transaksi"
+                        >
+                        <span>
+                            <strong>Verifikasi transaksi</strong>
+                            <small>
+                                Saya memeriksa informasi sebelum
+                                melakukan transaksi.
+                            </small>
+                        </span>
+                    </label>
 
-                    <p>
-                        <input type="checkbox" id="tautan"
-                               name="keamanan" value="tautan">
-                        <label for="tautan">
-                            Saya berhati-hati terhadap tautan mencurigakan.
-                        </label>
-                    </p>
-
-                    <button type="reset">Ulangi Checklist</button>
+                    <label class="security-check-item" for="tautan">
+                        <input
+                            type="checkbox"
+                            id="tautan"
+                            name="keamanan"
+                            value="tautan"
+                        >
+                        <span>
+                            <strong>Waspada tautan</strong>
+                            <small>
+                                Saya berhati-hati terhadap tautan
+                                mencurigakan.
+                            </small>
+                        </span>
+                    </label>
                 </fieldset>
+
+                <p
+                    id="securityMessage"
+                    class="security-message"
+                    role="status"
+                    aria-live="polite"
+                ></p>
+
+                <button class="btn out" type="reset">
+                    Ulangi Checklist
+                </button>
             </form>
         </section>
+
+        <!-- HUBUNGI BANTUAN -->
+        <section class="security-contact">
+            <div>
+                <h2>Menemukan aktivitas mencurigakan?</h2>
+                <p>
+                    Hubungi tim bantuan jika mengalami masalah
+                    keamanan atau membutuhkan arahan.
+                </p>
+            </div>
+
+            <a class="btn pri" href="bantuan.html">
+                Hubungi Customer Service
+            </a>
+        </section>
+
     </main>
 
-    <footer>
-        <p>&copy; 2026 TrustX. Keamanan Pengguna.</p>
-        <a href="bantuan.html">Pusat Bantuan</a>
-    </footer>
+    <script>
+            
+    document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("securityForm");
+    const checkboxes = form
+        ? form.querySelectorAll('input[type="checkbox"]')
+        : [];
+
+    const progress = document.getElementById("checkProgress");
+    const progressText = document.getElementById("checkProgressText");
+    const progressPercent = document.getElementById("checkProgressPercent");
+    const message = document.getElementById("securityMessage");
+    const resetButton = document.getElementById("resetSecurity");
+
+    if (!form || !progress || !progressText || !progressPercent) {
+        return;
+    }
+
+    // Menghitung progres checklist keamanan
+    function updateProgress() {
+        const total = checkboxes.length;
+        const checked = Array.from(checkboxes).filter(
+        function (checkbox) {
+            return checkbox.checked;
+        }
+        ).length;
+
+        const percent = total > 0
+        ? Math.round((checked / total) * 100)
+        : 0;
+
+        progress.max = total || 1;
+        progress.value = checked;
+
+        progressText.textContent = checked + " dari " + total + " selesai";
+        progressPercent.textContent = percent + "%";
+
+        if (message) {
+        if (total > 0 && checked === total) {
+            message.textContent =
+            "Hebat! Semua langkah keamanan sudah kamu periksa.";
+        } else if (checked > 0) {
+            message.textContent =
+            "Bagus! Lanjutkan memeriksa langkah keamanan lainnya.";
+        } else {
+            message.textContent =
+            "Centang setiap langkah yang sudah kamu lakukan.";
+        }
+        }
+    }
+
+    // Perbarui progres ketika checkbox berubah
+    checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener("change", updateProgress);
+    });
+
+    // Mengembalikan semua checklist ke kondisi awal
+    if (resetButton) {
+        resetButton.addEventListener("click", function () {
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = false;
+        });
+
+        updateProgress();
+        });
+    }
+
+    // Tampilkan progres awal
+    updateProgress();
+    });
+
+    </script>
 </body>
 </html>

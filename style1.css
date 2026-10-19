@@ -1,0 +1,1706 @@
+
+/* =========================================
+   TRUSTX — LANDING PAGE
+   File: style1.css
+   Responsive untuk HP, tablet, dan laptop
+   ========================================= */
+
+/* ---------- 1. VARIABEL DAN RESET ---------- */
+
+:root {
+    --navy: #192650;
+    --navy-dark: #111b3c;
+    --navy-light: #293b72;
+    --blue: #4767d5;
+    --blue-light: #eaf0ff;
+    --blue-pale: #f4f7ff;
+    --teal: #39899c;
+    --green: #218653;
+    --green-light: #e6f6ed;
+    --amber: #b87916;
+    --amber-light: #fff4dc;
+    --red: #c43b43;
+    --red-light: #fff0f0;
+
+    --text: #263247;
+    --muted: #68748a;
+    --white: #ffffff;
+    --bg: #f4f7fb;
+    --soft: #f0f3f9;
+    --border: #dce3ee;
+
+    --shadow: 0 8px 28px rgb(25 38 80 / 8%);
+    --shadow-hover: 0 16px 36px rgb(25 38 80 / 12%);
+
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+
+    --content-width: 1160px;
+    --page-padding: 24px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 100px;
+}
+
+body.index {
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+body.index img {
+    max-width: 100%;
+}
+
+body.index a {
+    color: inherit;
+}
+
+body.index button,
+body.index input {
+    font: inherit;
+}
+
+body.index button,
+body.index a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+body.index button:focus-visible,
+body.index a:focus-visible,
+body.index input:focus-visible {
+    outline: 3px solid rgb(71 103 213 / 45%);
+    outline-offset: 3px;
+}
+
+body.index section[id] {
+    scroll-margin-top: 100px;
+}
+
+/* ---------- 2. HEADER / NAVBAR ---------- */
+
+body.index .top {
+    position: sticky;
+    z-index: 100;
+    top: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+
+    width: 100%;
+    min-height: 78px;
+    padding: 12px max(24px, calc((100% - var(--content-width)) / 2));
+
+    border-bottom: 1px solid rgb(220 227 238 / 85%);
+    background: rgb(255 255 255 / 94%);
+    box-shadow: 0 2px 12px rgb(25 38 80 / 3%);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+body.index .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    flex-shrink: 0;
+
+    color: var(--navy);
+    text-decoration: none;
+}
+
+body.index .brand img {
+    display: block;
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+}
+
+body.index .brand strong,
+body.index .brand small {
+    display: block;
+}
+
+body.index .brand strong {
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -.5px;
+}
+
+body.index .brand small {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+body.index .bnav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+body.index .bnav a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 13px;
+    border-radius: 10px;
+
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 650;
+    text-decoration: none;
+
+    transition:
+        color .2s ease,
+        background .2s ease;
+}
+
+body.index .bnav a:hover,
+body.index .bnav a[aria-current="page"],
+body.index .bnav a[aria-current="location"] {
+    background: var(--blue-light);
+    color: var(--navy);
+}
+
+body.index .acts {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+body.index .landing-login {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 42px;
+    padding: 9px 13px;
+    border-radius: var(--radius-sm);
+
+    color: var(--navy);
+    font-size: 13px;
+    font-weight: 750;
+    text-decoration: none;
+
+    transition: background .2s ease;
+}
+
+body.index .landing-login:hover {
+    background: var(--soft);
+}
+
+/* ---------- 3. TOMBOL ---------- */
+
+body.index .landing-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    min-height: 46px;
+    padding: 12px 19px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.4;
+    text-align: center;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        color .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease,
+        transform .2s ease;
+}
+
+body.index .landing-button:hover {
+    transform: translateY(-2px);
+}
+
+body.index .landing-button:active {
+    transform: translateY(0) scale(.98);
+}
+
+body.index .landing-button-primary {
+    background: var(--navy);
+    color: var(--white);
+    box-shadow: 0 5px 14px rgb(25 38 80 / 13%);
+}
+
+body.index .landing-button-primary:hover {
+    background: var(--navy-light);
+    box-shadow: 0 8px 20px rgb(25 38 80 / 18%);
+}
+
+body.index .landing-button-secondary {
+    border-color: var(--border);
+    background: var(--white);
+    color: var(--navy);
+}
+
+body.index .landing-button-secondary:hover {
+    border-color: #bbc8e5;
+    background: var(--blue-pale);
+}
+
+body.index .landing-button-light {
+    background: var(--white);
+    color: var(--navy);
+}
+
+body.index .landing-button-light:hover {
+    background: var(--blue-light);
+    box-shadow: 0 6px 18px rgb(0 0 0 / 10%);
+}
+
+/* ---------- 4. KONTEN UTAMA ---------- */
+
+body.index main.wrap {
+    display: block;
+    width: 100%;
+    max-width: var(--content-width);
+    margin-inline: auto;
+    padding: 0 var(--page-padding);
+}
+
+/* ---------- 5. HERO ---------- */
+
+body.index .landing-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+    align-items: center;
+    gap: 48px;
+
+    min-height: 570px;
+    padding: 64px 0 56px;
+}
+
+body.index .landing-hero-copy {
+    min-width: 0;
+}
+
+body.index .landing-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    margin: 0 0 23px;
+    padding: 8px 13px;
+    border: 1px solid #dce5f7;
+    border-radius: 999px;
+    background: var(--white);
+
+    color: var(--navy);
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: .2px;
+}
+
+body.index .landing-status-dot {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border-radius: 50%;
+    background: #2caa70;
+    box-shadow: 0 0 0 4px rgb(44 170 112 / 12%);
+}
+
+body.index .landing-hero h1 {
+    margin: 0 0 20px;
+    color: var(--navy);
+
+    font-size: clamp(42px, 5.3vw, 66px);
+    font-weight: 850;
+    line-height: 1.08;
+    letter-spacing: -2.7px;
+}
+
+body.index .landing-hero-description {
+    max-width: 540px;
+    margin: 0;
+
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.9;
+}
+
+body.index .landing-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+
+    margin-top: 29px;
+}
+
+body.index .landing-trust-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    max-width: 470px;
+    margin: 25px 0 0;
+
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+body.index .landing-check {
+    display: grid;
+    place-items: center;
+
+    width: 22px;
+    height: 22px;
+    flex: 0 0 22px;
+
+    border-radius: 50%;
+    background: var(--green-light);
+    color: var(--green);
+
+    font-size: 13px;
+    font-weight: 850;
+}
+
+/* ---------- 6. ILUSTRASI HERO ---------- */
+
+body.index .landing-visual {
+    position: relative;
+    isolation: isolate;
+
+    display: grid;
+    place-items: center;
+
+    min-width: 0;
+    min-height: 400px;
+    padding: 42px 18px;
+}
+
+body.index .landing-dashboard {
+    position: relative;
+    z-index: 1;
+
+    display: grid;
+    place-items: center;
+
+    width: 100%;
+    max-width: 455px;
+    padding: 15px;
+
+    border: 1px solid rgb(220 227 238 / 90%);
+    border-radius: 26px;
+    background: var(--white);
+    box-shadow: 0 20px 55px rgb(25 38 80 / 10%);
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease;
+}
+
+body.index .landing-dashboard:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+body.index .landing-dashboard img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+body.index .landing-visual-orb {
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+body.index .landing-orb-one {
+    top: 12px;
+    right: 2%;
+
+    width: 180px;
+    height: 180px;
+
+    background: linear-gradient(145deg, #dce6ff, #edf2ff);
+}
+
+body.index .landing-orb-two {
+    bottom: 5px;
+    left: 2%;
+
+    width: 130px;
+    height: 130px;
+
+    background: linear-gradient(145deg, #d8f4e7, #edf9f3);
+}
+
+body.index .landing-mini-card {
+    position: absolute;
+    z-index: 3;
+
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    max-width: calc(100% - 10px);
+    padding: 13px 15px;
+
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    background: var(--white);
+    box-shadow: 0 10px 30px rgb(25 38 80 / 10%);
+
+    animation: landing-float 5s ease-in-out infinite alternate;
+}
+
+body.index .landing-mini-card strong,
+body.index .landing-mini-card small {
+    display: block;
+}
+
+body.index .landing-mini-card strong {
+    color: var(--navy);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+body.index .landing-mini-card small {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+body.index .landing-mini-icon,
+body.index .landing-mini-bottom-icon {
+    display: grid;
+    place-items: center;
+
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+
+    border-radius: 11px;
+    font-size: 18px;
+    font-weight: 850;
+}
+
+body.index .landing-mini-icon {
+    background: var(--green-light);
+    color: var(--green);
+}
+
+body.index .landing-mini-bottom-icon {
+    background: var(--amber-light);
+    color: var(--amber);
+}
+
+body.index .landing-mini-top {
+    top: 12px;
+    left: 0;
+}
+
+body.index .landing-mini-bottom {
+    right: 0;
+    bottom: 12px;
+    animation-delay: -2.5s;
+}
+
+@keyframes landing-float {
+    from {
+        transform: translateY(-5px);
+    }
+
+    to {
+        transform: translateY(7px);
+    }
+}
+
+/* ---------- 7. KARTU UMUM ---------- */
+
+body.index .card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    box-shadow: var(--shadow);
+}
+
+/* ---------- 8. FORM CEK REPUTASI ---------- */
+
+body.index .landing-search {
+    position: relative;
+    z-index: 2;
+
+    width: min(100%, 800px);
+    margin: 0 auto 34px;
+    padding: 32px;
+
+    scroll-margin-top: 110px;
+}
+
+body.index .landing-search h2 {
+    margin: 0 0 8px;
+    color: var(--navy);
+
+    font-size: clamp(23px, 3vw, 30px);
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: -.6px;
+}
+
+body.index .landing-search-description {
+    margin: 0 0 22px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* Tab WA dan X */
+
+body.index .landing-search .tabs {
+    display: flex;
+    gap: 6px;
+
+    width: fit-content;
+    max-width: 100%;
+    margin-bottom: 19px;
+    padding: 5px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--soft);
+}
+
+body.index .landing-search .tab {
+    min-height: 40px;
+    padding: 9px 17px;
+
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 750;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        color .2s ease,
+        box-shadow .2s ease;
+}
+
+body.index .landing-search .tab:hover {
+    color: var(--navy);
+}
+
+body.index .landing-search .tab[aria-pressed="true"] {
+    background: var(--navy);
+    color: var(--white);
+    box-shadow: 0 4px 10px rgb(25 38 80 / 17%);
+}
+
+/* Form */
+
+body.index .landing-search .form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 12px;
+}
+
+body.index .visually-hidden {
+    position: absolute !important;
+
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+body.index .landing-search input[type="text"] {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 49px;
+    padding: 12px 15px;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: #fbfcff;
+    color: var(--text);
+
+    font-size: 13px;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+body.index .landing-search input[type="text"]::placeholder {
+    color: #929caf;
+}
+
+body.index .landing-search input[type="text"]:focus {
+    border-color: var(--blue);
+    background: var(--white);
+    outline: none;
+    box-shadow: 0 0 0 4px rgb(71 103 213 / 10%);
+}
+
+body.index .landing-search input[aria-invalid="true"] {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgb(196 59 67 / 9%);
+}
+
+body.index .landing-search input[aria-invalid="false"] {
+    border-color: var(--green);
+}
+
+body.index .landing-search .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    min-height: 49px;
+    padding: 12px 20px;
+
+    border: 1px solid transparent;
+    border-radius: 11px;
+
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+body.index .landing-search .btn.pr {
+    background: var(--navy);
+    color: var(--white);
+}
+
+body.index .landing-search .btn.pr:hover {
+    background: var(--navy-light);
+    box-shadow: 0 5px 15px rgb(25 38 80 / 17%);
+}
+
+body.index .landing-search .btn:active {
+    transform: scale(.98);
+}
+
+body.index .landing-search .btn:disabled {
+    cursor: wait;
+    opacity: .7;
+}
+
+body.index .landing-search .err {
+    grid-column: 1 / -1;
+
+    margin: 0;
+    color: var(--red);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+body.index .landing-search .err:empty {
+    display: none;
+}
+
+body.index .landing-search .err:not(:empty) {
+    padding: 9px 12px;
+    border-radius: 9px;
+    background: var(--red-light);
+}
+
+body.index .landing-search .err.message-success:not(:empty) {
+    background: var(--green-light);
+    color: var(--green);
+}
+
+body.index .landing-search .err.message-info:not(:empty) {
+    background: var(--blue-light);
+    color: var(--navy);
+}
+
+/* Catatan opsional di bawah form */
+
+body.index .landing-search-note {
+    margin: 15px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+/* ---------- 9. RINGKASAN MANFAAT ---------- */
+
+body.index .landing-value-strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+
+    margin: 36px 0 92px;
+}
+
+body.index .landing-value-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    min-width: 0;
+    padding: 21px 19px;
+
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    background: var(--white);
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+body.index .landing-value-item:hover {
+    transform: translateY(-4px);
+    border-color: #c0ccec;
+    box-shadow: var(--shadow);
+}
+
+body.index .landing-value-number {
+    display: grid;
+    place-items: center;
+
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+
+    border-radius: 12px;
+    background: var(--blue-light);
+    color: var(--navy);
+
+    font-size: 12px;
+    font-weight: 850;
+}
+
+body.index .landing-value-item p {
+    margin: 0;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 750;
+    line-height: 1.6;
+}
+
+/* ---------- 10. SECTION UMUM ---------- */
+
+body.index .landing-section {
+    margin: 0 0 94px;
+}
+
+body.index .landing-section-heading {
+    max-width: 680px;
+    margin: 0 auto 35px;
+    text-align: center;
+}
+
+body.index .landing-section-label {
+    display: inline-block;
+    margin-bottom: 12px;
+
+    color: var(--blue);
+    font-size: 11px;
+    font-weight: 850;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+body.index .landing-section-heading h2,
+body.index .landing-cta h2 {
+    margin: 0;
+    color: var(--navy);
+
+    font-size: clamp(27px, 3.5vw, 39px);
+    font-weight: 850;
+    line-height: 1.2;
+    letter-spacing: -1px;
+}
+
+body.index .landing-section-heading p {
+    max-width: 590px;
+    margin: 15px auto 0;
+
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+/* ---------- 11. KARTU FITUR ---------- */
+
+body.index .landing-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 19px;
+}
+
+body.index .landing-feature-card {
+    position: relative;
+    overflow: hidden;
+
+    min-width: 0;
+    padding: 27px 25px;
+
+    border: 1px solid var(--border);
+    border-radius: 19px;
+    background: var(--white);
+
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+body.index .landing-feature-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 3px;
+
+    background: linear-gradient(90deg, var(--blue), #86a1f5);
+
+    transform: scaleX(0);
+    transform-origin: left;
+
+    transition: transform .25s ease;
+}
+
+body.index .landing-feature-card:hover {
+    transform: translateY(-6px);
+    border-color: #c4d0ef;
+    box-shadow: var(--shadow-hover);
+}
+
+body.index .landing-feature-card:hover::before {
+    transform: scaleX(1);
+}
+
+body.index .landing-feature-symbol {
+    display: grid;
+    place-items: center;
+
+    width: 51px;
+    height: 51px;
+    margin-bottom: 23px;
+
+    border-radius: 15px;
+    background: var(--blue-light);
+    color: var(--navy);
+
+    font-size: 25px;
+    font-weight: 750;
+
+    transition:
+        transform .25s ease,
+        background .25s ease;
+}
+
+body.index .landing-feature-card:hover .landing-feature-symbol {
+    transform: scale(1.07) rotate(-3deg);
+    background: #dce5ff;
+}
+
+body.index .landing-feature-index {
+    display: block;
+    margin-bottom: 9px;
+
+    color: var(--blue);
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 1.2px;
+}
+
+body.index .landing-feature-card h3 {
+    margin: 0 0 10px;
+    color: var(--navy);
+
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.4;
+}
+
+body.index .landing-feature-card p {
+    margin: 0;
+    color: var(--muted);
+
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+body.index .landing-disclaimer {
+    margin: 23px 0 0;
+    padding: 15px 17px;
+
+    border-left: 3px solid #c3cee7;
+    border-radius: 0 10px 10px 0;
+    background: #edf1f8;
+
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+/* ---------- 12. CARA KERJA ---------- */
+
+body.index .landing-how {
+    padding: 32px 28px;
+
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: var(--white);
+}
+
+body.index .landing-step-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+}
+
+body.index .landing-step-card {
+    position: relative;
+    min-width: 0;
+}
+
+body.index .landing-step-number {
+    display: grid;
+    place-items: center;
+
+    width: 48px;
+    height: 48px;
+    margin-bottom: 20px;
+
+    border-radius: 15px;
+    background: var(--navy);
+    color: var(--white);
+
+    font-size: 17px;
+    font-weight: 850;
+
+    transition:
+        transform .2s ease,
+        background .2s ease;
+}
+
+body.index .landing-step-card:hover .landing-step-number {
+    transform: scale(1.08);
+    background: var(--blue);
+}
+
+body.index .landing-step-card h3 {
+    margin: 0 0 10px;
+    color: var(--navy);
+
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+body.index .landing-step-card p {
+    margin: 0;
+    color: var(--muted);
+
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+body.index .landing-step-line {
+    position: absolute;
+    top: 23px;
+    left: 60px;
+    right: -12px;
+
+    height: 1px;
+    background: var(--border);
+}
+
+/* ---------- 13. CALL TO ACTION ---------- */
+
+body.index .landing-cta {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+
+    margin-bottom: 55px;
+    padding: 42px;
+
+    border-radius: 24px;
+    background: linear-gradient(120deg, var(--navy-dark), #293c77);
+    box-shadow: 0 15px 36px rgb(25 38 80 / 16%);
+}
+
+body.index .landing-cta::before,
+body.index .landing-cta::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+body.index .landing-cta::before {
+    top: -110px;
+    right: 8%;
+    width: 260px;
+    height: 260px;
+    box-shadow:
+        0 0 0 25px rgb(255 255 255 / 3%),
+        0 0 0 50px rgb(255 255 255 / 2%);
+}
+
+body.index .landing-cta::after {
+    right: 30%;
+    bottom: -180px;
+    width: 250px;
+    height: 250px;
+}
+
+body.index .landing-cta-content {
+    max-width: 650px;
+}
+
+body.index .landing-cta .landing-section-label {
+    color: #bdccff;
+}
+
+body.index .landing-cta h2 {
+    max-width: 600px;
+    color: var(--white);
+    font-size: clamp(25px, 3.2vw, 35px);
+}
+
+body.index .landing-cta p {
+    max-width: 570px;
+    margin: 14px 0 0;
+
+    color: #d3daee;
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+body.index .landing-cta .landing-button {
+    position: relative;
+    z-index: 1;
+}
+
+/* ---------- 14. FOOTER ---------- */
+
+body.index .landing-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+
+    padding: 25px 0 30px;
+    border-top: 1px solid var(--border);
+}
+
+body.index .landing-footer p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+body.index .landing-footer nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 17px;
+}
+
+body.index .landing-footer nav a {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 650;
+    text-decoration: none;
+
+    transition: color .2s ease;
+}
+
+body.index .landing-footer nav a:hover {
+    color: var(--blue);
+}
+
+/* ---------- 15. TABLET ---------- */
+
+@media (max-width: 900px) {
+    :root {
+        --page-padding: 22px;
+    }
+
+    body.index .top {
+        gap: 15px;
+        padding-inline: 22px;
+    }
+
+    body.index .bnav {
+        gap: 1px;
+    }
+
+    body.index .bnav a {
+        padding-inline: 9px;
+        font-size: 12px;
+    }
+
+    body.index .brand small {
+        max-width: 150px;
+        font-size: 9px;
+    }
+
+    body.index .landing-hero {
+        gap: 22px;
+        min-height: 480px;
+        padding-block: 48px;
+    }
+
+    body.index .landing-hero h1 {
+        font-size: clamp(38px, 5.6vw, 51px);
+        letter-spacing: -1.8px;
+    }
+
+    body.index .landing-visual {
+        min-height: 330px;
+        padding-inline: 10px;
+    }
+
+    body.index .landing-mini-card {
+        padding: 10px;
+    }
+
+    body.index .landing-feature-grid {
+        gap: 13px;
+    }
+
+    body.index .landing-feature-card {
+        padding: 22px 18px;
+    }
+
+    body.index .landing-value-item {
+        padding: 16px 13px;
+        gap: 10px;
+    }
+
+    body.index .landing-value-number {
+        width: 35px;
+        height: 35px;
+        flex-basis: 35px;
+    }
+
+    body.index .landing-cta {
+        padding: 32px;
+    }
+}
+
+/* ---------- 16. HP ---------- */
+
+@media (max-width: 640px) {
+    :root {
+        --page-padding: 17px;
+    }
+
+    html {
+        scroll-padding-top: 135px;
+    }
+
+    body.index {
+        font-size: 14px;
+    }
+
+    body.index section[id] {
+        scroll-margin-top: 135px;
+    }
+
+    /* Header dua baris */
+    body.index .top {
+        position: sticky;
+        top: 0;
+
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+
+        min-height: auto;
+        padding: 10px 16px;
+    }
+
+    body.index .brand {
+        gap: 8px;
+    }
+
+    body.index .brand img {
+        width: 38px;
+        height: 38px;
+    }
+
+    body.index .brand strong {
+        font-size: 18px;
+    }
+
+    body.index .brand small {
+        max-width: 180px;
+        font-size: 9px;
+    }
+
+    body.index .acts {
+        gap: 5px;
+    }
+
+    body.index .landing-login {
+        min-height: 37px;
+        padding: 7px 9px;
+        font-size: 11px;
+    }
+
+    body.index .acts .landing-button {
+        min-height: 37px;
+        padding: 8px 12px;
+        border-radius: 9px;
+        font-size: 11px;
+    }
+
+    /* Navigasi horizontal di bawah logo */
+    body.index .bnav {
+        grid-column: 1 / -1;
+
+        display: flex;
+        justify-content: space-between;
+        gap: 5px;
+
+        width: 100%;
+        padding-top: 3px;
+    }
+
+    body.index .bnav a {
+        flex: 1;
+        min-height: 35px;
+        padding: 8px 5px;
+        border-radius: 8px;
+
+        font-size: 11px;
+        text-align: center;
+    }
+
+    body.index main.wrap {
+        padding-top: 0;
+    }
+
+    /* Hero */
+    body.index .landing-hero {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 18px;
+
+        min-height: 0;
+        padding: 40px 0 30px;
+    }
+
+    body.index .landing-eyebrow {
+        margin-bottom: 17px;
+        padding: 7px 10px;
+        font-size: 10px;
+    }
+
+    body.index .landing-hero h1 {
+        margin-bottom: 15px;
+        font-size: clamp(39px, 10vw, 52px);
+        line-height: 1.1;
+        letter-spacing: -1.8px;
+    }
+
+    body.index .landing-hero-description {
+        font-size: 13px;
+        line-height: 1.85;
+    }
+
+    body.index .landing-hero-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+        margin-top: 22px;
+    }
+
+    body.index .landing-hero-actions .landing-button {
+        width: 100%;
+        min-height: 46px;
+    }
+
+    body.index .landing-trust-note {
+        margin-top: 18px;
+        font-size: 10px;
+    }
+
+    /* Ilustrasi */
+    body.index .landing-visual {
+        min-height: 285px;
+        padding: 35px 10px;
+    }
+
+    body.index .landing-dashboard {
+        max-width: 390px;
+        padding: 9px;
+        border-radius: 19px;
+    }
+
+    body.index .landing-orb-one {
+        top: 5px;
+        right: 1%;
+        width: 125px;
+        height: 125px;
+    }
+
+    body.index .landing-orb-two {
+        bottom: 2px;
+        left: 1%;
+        width: 90px;
+        height: 90px;
+    }
+
+    body.index .landing-mini-card {
+        gap: 7px;
+        padding: 8px 10px;
+        border-radius: 12px;
+    }
+
+    body.index .landing-mini-card strong {
+        font-size: 10px;
+    }
+
+    body.index .landing-mini-card small {
+        font-size: 9px;
+    }
+
+    body.index .landing-mini-icon,
+    body.index .landing-mini-bottom-icon {
+        width: 29px;
+        height: 29px;
+        flex-basis: 29px;
+        border-radius: 8px;
+        font-size: 15px;
+    }
+
+    body.index .landing-mini-top {
+        top: 2px;
+        left: 0;
+    }
+
+    body.index .landing-mini-bottom {
+        right: 0;
+        bottom: 2px;
+    }
+
+    /* Form pencarian */
+    body.index .landing-search {
+        margin-bottom: 20px;
+        padding: 23px 18px;
+        border-radius: 18px;
+    }
+
+    body.index .landing-search h2 {
+        font-size: 23px;
+    }
+
+    body.index .landing-search-description {
+        font-size: 12px;
+    }
+
+    body.index .landing-search .tabs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+    }
+
+    body.index .landing-search .tab {
+        padding-inline: 8px;
+        font-size: 11px;
+    }
+
+    body.index .landing-search .form {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    body.index .landing-search input[type="text"] {
+        min-height: 47px;
+        font-size: 12px;
+    }
+
+    body.index .landing-search .btn {
+        width: 100%;
+        min-height: 47px;
+    }
+
+    body.index .landing-search .err {
+        grid-column: auto;
+    }
+
+    /* Manfaat */
+    body.index .landing-value-strip {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+        margin: 28px 0 68px;
+    }
+
+    body.index .landing-value-item {
+        padding: 13px 15px;
+    }
+
+    body.index .landing-value-number {
+        width: 37px;
+        height: 37px;
+        flex-basis: 37px;
+    }
+
+    body.index .landing-value-item p {
+        font-size: 12px;
+    }
+
+    /* Judul section */
+    body.index .landing-section {
+        margin-bottom: 68px;
+    }
+
+    body.index .landing-section-heading {
+        margin-bottom: 25px;
+    }
+
+    body.index .landing-section-heading h2 {
+        font-size: 28px;
+        letter-spacing: -.7px;
+    }
+
+    body.index .landing-section-heading p {
+        font-size: 12px;
+    }
+
+    /* Fitur menjadi satu kolom */
+    body.index .landing-feature-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 13px;
+    }
+
+    body.index .landing-feature-card {
+        padding: 23px;
+        border-radius: 16px;
+    }
+
+    body.index .landing-feature-symbol {
+        width: 45px;
+        height: 45px;
+        margin-bottom: 17px;
+        font-size: 23px;
+    }
+
+    body.index .landing-feature-card h3 {
+        font-size: 16px;
+    }
+
+    body.index .landing-feature-card p {
+        font-size: 12px;
+    }
+
+    body.index .landing-disclaimer {
+        font-size: 10px;
+    }
+
+    /* Cara kerja */
+    body.index .landing-how {
+        padding: 24px 20px;
+        border-radius: 18px;
+    }
+
+    body.index .landing-step-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 26px;
+    }
+
+    body.index .landing-step-card {
+        padding-left: 1px;
+    }
+
+    body.index .landing-step-number {
+        width: 42px;
+        height: 42px;
+        margin-bottom: 14px;
+        border-radius: 12px;
+        font-size: 15px;
+    }
+
+    body.index .landing-step-line {
+        display: none;
+    }
+
+    body.index .landing-step-card h3 {
+        font-size: 14px;
+    }
+
+    body.index .landing-step-card p {
+        font-size: 12px;
+    }
+
+    /* CTA */
+    body.index .landing-cta {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 23px;
+
+        margin-bottom: 35px;
+        padding: 28px 22px;
+        border-radius: 19px;
+    }
+
+    body.index .landing-cta h2 {
+        font-size: 27px;
+        letter-spacing: -.6px;
+    }
+
+    body.index .landing-cta p {
+        font-size: 12px;
+    }
+
+    body.index .landing-cta .landing-button {
+        width: 100%;
+    }
+
+    /* Footer */
+    body.index .landing-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 22px 0 27px;
+    }
+
+    body.index .landing-footer nav {
+        gap: 12px 16px;
+    }
+
+    body.index .landing-footer nav a,
+    body.index .landing-footer p {
+        font-size: 10px;
+    }
+}
+
+/* ---------- 17. HP KECIL ---------- */
+
+@media (max-width: 360px) {
+    :root {
+        --page-padding: 13px;
+    }
+
+    body.index .top {
+        padding-inline: 12px;
+    }
+
+    body.index .brand img {
+        width: 33px;
+        height: 33px;
+    }
+
+    body.index .brand strong {
+        font-size: 16px;
+    }
+
+    body.index .brand small {
+        max-width: 125px;
+        font-size: 8px;
+    }
+
+    body.index .landing-hero h1 {
+        font-size: 37px;
+    }
+
+    body.index .landing-visual {
+        min-height: 245px;
+    }
+
+    body.index .landing-mini-card {
+        gap: 5px;
+        padding: 7px;
+    }
+
+    body.index .landing-mini-card strong {
+        font-size: 9px;
+    }
+
+    body.index .landing-mini-card small {
+        font-size: 8px;
+    }
+
+    body.index .landing-search {
+        padding: 20px 14px;
+    }
+}
+
+/* ---------- 18. AKSESIBILITAS ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    body.index *,
+    body.index *::before,
+    body.index *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

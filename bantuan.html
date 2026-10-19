@@ -4,132 +4,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bantuan dan Customer Service - TrustX</title>
-</head>
-<body>
-    <header>
-        <img src="assets/images/logo-trustx.svg"
-             alt="Logo TrustX" width="100">
-        <h1>TrustX</h1>
-        <p>Pusat Bantuan dan Layanan Pelanggan</p>
 
-        <nav aria-label="Navigasi utama">
-            <a href="index.html">Kembali ke Beranda</a>
-        </nav>
+    <meta
+        name="description"
+        content="Pusat bantuan TrustX untuk pertanyaan, kendala akun, laporan, dan klarifikasi."
+    >
+
+    <title>Pusat Bantuan - TrustX</title>
+
+    <link rel="stylesheet" href="buyer.css">
+    <script src="bantuan.js" defer></script>
+</head>
+
+<body class="buyer" data-page="bantuan">
+
+    <!-- HEADER -->
+    <header class="top">
+        <a class="brand" href="index.html">
+            <img
+                src="./assets/images/logo-trustx.svg"
+                alt="Logo TrustX"
+                width="40"
+                height="40"
+            >
+            <span>
+                <strong>TrustX</strong>
+                <small>Cek Dulu</small>
+            </span>
+        </a>
+
+        <h1>Pusat Bantuan</h1>
+
+        <div class="acts">
+            <a
+                class="ib"
+                href="index.html"
+                aria-label="Kembali ke beranda"
+                title="Kembali ke beranda"
+            >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M19 12H5"></path>
+                    <path d="m12 19-7-7 7-7"></path>
+                </svg>
+            </a>
+        </div>
     </header>
 
-    <main>
-        <section>
-            <h2>Pusat Bantuan</h2>
-            <p>
-                Kami siap membantu Anda menggunakan TrustX
-                dengan aman dan nyaman.
-            </p>
+    <main class="help-main">
+
+        <!-- PENGANTAR -->
+        <section class="hero">
+            <div class="hero-body">
+                <span class="hero-tag">Pusat Bantuan TrustX</span>
+
+                <h2>Ada yang bisa kami bantu?</h2>
+
+                <p>
+                    Temukan jawaban atas pertanyaan kamu atau kirimkan
+                    pesan kepada tim bantuan TrustX jika mengalami kendala.
+                </p>
+            </div>
         </section>
 
-        <section>
-            <h2>Pertanyaan yang Sering Diajukan</h2>
+        <!-- FAQ -->
+        <section class="card help-section" aria-labelledby="faqTitle">
+            <h2 id="faqTitle">Pertanyaan yang Sering Diajukan</h2>
 
-            <details>
-                <summary>Apa itu TrustX?</summary>
-                <p>
-                    TrustX adalah platform untuk membantu pengguna
-                    memeriksa informasi reputasi akun dan nomor
-                    WhatsApp dalam transaksi jual beli online.
-                </p>
-            </details>
+            <div class="faq-list">
+                <details>
+                    <summary>Apa itu TrustX?</summary>
+                    <p>
+                        TrustX adalah platform untuk membantu pengguna
+                        memeriksa informasi reputasi akun dan nomor
+                        WhatsApp dalam transaksi jual beli online.
+                    </p>
+                </details>
 
-            <details>
-                <summary>Bagaimana cara melaporkan akun mencurigakan?</summary>
-                <p>
-                    Isi formulir pengaduan dengan informasi akun,
-                    nomor WhatsApp jika tersedia, dan kronologi
-                    kejadian yang Anda alami.
-                </p>
-            </details>
+                <details>
+                    <summary>
+                        Bagaimana cara melaporkan akun mencurigakan?
+                    </summary>
+                    <p>
+                        Isi formulir laporan dengan informasi akun,
+                        nomor WhatsApp jika tersedia, dan kronologi
+                        kejadian yang kamu alami. Ikuti petunjuk pada
+                        halaman laporan TrustX.
+                    </p>
+                </details>
 
-            <details>
-                <summary>Apakah hasil pengecekan menjamin akun aman?</summary>
-                <p>
-                    Tidak. Hasil pengecekan merupakan informasi
-                    pendukung dan tidak menjamin bahwa seseorang
-                    bebas dari risiko penipuan.
-                </p>
-            </details>
+                <details>
+                    <summary>
+                        Apakah hasil pengecekan menjamin akun aman?
+                    </summary>
+                    <p>
+                        Tidak. Hasil pengecekan merupakan informasi
+                        pendukung dan tidak menjamin seseorang bebas
+                        dari risiko penipuan.
+                    </p>
+                </details>
 
-            <details>
-                <summary>Bagaimana jika saya dituduh melakukan penipuan?</summary>
-                <p>
-                    Anda dapat menghubungi tim bantuan untuk
-                    mengajukan klarifikasi dan memberikan bukti
-                    pendukung.
-                </p>
-            </details>
+                <details>
+                    <summary>
+                        Bagaimana jika saya dituduh melakukan penipuan?
+                    </summary>
+                    <p>
+                        Kamu dapat mengajukan klarifikasi dan memberikan
+                        bukti pendukung melalui fitur sanggahan yang
+                        tersedia di TrustX.
+                    </p>
+                </details>
+            </div>
         </section>
 
-        <section>
-            <h2>Hubungi Customer Service</h2>
-            <p>
-                Sampaikan pertanyaan, kendala, atau pengaduan
-                Anda melalui formulir berikut.
+        <!-- FORM BANTUAN -->
+        <section class="card help-section" aria-labelledby="contactTitle">
+            <h2 id="contactTitle">Hubungi Customer Service</h2>
+
+            <p class="help-description">
+                Sampaikan pertanyaan, kendala, atau pengaduan melalui
+                formulir berikut.
             </p>
 
-            <form action="#" method="post">
+            <form id="helpForm" class="help-form">
                 <fieldset>
                     <legend>Formulir Bantuan</legend>
 
-                    <p>
-                        <label for="nama">Nama lengkap:</label><br>
-                        <input type="text" id="nama" name="nama"
-                               autocomplete="name" required>
-                    </p>
+                    <div class="help-field">
+                        <label for="nama">Nama lengkap</label>
+                        <input
+                            type="text"
+                            id="nama"
+                            name="nama"
+                            autocomplete="name"
+                            maxlength="100"
+                            required
+                        >
+                    </div>
 
-                    <p>
-                        <label for="email">Alamat email:</label><br>
-                        <input type="email" id="email" name="email"
-                               autocomplete="email" required>
-                    </p>
+                    <div class="help-field">
+                        <label for="email">Alamat email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            autocomplete="email"
+                            maxlength="254"
+                            required
+                        >
+                    </div>
 
-                    <p>
-                        <label for="kategori">Kategori bantuan:</label><br>
+                    <div class="help-field">
+                        <label for="kategori">Kategori bantuan</label>
                         <select id="kategori" name="kategori" required>
-                            <option value="">Pilih kategori</option>
+                            <option value="">Pilih kategori bantuan</option>
                             <option value="akun">Masalah akun</option>
                             <option value="laporan">Laporan penipuan</option>
-                            <option value="klarifikasi">Klarifikasi laporan</option>
+                            <option value="klarifikasi">
+                                Klarifikasi laporan
+                            </option>
                             <option value="teknis">Kendala teknis</option>
                             <option value="lainnya">Lainnya</option>
                         </select>
-                    </p>
+                    </div>
 
-                    <p>
-                        <label for="pesan">Pesan atau kronologi:</label><br>
-                        <textarea id="pesan" name="pesan"
-                                  rows="6" cols="40"
-                                  placeholder="Jelaskan kendala Anda..."
-                                  required></textarea>
-                    </p>
+                    <div class="help-field">
+                        <label for="pesan">Pesan atau kronologi</label>
+                        <textarea
+                            id="pesan"
+                            name="pesan"
+                            rows="6"
+                            maxlength="3000"
+                            placeholder="Jelaskan kendala yang kamu alami..."
+                            required
+                        ></textarea>
+                    </div>
 
-                    <button type="submit">Kirim Pengaduan</button>
-                    <button type="reset">Reset Formulir</button>
+                    <p
+                        id="helpMessage"
+                        class="help-message"
+                        role="status"
+                        aria-live="polite"
+                    ></p>
+
+                    <div class="help-actions">
+                        <button class="btn pri" type="submit">
+                            Kirim Pengaduan
+                        </button>
+
+                        <button class="btn out" type="reset">
+                            Reset Formulir
+                        </button>
+                    </div>
                 </fieldset>
             </form>
         </section>
 
-        <section>
-            <h2>Tips Sebelum Menghubungi CS</h2>
-            <ul>
+        <!-- TIPS KEAMANAN -->
+        <section class="card help-section" aria-labelledby="tipsTitle">
+            <h2 id="tipsTitle">Tips Sebelum Menghubungi CS</h2>
+
+            <ul class="help-tips">
                 <li>Jangan memberikan kata sandi kepada siapa pun.</li>
                 <li>Jangan membagikan kode OTP.</li>
-                <li>Sertakan kronologi yang jelas jika melaporkan penipuan.</li>
-                <li>Hindari mengirimkan data pribadi yang tidak diperlukan.</li>
+                <li>
+                    Sertakan kronologi yang jelas jika melaporkan penipuan.
+                </li>
+                <li>
+                    Hindari mengirimkan data pribadi yang tidak diperlukan.
+                </li>
             </ul>
-        </section>
-    </main>
 
-    <footer>
-        <p>&copy; 2026 TrustX. Pusat Bantuan Pengguna.</p>
-        <a href="keamanan-akun.html">Pelajari Keamanan Akun</a>
-    </footer>
+            <a class="btn out" href="keamanan-akun.html">
+                Pelajari Keamanan Akun
+            </a>
+        </section>
+
+    </main>
 </body>
 </html>

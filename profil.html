@@ -1,215 +1,316 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>TrustX - Beranda Pembeli</title>
+    <title>Profil Pembeli - TrustX</title>
+
+    <link rel="stylesheet" href="buyer.css">
 </head>
 
-<body>
+<body class="buyer" data-page="profil">
 
     <!-- HEADER -->
-    <header>
-        <nav>
-            <table width="100%">
-                <tr>
-                    <td>
-                        <a href="index.html">
-                               <img src="assets/images/logo-trustx.svg" alt="Logo TrustX" width="120">
-                        </a>
-                    </td>
-                    <td align="right">
-                        <a href="#notifikasi">Notifikasi</a>
-                        &nbsp;&nbsp;
-                        <a href="#profil">Profil</a>
-                    </td>
-                </tr>
-            </table>
+    <header class="top">
+
+        <!-- Logo -->
+        <a class="brand" href="index.html">
+            <img
+                src="./assets/images/logo-trustx.svg"
+                alt="Logo TrustX"
+                width="44"
+                height="44"
+            >
+            <span>
+                <strong>TrustX</strong>
+                <small>Cek Dulu</small>
+            </span>
+        </a>
+
+        <!-- Navigasi utama -->
+        <nav class="bnav" aria-label="Navigasi utama">
+
+            <a href="index.html" data-ic="shield">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 22s9-4.5 9-11V5l-9-3-9 3v6c0 6.5 9 11 9 11Z"/>
+                </svg>
+                <span>Beranda</span>
+            </a>
+
+            <a href="lapor.html" data-ic="doc">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/>
+                    <path d="M14 2v6h6M8 13h8M8 17h8"/>
+                </svg>
+                <span>Laporan</span>
+            </a>
+
+            <a href="profil.html" aria-current="page" data-ic="user">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="8" r="4"/>
+                    <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+                </svg>
+                <span>Profil</span>
+            </a>
+
         </nav>
+
+
+    <!-- Tombol akun -->
+    <div class="acts">
+        <button
+            class="ib"
+            type="button"
+            id="notificationButton"
+            aria-label="Notifikasi"
+            title="Notifikasi"
+        >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                <path d="M10 21h4"></path>
+            </svg>
+        </button>
+
+        <a
+        class="ib dark"
+        href="profil.html"
+        aria-label="Profil akun"
+        title="Profil akun">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M5 21v-2a7 7 0 0 1 14 0v2"></path>
+        </svg>
+        </a>
+    </div>
+
+
     </header>
 
-      <main>
+    <!-- KONTEN UTAMA -->
+    <main class="profile-main">
 
-        <!-- PROFIL -->
-        <section align="center" id="profil">
+        <!-- Judul halaman -->
+        <section class="profile-heading">
+            <p class="profile-eyebrow">AKUN SAYA</p>
 
-           <img
-                src="https://ui-avatars.com/api/?name=Dewi&background=0D8ABC&color=fff&size=100"
-                alt="Avatar Dewi"
-                width="100"
-                height="100"
-            >
+            <h1>Profil Saya</h1>
 
-            <h1>Dewi</h1>
-
-            <p>
-                ID Toko: #TX-99214 • Terverifikasi
+            <p class="safe">
+                Kelola informasi akun dan lihat reputasi
+                akunmu di TrustX.
             </p>
+        </section>
 
-            <p>
+        <!-- INFORMASI PENGGUNA -->
+        <section class="card profile-card" aria-labelledby="namaProfil">
 
-                <button type="button">
+            <div class="profile-cover"></div>
+
+            <div class="profile-info">
+
+                <img
+                    class="profile-avatar"
+                    src="https://ui-avatars.com/api/?name=Dewi&background=162350&color=fff&size=160"
+                    alt="Foto profil Dewi"
+                    width="88"
+                    height="88"
+                >
+
+                <div class="profile-name">
+                    <h2 id="namaProfil">Dewi</h2>
+
+                    <p class="safe">
+                        ID Pengguna: #TX-99214
+                    </p>
+
+                    <span class="profile-verified">
+                        ✓ Akun Terverifikasi
+                    </span>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn sec"
+                    id="shareProfile"
+                >
                     Bagikan Profil
                 </button>
-            </p>
 
+                <p
+                    id="shareMessage"
+                    class="profile-message"
+                    role="status"
+                    aria-live="polite"
+                ></p>
+
+            </div>
         </section>
 
+        <!-- RINGKASAN REPUTASI -->
+        <section class="card" aria-labelledby="judulStatistik">
 
-        <!-- STATISTIK AKUN -->
-        <section>
+            <h2 id="judulStatistik">Ringkasan Reputasi</h2>
 
-            <h2>Statistik Akun</h2>
+            <div class="stats">
 
-            <table border="1">
+                <article class="stat ok">
+                    <small>Skor Reputasi</small>
+                    <b>96/100</b>
+                </article>
 
-                <tr>
-                    <th>Skor Trust</th>
-                    <th>Transaksi</th>
-                    <th>Aduan Aktif</th>
-                </tr>
+                <article class="stat">
+                    <small>Transaksi</small>
+                    <b>142</b>
+                </article>
 
-                <tr>
-                    <td>
-                        <strong>96</strong>/100
-                    </td>
+                <article class="stat ok">
+                    <small>Laporan Aktif</small>
+                    <b>0</b>
+                </article>
 
-                    <td>
-                        <strong>142</strong>
-                    </td>
-
-                    <td>
-                        <strong>0</strong>
-                    </td>
-                </tr>
-
-            </table>
-
+            </div>
         </section>
-
 
         <!-- IDENTITAS TERVERIFIKASI -->
-        <section>
+        <section class="card" aria-labelledby="judulIdentitas">
 
-            <h2>Identitas Terverifikasi</h2>
+            <h2 id="judulIdentitas">Identitas Terverifikasi</h2>
 
-            <fieldset>
+            <div class="profile-identity-list">
 
-                <legend>Data Terverifikasi</legend>
+                <!-- Rekening bank -->
+                <article class="profile-identity">
 
-                <p>
-                    <strong>Bank BCA</strong>
-                    <br>
-                    <small>
-                        5210-****-8891 a/n Budi S.
-                    </small>
+                    <div
+                        class="profile-identity-icon"
+                        aria-hidden="true"
+                    >
+                        ▤
+                    </div>
 
-                    <br>
+                    <div class="profile-identity-content">
+                        <strong>Rekening Bank</strong>
+                        <p>5210-****-8891</p>
+                        <small>a.n. Budi S.</small>
+                    </div>
 
-                    ✓ Terverifikasi
-                </p>
+                    <span class="profile-verified">
+                        Terverifikasi
+                    </span>
 
-                <hr>
+                </article>
 
-                <p>
-                    <strong>WhatsApp Bisnis</strong>
-                    <br>
-                    <small>
-                        +62 812-3469-7890
-                    </small>
+                <!-- WhatsApp -->
+                <article class="profile-identity">
 
-                    <br>
+                    <div
+                        class="profile-identity-icon"
+                        aria-hidden="true"
+                    >
+                        ☎
+                    </div>
 
-                    ✓ Terverifikasi
-                </p>
+                    <div class="profile-identity-content">
+                        <strong>WhatsApp</strong>
+                        <p>Nomor WhatsApp terhubung</p>
+                    </div>
 
-                <hr>
+                    <span class="profile-verified">
+                        Terverifikasi
+                    </span>
 
-                <p>
-                    <strong>Akun X</strong>
-                    <br>
-                    <small>
-                        @dewi
-                    </small>
+                </article>
 
-                    <br>
+                <!-- Akun X -->
+                <article class="profile-identity">
 
-                    ✓ Terverifikasi
-                </p>
+                    <div
+                        class="profile-identity-icon"
+                        aria-hidden="true"
+                    >
+                        𝕏
+                    </div>
 
-            </fieldset>
+                    <div class="profile-identity-content">
+                        <strong>Akun X</strong>
+                        <p>@dewi</p>
+                    </div>
 
+                    <span class="profile-verified">
+                        Terverifikasi
+                    </span>
+
+                </article>
+
+            </div>
         </section>
 
+        <!-- PENGATURAN AKUN -->
+        <section class="card" aria-labelledby="judulPengaturan">
 
-        <!-- MANAJEMEN AKUN -->
-        <section>
+            <h2 id="judulPengaturan">Pengaturan Akun</h2>
 
-            <h2>Manajemen Akun</h2>
+            <div class="stack profile-settings">
 
-            <ul>
+                <a href="keamanan-akun.html" class="btn out">
+                    <span>Keamanan Akun</span>
+                    <span aria-hidden="true">›</span>
+                </a>
 
-                <li>
-                    <a href="keamanan-akun.html">
-                        Keamanan Akun
-                    </a>
-                </li>
+                <a href="bantuan.html" class="btn out">
+                    <span>Pusat Bantuan</span>
+                    <span aria-hidden="true">›</span>
+                </a>
 
-                <li>
-                    <a href="bantuan.html">
-                        Bantuan / CS
-                    </a>
-                </li>
+                <a href="Landing-pages.html" class="btn out profile-logout">
+                    Keluar dari Akun
+                </a>
 
-                <li>
-                    <a href="index.html">
-                        Keluar
-                    </a>
-                </li>
-
-            </ul>
-
+            </div>
         </section>
+
+        <!-- CATATAN -->
+        <p class="profile-note">
+            Pastikan informasi akunmu selalu benar dan terbaru.
+        </p>
 
     </main>
 
+    <script>
+        
+    const shareButton = document.querySelector("#shareProfile");
+    const shareMessage = document.querySelector("#shareMessage");
 
-    <!-- BOTTOM NAVIGATION -->
-    <footer>
+    if (shareButton && shareMessage) {
+    shareButton.addEventListener("click", async () => {
+        const profileUrl = window.location.href;
 
-        <nav>
-            <table width="100%">
-                <tr>
+        try {
+        if (navigator.share) {
+            await navigator.share({
+            title: "Profil TrustX",
+            url: profileUrl
+            });
 
-                    <td align="center">
-                        <a href="index.html">
-                            Beranda
-                        </a>
-                    </td>
+            shareMessage.textContent = "Profil siap dibagikan.";
+        } else if (navigator.clipboard) {
+            await navigator.clipboard.writeText(profileUrl);
+            shareMessage.textContent = "Tautan profil berhasil disalin.";
+        } else {
+            shareMessage.textContent =
+            "Salin tautan profil dari bilah alamat browser.";
+        }
+        } catch (error) {
+        if (error.name !== "AbortError") {
+            shareMessage.textContent =
+            "Tautan tidak dapat dibagikan. Silakan coba lagi.";
+        }
+        }
+    });
+    }
 
-                    <td align="center">
-                        <a href="lapor.html">
-                            Laporan
-                        </a>
-                    </td>
-
-                    <td align="center">
-                        <a href="profil.html">
-                            Profil
-                        </a>
-                    </td>
-
-                </tr>
-            </table>
-        </nav>
-
-        <p align="center">
-            &copy; 2026 TrustX
-        </p>
-
-    </footer>
-
+    </script>
 </body>
-
 </html>
