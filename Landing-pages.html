@@ -1,0 +1,393 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="TrustX membantu pengguna memeriksa reputasi akun dan membaca laporan komunitas sebelum bertransaksi."
+    >
+
+    <title>TrustX - Cek Dulu Sebelum Transaksi</title>
+
+    <link rel="stylesheet" href="style1.css">
+</head>
+
+<body class="index" data-page="home">
+
+    <!-- HEADER / NAVBAR -->
+    <header class="top">
+        <a href="index.html" class="brand">
+            <img
+                src="./assets/images/logo-trustx.svg"
+                alt="Logo TrustX"
+                width="44"
+                height="44"
+            >
+            <span>
+                <strong>TrustX</strong>
+                <small>Cek Dulu Sebelum Transaksi</small>
+            </span>
+        </a>
+
+        <nav class="bnav" aria-label="Navigasi utama">
+            <a href="#beranda" aria-current="page">Beranda</a>
+            <a href="#fitur">Fitur</a>
+            <a href="#cara-kerja">Cara Kerja</a>
+        </nav>
+
+        <div class="acts">
+            <a href="login.html" class="landing-login">Masuk</a>
+            <a
+                href="daftar.html"
+                class="landing-button landing-button-primary"
+            >
+                Daftar
+            </a>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA -->
+    <main class="wrap">
+
+        <!-- HERO -->
+        <section class="landing-hero" id="beranda">
+            <div class="landing-hero-copy">
+                <p class="landing-eyebrow">
+                    <span
+                        class="landing-status-dot"
+                        aria-hidden="true"
+                    ></span>
+                    Platform informasi reputasi akun
+                </p>
+
+                <h1>
+                    Cek Dulu,<br>
+                    Baru Transaksi.
+                </h1>
+
+                <p class="landing-hero-description">
+                    Lebih waspada sebelum bertransaksi online.
+                    TrustX membantu kamu memeriksa informasi reputasi
+                    akun dan membaca laporan komunitas agar dapat
+                    mengambil keputusan dengan lebih bijak.
+                </p>
+
+                <div class="landing-hero-actions">
+                    <a
+                        href="#cek-reputasi"
+                        class="landing-button landing-button-primary"
+                    >
+                        Mulai Periksa
+                        <span aria-hidden="true">→</span>
+                    </a>
+
+                    <a
+                        href="#cara-kerja"
+                        class="landing-button landing-button-secondary"
+                    >
+                        Pelajari Cara Kerja
+                    </a>
+                </div>
+
+                <p class="landing-trust-note">
+                    <span aria-hidden="true" class="landing-check">✓</span>
+                    Periksa informasi terlebih dahulu dan tetap gunakan
+                    pertimbangan pribadi sebelum bertransaksi.
+                </p>
+            </div>
+
+            <!-- ILUSTRASI DASHBOARD -->
+            <div
+                class="landing-visual"
+                role="group"
+                aria-label="Ilustrasi pemeriksaan reputasi"
+            >
+                <div
+                    class="landing-visual-orb landing-orb-one"
+                    aria-hidden="true"
+                ></div>
+
+                <div
+                    class="landing-visual-orb landing-orb-two"
+                    aria-hidden="true"
+                ></div>
+
+                <div class="landing-mini-card landing-mini-top">
+                    <span class="landing-mini-icon" aria-hidden="true">
+                        ✓
+                    </span>
+                    <span>
+                        <strong>Pemeriksaan Akun</strong>
+                        <small>Informasi tersedia</small>
+                    </span>
+                </div>
+
+                <div class="landing-dashboard">
+                    <img
+                        src="./assets/images/hero-reputasi.svg"
+                        alt="Ilustrasi dashboard pemeriksaan akun"
+                        width="400"
+                        height="300"
+                    >
+                </div>
+
+                <div class="landing-mini-card landing-mini-bottom">
+                    <span
+                        class="landing-mini-bottom-icon"
+                        aria-hidden="true"
+                    >
+                        !
+                    </span>
+                    <span>
+                        <strong>Lebih Waspada</strong>
+                        <small>Kenali risiko transaksi</small>
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- FORM CEK REPUTASI -->
+        <section
+            class="card search landing-search"
+            id="cek-reputasi"
+            aria-labelledby="judul-pencarian"
+        >
+            <h2 id="judul-pencarian">Cek Reputasi Akun</h2>
+
+            <p class="landing-search-description">
+                Masukkan nomor WhatsApp atau username X yang ingin
+                kamu periksa.
+            </p>
+
+            <div class="tabs" aria-label="Pilih jenis akun">
+                <button
+                    class="tab"
+                    type="button"
+                    data-m="wa"
+                    aria-pressed="true"
+                >
+                    Nomor WA
+                </button>
+
+                <button
+                    class="tab"
+                    type="button"
+                    data-m="x"
+                    aria-pressed="false"
+                >
+                    Username X
+                </button>
+            </div>
+
+            <form id="form" class="form" novalidate>
+                <label class="visually-hidden" for="q">
+                    Nomor WhatsApp atau username X
+                </label>
+
+                <input
+                    id="q"
+                    name="account"
+                    type="text"
+                    placeholder="Masukkan nomor WhatsApp"
+                    autocomplete="off"
+                    aria-describedby="err"
+                    required
+                >
+
+                <p class="err" id="err" role="alert"></p>
+
+                <button
+                    class="btn pri"
+                    id="go"
+                    type="submit"
+                >
+                    Cek Reputasi
+                </button>
+            </form>
+        </section>
+
+        <!-- RINGKASAN MANFAAT -->
+        <section
+            class="landing-value-strip"
+            aria-label="Manfaat menggunakan TrustX"
+        >
+            <div class="landing-value-item">
+                <span class="landing-value-number">01</span>
+                <p>Periksa informasi akun</p>
+            </div>
+
+            <div class="landing-value-item">
+                <span class="landing-value-number">02</span>
+                <p>Baca laporan komunitas</p>
+            </div>
+
+            <div class="landing-value-item">
+                <span class="landing-value-number">03</span>
+                <p>Ambil keputusan lebih bijak</p>
+            </div>
+        </section>
+
+        <!-- FITUR UTAMA -->
+        <section class="landing-section" id="fitur">
+            <div class="landing-section-heading">
+                <span class="landing-section-label">Fitur Utama</span>
+
+                <h2>Lebih Kenal Sebelum Percaya</h2>
+
+                <p>
+                    TrustX menyediakan fitur untuk membantu pengguna
+                    mendapatkan informasi sebelum melakukan transaksi
+                    dengan akun yang belum dikenal.
+                </p>
+            </div>
+
+            <div class="landing-feature-grid">
+                <article class="landing-feature-card">
+                    <span
+                        class="landing-feature-symbol"
+                        aria-hidden="true"
+                    >⌕</span>
+
+                    <span class="landing-feature-index">FITUR 01</span>
+
+                    <h3>Cek Reputasi Akun</h3>
+
+                    <p>
+                        Periksa informasi akun untuk mengetahui apakah
+                        terdapat data atau laporan komunitas yang relevan.
+                    </p>
+                </article>
+
+                <article class="landing-feature-card">
+                    <span
+                        class="landing-feature-symbol"
+                        aria-hidden="true"
+                    >≡</span>
+
+                    <span class="landing-feature-index">FITUR 02</span>
+
+                    <h3>Laporan Komunitas</h3>
+
+                    <p>
+                        Baca laporan yang dibagikan pengguna sebagai
+                        bahan pertimbangan sebelum melakukan transaksi.
+                    </p>
+                </article>
+
+                <article class="landing-feature-card">
+                    <span
+                        class="landing-feature-symbol"
+                        aria-hidden="true"
+                    >⚖</span>
+
+                    <span class="landing-feature-index">FITUR 03</span>
+
+                    <h3>Klarifikasi Penjual</h3>
+
+                    <p>
+                        Penjual dapat mengajukan klarifikasi dan
+                        menyertakan bukti untuk membantu proses
+                        peninjauan laporan terhadap akunnya.
+                    </p>
+                </article>
+            </div>
+
+            <p class="landing-disclaimer">
+                Informasi dan laporan komunitas merupakan bahan
+                pertimbangan, bukan jaminan bahwa suatu akun aman atau
+                terbukti melakukan pelanggaran. Periksa bukti dan konteks
+                sebelum mengambil keputusan.
+            </p>
+        </section>
+
+        <!-- CARA KERJA -->
+        <section class="landing-section" id="cara-kerja">
+            <div class="landing-section-heading">
+                <span class="landing-section-label">Cara Kerja</span>
+
+                <h2>Tiga Langkah Menggunakan TrustX</h2>
+
+                <p>
+                    Mulai dengan memeriksa informasi, meninjau hasil,
+                    lalu menentukan langkah berikutnya secara bijak.
+                </p>
+            </div>
+
+            <div class="landing-how">
+                <div class="landing-step-grid">
+                    <article class="landing-step-card">
+                        <span class="landing-step-number">1</span>
+
+                        <span
+                            class="landing-step-line"
+                            aria-hidden="true"
+                        ></span>
+
+                        <h3>Masukkan Informasi Akun</h3>
+
+                        <p>
+                            Cari akun atau username yang ingin kamu
+                            periksa melalui fitur yang tersedia.
+                        </p>
+                    </article>
+
+                    <article class="landing-step-card">
+                        <span class="landing-step-number">2</span>
+
+                        <span
+                            class="landing-step-line"
+                            aria-hidden="true"
+                        ></span>
+
+                        <h3>Tinjau Hasil Pemeriksaan</h3>
+
+                        <p>
+                            Baca informasi akun dan laporan komunitas
+                            yang tersedia dengan memperhatikan konteksnya.
+                        </p>
+                    </article>
+
+                    <article class="landing-step-card">
+                        <span class="landing-step-number">3</span>
+
+                        <h3>Ambil Keputusan</h3>
+
+                        <p>
+                            Pertimbangkan informasi yang ditemukan
+                            sebelum melanjutkan transaksi online.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- CALL TO ACTION -->
+        <section class="landing-cta">
+            <div class="landing-cta-content">
+                <span class="landing-section-label">Mulai Sekarang</span>
+
+                <h2>Jangan Terburu-buru Saat Bertransaksi.</h2>
+
+                <p>
+                    Jadikan pemeriksaan informasi sebagai langkah awal
+                    sebelum melakukan transaksi dengan akun baru.
+                </p>
+            </div>
+
+            <a
+                href="daftar.html"
+                class="landing-button landing-button-light"
+            >
+                Buat Akun TrustX
+                <span aria-hidden="true">→</span>
+            </a>
+        </section>
+    </main>
+
+    <!-- Interaksi pencarian ditangani oleh buyer.js jika tersedia -->
+    <script src="buyer.js" defer></script>
+</body>
+</html>
