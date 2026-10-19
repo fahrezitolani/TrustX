@@ -504,6 +504,63 @@ input:focus { outline: 3px solid rgb(138 166 236 / 35%); border-color: #526da8; 
 .auth-switch a { font-weight: 700; }
 .back-link { display: block; color: var(--navy); font-size: 13px; text-align: center; text-decoration: none; }
 
+/* Header halaman masuk & daftar */
+body.seller .top.auth-top { position: static; box-shadow: none; padding: 14px 18px; border: 0; background: var(--navy); }
+body.seller .top.auth-top h1 { flex: 1; margin: 0; color: #fff; font-size: 17px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+body.seller .auth-top .ib { color: #fff; background: rgb(255 255 255 / 14%); }
+body.seller .auth-top .ib svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
+body.seller .auth-top-link { display: inline-block; padding: 8px; color: #cdd6f0; font-size: 13px; font-weight: 700; text-decoration: none; }
+body.seller .auth-top-link:hover { color: #fff; text-decoration: underline; }
+
+/* Kartu auth */
+body.seller .auth-card { border: 1px solid var(--line); border-radius: var(--r); background: #fff; box-shadow: var(--sh); }
+
+/* Kartu merek di dalam auth-card */
+.auth-brand { padding: 20px; margin-bottom: 18px; border: 1px solid #e0e5f0; border-radius: 14px; background: #fbfcff; text-align: center; }
+.auth-brand img { display: block; width: 64px; height: 64px; margin: 0 auto 10px; }
+.auth-brand strong { display: block; color: var(--navy); font-size: 18px; }
+.auth-brand small { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.auth-brand p { margin: 10px 0 0; color: var(--muted); font-size: 12px; }
+
+/* Pilih peran (Pembeli / Penjual) */
+.role-pick { margin-bottom: 18px; }
+.role-pick h2 { margin: 0 0 6px; color: var(--navy); font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.role-pick p { margin: 0 0 12px; color: var(--muted); font-size: 12px; }
+.role-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.role-btn { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; border: 0; border-radius: 23px; color: var(--navy); background: #e8edf9; font: inherit; font-size: 13px; font-weight: 800; letter-spacing: .04em; cursor: pointer; transition: background-color .15s ease, color .15s ease; }
+.role-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
+.role-btn[aria-pressed="true"] { color: #fff; background: var(--navy); }
+
+/* Kolom isian dengan ikon */
+.auth-field { display: flex; align-items: center; gap: 10px; padding: 0 14px; border: 1.5px solid #cdd4e4; border-radius: 12px; background: #fff; }
+.auth-field:focus-within { border-color: var(--accent, #4f6bd8); outline: 3px solid rgb(79 107 216 / 45%); outline-offset: 2px; }
+.auth-field svg { flex: 0 0 20px; width: 20px; height: 20px; fill: none; stroke: var(--muted); stroke-width: 1.8; }
+body.seller .auth-field input,
+body.seller .auth-field input[type=text],
+body.seller .auth-field input[type=email],
+body.seller .auth-field input[type=tel],
+body.seller .auth-field input[type=password] { flex: 1; width: auto; min-width: 0; min-height: 48px; padding: 0; border: 0; border-radius: 0; outline: none; color: var(--text); background: none; font: inherit; font-size: 14px; }
+body.seller .auth-field input:focus { border: 0; outline: none; }
+.auth-field .password-toggle { position: static; transform: none; }
+
+/* Tautan bantu di bawah kolom */
+.auth-hint { margin: -4px 0 0; text-align: right; font-size: 12px; }
+.auth-hint a { color: var(--navy); font-weight: 700; }
+
+/* Catatan aturan kata sandi */
+.auth-note { margin: 0; padding: 10px 12px; border-radius: 10px; color: #8a6d00; background: #fff8e1; font-size: 12px; }
+
+/* Setuju syarat */
+.auth-terms { display: flex; gap: 10px; margin-top: 6px; color: var(--muted); font-size: 12px; }
+.auth-terms input { flex: 0 0 auto; width: 18px; height: 18px; min-height: 0; margin-top: 1px; accent-color: var(--navy); }
+.auth-terms a { color: var(--navy); font-weight: 700; }
+
+/* Tombol masuk lewat layanan lain */
+.socials { display: grid; gap: 10px; margin-top: 16px; }
+.socials .btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 46px; border-radius: 12px; font-size: 13px; font-weight: 700; }
+.socials-sep { display: flex; align-items: center; gap: 12px; margin: 18px 0 0; color: var(--muted); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.socials-sep::before, .socials-sep::after { content: ""; flex: 1; height: 1px; background: #e0e5f0; }
+
 /* == Klarifikasi == */
     
 /* Popup Form Klarifikasi */
@@ -1172,4 +1229,36 @@ body.popup-klarifikasi-open {
     .review-help .btn {
         width: 100%;
     }
+}
+
+/* ===== Verifikasi OTP ===== */
+body .otp-fieldset { border: 0; padding: 0; margin: 0; }
+body .otp-input-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+body .otp-input-row input {
+  width: 42px;
+  height: 48px;
+  padding: 10px;
+  text-align: center;
+  font-size: 20px;
+  border: 1.5px solid #cdd4e4;
+  border-radius: 12px;
+  background: #fff;
+  font: inherit;
+  color: var(--text);
+  flex: 0 0 42px;
+  box-sizing: border-box;
+}
+body .otp-input-row input:focus {
+  border-color: var(--accent, #4f6bd8);
+  outline: 3px solid rgb(79 107 216 / 45%);
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  body .otp-input-row { gap: 6px; }
+  body .otp-input-row input { width: 36px; height: 44px; font-size: 18px; flex-basis: 36px; }
 }

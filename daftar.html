@@ -1,51 +1,95 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Daftar akun TrustX untuk memeriksa reputasi akun, melaporkan transaksi, dan mengelola toko.">
-    <title>Daftar - TrustX</title>
+    <meta name="description" content="Daftar akun TrustX sebagai pembeli atau penjual untuk memeriksa reputasi dan mengelola laporan.">
+    <title>Daftar Akun - TrustX</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="seller.css">
-    <link rel="stylesheet" href="buyer.css">
     <script src="script.js" defer></script>
 </head>
-<body class="seller">
+<body class="seller" data-page="register">
+    <header class="top auth-top">
+        <a class="ib" href="Landing-pages.html" aria-label="Kembali">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </a>
+        <h1>DAFTAR AKUN</h1>
+        <a class="ib auth-top-link" href="bantuan.html">[Bantuan]</a>
+    </header>
     <main class="auth-main">
         <div class="auth-card">
-            <div class="auth-symbol">
+            <div class="auth-brand">
                 <img src="./assets/images/logo-trustx.svg" alt="Logo TrustX">
+                <strong>TrustX - Cek Dulu</strong>
+                <small>Portal Reputasi &amp; Manajemen Sangganan Toko</small>
+                <p>Verifikasi akun, jejak transaksi, rekening, dan simpan riwayat pencegahan penipuan.</p>
             </div>
-            <h1>Buat Akun TrustX</h1>
-            <p class="section-intro">Daftar sekarang untuk mulai memeriksa reputasi dan melindungi transaksi Anda.</p>
+            <h1>Daftar Akun</h1>
+            <p class="section-intro">Pilih peran akun untuk memeriksa reputasi, no rekening, dan mengelola laporan sangganan.</p>
+
+            <div class="role-pick">
+                <h2>Pilih Peran Anda</h2>
+                <p>Pilih sebagai pembeli untuk cek reputasi akun penjual, atau penjual untuk mengelola toko dan bukti sangganan.</p>
+                <div class="role-tabs" role="group" aria-label="Pilih peran akun">
+                    <button type="button" class="role-btn" aria-pressed="true">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v2h20v-2c0-3.3-6.7-5-10-5z"/></svg>
+                        PEMBELI
+                    </button>
+                    <button type="button" class="role-btn" aria-pressed="false">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l1.5-5h15L21 9M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0M5 21V12H7v9m10 0V12h2v9"/></svg>
+                        PENJUAL
+                    </button>
+                </div>
+            </div>
+
             <form id="registerForm" class="form-stack" novalidate>
                 <div class="field">
                     <label for="registerName">Nama Lengkap</label>
-                    <input type="text" id="registerName" name="name" autocomplete="name" required placeholder="Nama lengkap">
-                </div>
-                <div class="field">
-                    <label for="registerEmail">Alamat Email</label>
-                    <input type="email" id="registerEmail" name="email" autocomplete="email" required placeholder="email@example.com">
-                </div>
-                <div class="field">
-                    <label for="registerPassword">Kata Sandi</label>
-                    <div class="password-wrap">
-                        <input type="password" id="registerPassword" name="password" autocomplete="new-password" required placeholder="Min. 8 karakter">
-                        <button type="button" class="password-toggle" data-toggle-password="registerPassword" aria-label="Tampilkan kata sandi">Lihat</button>
+                    <div class="auth-field">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v2h20v-2c0-3.3-6.7-5-10-5z"/></svg>
+                        <input type="text" id="registerName" name="name" autocomplete="name" required placeholder="Contoh: Dewi Rahmawati">
                     </div>
                 </div>
                 <div class="field">
+                    <label for="registerWa">Nomor WhatsApp <small>(Untuk OTP)</small></label>
+                    <div class="auth-field">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 3A2.5 2.5 0 0 0 3 5.5v13A2.5 2.5 0 0 0 5.5 21h13a2.5 2.5 0 0 0 2.5-2.5v-13A2.5 2.5 0 0 0 18.5 3h-13z"/></svg>
+                        <input type="tel" id="registerWa" name="wa" autocomplete="tel" required placeholder="081234567890">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="registerPassword">Kata Sandi</label>
+                    <div class="auth-field">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <input type="password" id="registerPassword" name="password" autocomplete="new-password" required placeholder="Min. 8 karakter">
+                        <button type="button" class="password-toggle" data-toggle-password="registerPassword" aria-label="Tampilkan kata sandi">Lihat</button>
+                    </div>
+                    <p class="auth-note">Kata sandi minimal 8 karakter, disarankan menggabungkan huruf, angka, dan simbol.</p>
+                </div>
+                <div class="field">
                     <label for="confirmPassword">Ulangi Kata Sandi</label>
-                    <div class="password-wrap">
+                    <div class="auth-field">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                         <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" required placeholder="Ulangi kata sandi">
                         <button type="button" class="password-toggle" data-toggle-password="confirmPassword" aria-label="Tampilkan kata sandi">Lihat</button>
                     </div>
                 </div>
+                <label class="auth-terms">
+                    <input type="checkbox" id="terms" required>
+                    <span>Saya menyetujui <a href="#">syarat &amp; ketentuan</a> serta <a href="#">kebijakan privasi</a> TrustX.</span>
+                </label>
                 <p class="err" id="registerMessage" role="alert"></p>
                 <button type="submit" class="check-btn">Daftar</button>
             </form>
+
+            <div class="socials-sep">ATAU DAFTAR DENGAN</div>
+            <div class="socials">
+                <button type="button" class="btn out" disabled>DAFTAR dengan Akun X</button>
+                <button type="button" class="btn out" disabled>DAFTAR dengan Akun Google</button>
+            </div>
             <p class="auth-switch">
                 Sudah punya akun? <a href="login.html">Masuk di sini</a>
             </p>

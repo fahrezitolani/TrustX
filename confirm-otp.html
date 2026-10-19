@@ -1,43 +1,48 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Masukkan kode OTP 6 digit untuk verifikasi nomor WhatsApp dan validitas laporan.">
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
-  <link rel="stylesheet" href="lapor.css">
-  <title>Konfirmasi OTP - TrustX</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfirmasi OTP - TrustX</title>
+    <meta name="description" content="Masukkan kode OTP 6 digit untuk melanjutkan laporan.">
+    <link rel="stylesheet" href="seller.css">
+    <link rel="stylesheet" href="buyer.css">
+    <script src="lapor.js" defer></script>
 </head>
-<body class="lapor" data-page="otp">
-  <header class="top dark">
-    <a href="lapor.html">&lsaquo; Kembali</a>
-    <h1>Konfirmasi OTP</h1>
-    <a href="bantuan.html">Bantuan</a>
-  </header>
-  <main class="otp">
-    <img class="lock" src="assets/images/background-border.svg" alt="Ikon gembok verifikasi" width="96" height="96">
-    <h2>Masukkan Kode Verifikasi OTP</h2>
-    <p>Kami telah mengirimkan kode 6 digit ke nomor WhatsApp:<br><strong id="wa-pelapor" style="font-size:18px">0812-xxxx-7890</strong></p>
-    <form id="form-otp" novalidate style="display:grid;gap:20px;width:100%;justify-items:center">
-      <fieldset style="border:0;padding:0;margin:0;width:100%">
-        <legend class="vh">Kode OTP, 6 digit</legend>
-        <div class="otp-row">
-          <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1">
-          <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2">
-          <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3">
-          <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4">
-          <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5">
-          <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6">
+<body class="seller">
+    <main class="auth-main">
+        <div class="auth-card">
+            <div class="auth-symbol">
+                <img src="./assets/images/logo-trustx.svg" alt="Logo TrustX">
+            </div>
+            <h1>Konfirmasi OTP</h1>
+            <p class="section-intro">
+                Masukkan kode 6 digit yang dikirim ke nomor WhatsApp
+                <strong id="whatsapp-number">0812-xxxx-7890</strong>.
+            </p>
+            <form id="otp-form" class="form-stack" novalidate>
+                <fieldset class="otp-fieldset" aria-label="Kode OTP 6 digit">
+                    <legend class="vh">Kode OTP 6 digit</legend>
+                    <div class="otp-input-row">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 2">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 3">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 4">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 5">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 6">
+                    </div>
+                    <p class="err" id="otp-error" role="alert"></p>
+                </fieldset>
+                <button type="submit" class="check-btn">Konfirmasi &amp; Kirim Laporan</button>
+            </form>
+            <p class="auth-switch">
+                Tidak menerima kode?
+                <button type="button" class="link-btn" id="resend-otp">Kirim Ulang</button>
+            </p>
+            <p class="auth-switch">
+                <a href="lapor.html">&larr; Kembali ke formulir laporan</a>
+            </p>
         </div>
-        <p class="err" id="err-otp" role="alert"></p>
-        <p class="ok" id="ok-otp" role="status"></p>
-      </fieldset>
-      <div>Tidak menerima kode?<br><button class="link" type="button" id="kirim-ulang" disabled>Kirim Ulang (00:45)</button></div>
-      <button class="btn" type="submit">Konfirmasi &amp; Kirim Laporan</button>
-    </form>
-    <p class="info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg><span>Verifikasi nomor WhatsApp diperlukan untuk menjaga validitas laporan serta mencegah spam data dari akun bot.</span></p>
-    <p class="by"><img src="assets/images/logo-trustx.svg" alt="" width="26" height="26">Dilindungi TrustX</p>
-  </main>
-  <script src="lapor.js"></script>
+    </main>
 </body>
 </html>

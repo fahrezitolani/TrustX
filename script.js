@@ -1,7 +1,5 @@
-﻿#
-# Interaksi front-end TrustX.
-# Belum terhubung ke database/backend.
-#
+﻿/* Interaksi front-end TrustX — masuk, daftar, dan pemilihan peran.
+   Belum terhubung ke database/backend. */
 "use strict";
 // use strict adalah praktik yang baik untuk menulis JavaScript modern. Ini membantu mencegah beberapa kesalahan umum dan membuat kode lebih aman.
 
@@ -133,7 +131,40 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
     // =========================
-    // 4. Form login
+    // 4. Pilih peran (Pembeli / Penjual)
+    // =========================
+    const roleTabs = document.querySelectorAll(".role-btn");
+
+    if (roleTabs.length) {
+        roleTabs.forEach((button) => {
+            button.addEventListener("click", () => {
+                roleTabs.forEach((item) => {
+                    item.setAttribute(
+                        "aria-pressed",
+                        String(item === button)
+                    );
+                });
+            });
+        });
+    }
+
+    function pilihPeran() {
+        const aktif = document.querySelector(
+            '.role-btn[aria-pressed="true"]'
+        );
+
+        return aktif && /penjual/i.test(aktif.textContent)
+            ? "seller"
+            : "buyer";
+    }
+
+    // Beranda tujuan sesuai peran yang dipilih.
+    function beranda(peran) {
+        return peran === "seller" ? "index-seller.html" : "index.html";
+    }
+
+    // =========================
+    // 5. Form login
     // =========================
     const login = document.getElementById("loginForm");
 
@@ -158,18 +189,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Login front-end (masa uji) — tanpa backend,
-            // form ini mengarah ke halaman beranda index.html.
+            const peran = localStorage.getItem("trustx_peran") || "buyer";
+
+            // Login front-end (masa uji) — tanpa backend.
             out.textContent =
                 "Login berhasil. Mengarah ke halaman beranda...";
             setTimeout(() => {
-                window.location.href = "index.html";
+                window.location.href = beranda(peran);
             }, 600);
         });
     }
 
     // =========================
-    // 5. Form registrasi
+    // 6. Form registrasi
     // =========================
     const register = document.getElementById("registerForm");
 
@@ -178,9 +210,10 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
 
             const name = document.getElementById("registerName");
-            const email = document.getElementById("registerEmail");
+            const wa = document.getElementById("registerWa");
             const pass = document.getElementById("registerPassword");
             const confirm = document.getElementById("confirmPassword");
+            const terms = document.getElementById("terms");
             const out = document.getElementById("registerMessage");
 
             if (!name.value.trim()) {
@@ -189,10 +222,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            if (!email.value.trim() || !email.validity.valid) {
+            if (!/^\+?[0-9][0-9\s-]{7,17}$/.test(wa.value.trim())) {
                 out.textContent =
-                    "Masukkan alamat email yang valid.";
-                email.focus();
+                    "Masukkan nomor WhatsApp yang valid.";
+                wa.focus();
                 return;
             }
 
@@ -210,9 +243,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            if (terms && !terms.checked) {
+                out.textContent =
+                    "Setujui syarat dan ketentuan untuk melanjutkan.";
+                terms.focus();
+                return;
+            }
+
+            // Simpan peran terpilih agar beranda tujuan konsisten.
+            localStorage.setItem("trustx_peran", pilihPeran());
+
             out.textContent =
-                "Validasi berhasil. Data belum disimpan karena " +
-                "aplikasi belum terhubung ke backend.";
+                "Validasi berhasil. Kode OTP akan dikirim ke WhatsApp " +
+                "setelah backend terhubung.";
         });
     }
 });

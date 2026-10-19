@@ -114,8 +114,8 @@
   function otp() {
     const d = store.get(KEY);
     if (!d) { location.replace("lapor.html"); return; }
-    $("#wa-pelapor").textContent = d.pelapor;
-    const boxes = [...document.querySelectorAll(".otp-row input")], err = $("#err-otp"), ok = $("#ok-otp"), re = $("#kirim-ulang");
+    $("#whatsapp-number").textContent = d.pelapor;
+    const boxes = [...document.querySelectorAll(".otp-input-row input")], err = $("#otp-error"), re = $("#resend-otp");
     boxes.forEach((b, i) => {
       b.addEventListener("input", () => { b.value = b.value.replace(/\D/g, "").slice(-1); err.textContent = ""; if (b.value && boxes[i + 1]) boxes[i + 1].focus(); });
       b.addEventListener("keydown", (e) => { if (e.key === "Backspace" && !b.value && boxes[i - 1]) boxes[i - 1].focus(); });
@@ -127,17 +127,17 @@
     });
     let s = 45, salah = 0;
     (function tick() {
-      re.disabled = s > 0;
-      re.textContent = s > 0 ? "Kirim Ulang (00:" + String(s).padStart(2, "0") + ")" : "Kirim Ulang";
+      re.disabled = false;
       if (s > 0) { s--; setTimeout(tick, 1000); }
     })();
-    re.addEventListener("click", () => { // TODO: POST /api/otp/kirim
-      salah = 0; err.textContent = ""; ok.textContent = "Kode baru dikirim ke WhatsApp Anda."; s = 45;
+    re.addEventListener("click", () => {
+      salah = 0; err.textContent = "";
+      s = 45;
       re.disabled = true; re.textContent = "Kirim Ulang (00:45)";
       const t = setInterval(() => { s--; re.textContent = s > 0 ? "Kirim Ulang (00:" + String(s).padStart(2, "0") + ")" : "Kirim Ulang"; if (s <= 0) { re.disabled = false; clearInterval(t); } }, 1000);
     });
-    $("#form-otp").addEventListener("submit", (e) => {
-      e.preventDefault(); ok.textContent = "";
+    $("#otp-form").addEventListener("submit", (e) => {
+      e.preventDefault();
       const k = boxes.map((b) => b.value).join("");
       if (k.length < 6) { err.textContent = "Masukkan 6 digit kode OTP."; return; }
       if (salah >= 5) { err.textContent = "Terlalu banyak percobaan. Minta kode baru."; return; }
@@ -154,6 +154,8 @@
     const t = store.get(TIKET);
     if (!t) { location.replace("lapor.html"); return; }
     $("#t-id").textContent = "#" + t.id; $("#t-akun").textContent = t.akun;
+    const otpStatus = document.getElementById("otp-status");
+    if (otpStatus) otpStatus.textContent = "Verifikasi OTP valid. Laporan " + t.id + " telah tayang di database.";
     $("#t-kat").textContent = t.status === "scam" ? "Penipuan WTS / Scam Transfer" : "Transaksi Aman / Rekomendasi";
     const p = Object.fromEntries(new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Asia/Jakarta" }).formatToParts(new Date(t.waktu)).map((x) => [x.type, x.value]));
     $("#t-waktu").textContent = p.day + " " + p.month + " " + p.year + ", " + p.hour + ":" + p.minute + " WIB";

@@ -3,32 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Masuk ke akun TrustX untuk memeriksa reputasi akun dan mengelola laporan sangganan.">
     <title>Masuk - TrustX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="seller.css">
-    <link rel="stylesheet" href="buyer.css">
     <script src="script.js" defer></script>
 </head>
-<body class="seller">
+<body class="seller" data-page="login">
+    <header class="top auth-top">
+        <a class="ib" href="Landing-pages.html" aria-label="Kembali">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </a>
+        <h1>MASUK</h1>
+        <a class="ib auth-top-link" href="bantuan.html">[Bantuan]</a>
+    </header>
     <main class="auth-main">
         <div class="auth-card">
             <div class="auth-symbol">
                 <img src="./assets/images/logo-trustx.svg" alt="Logo TrustX">
             </div>
             <h1>Masuk ke Akun</h1>
-<form id="loginForm" class="form-stack" novalidate>
+            <p class="section-intro">Verifikasi akun, no rekening, dan transaksi sebelum transfer.</p>
+            <form id="loginForm" class="form-stack" novalidate>
                 <div class="field">
                     <label for="loginEmail">Alamat Email</label>
-                    <input type="email" id="loginEmail" name="email" required placeholder="email@example.com">
+                    <div class="auth-field">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M22 4l-10 8L2 4"/></svg>
+                        <input type="email" id="loginEmail" name="email" required placeholder="email@example.com">
+                    </div>
                 </div>
                 <div class="field">
                     <label for="loginPassword">Kata Sandi</label>
-                    <input type="password" id="loginPassword" name="password" required placeholder="Kata sandi">
+                    <div class="auth-field">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <input type="password" id="loginPassword" name="password" required placeholder="Kata sandi">
+                        <button type="button" class="password-toggle" data-toggle-password="loginPassword" aria-label="Tampilkan kata sandi">Lihat</button>
+                    </div>
                 </div>
+                <p class="auth-hint"><a href="#">Lupa kata sandi?</a></p>
                 <p class="err" id="loginMessage" role="alert"></p>
                 <button type="submit" class="check-btn">Masuk</button>
             </form>
+
+            <div class="socials-sep">ATAU</div>
+            <div class="socials">
+                <button type="button" class="btn out" disabled>MASUK via X</button>
+                <button type="button" class="btn out" disabled>MASUK via Google</button>
+            </div>
             <p class="auth-switch">
-                Belum punya akun? <a href="daftar.html">Daftar disini</a>
+                Belum punya akun? <a href="daftar.html">Daftar</a>
             </p>
         </div>
     </main>
