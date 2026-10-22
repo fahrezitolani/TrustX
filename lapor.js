@@ -1,48 +1,72 @@
 "use strict";
 /* Interaksi fitur Pelaporan Transaksi (lapor.html, confirm-otp.html, success.html).
-   Belum terhubung ke backend: data akun masih dummy dan laporan disimpan di browser.
-   Saat API Flask siap, ganti bagian bertanda TODO. */
+   Terhubung ke backend Django (folder backend/). Jalankan dulu: python manage.py runserver */
 (() => {
+  const API = "http://127.0.0.1:8000/api"; // ganti saat backend sudah di-deploy
+  const KEY = "trustx_draft", TIKET = "trustx_tiket";
+  // TODO: ambil dari akun yang login (fitur 1). Sementara memakai nomor tetap.
+  const PELAPOR = "081246817890";
+  const KOSONG = { whatsapp: "", bank: "", rekening: "", scam: false, jumlah_scam_7_hari: 0 };
   const $ = (s) => document.querySelector(s);
-  const KEY = "trustx_draft", LIST = "trustx_laporan", TIKET = "trustx_tiket";
-  const PELAPOR = "0812-xxxx-7890";
-  const DEMO_OTP = "692841"; // TODO: ganti dengan POST /api/otp/verify
-  // TODO: ganti dengan GET /api/akun?q=...
-  const AKUN = {
-    "@buyer_ticket_f1": { wa: "0812-4681-7890", bank: "BCA", rek: "5411-xxxx a/n G*** R***", scam: false },
-    "@seller_gadget_murah": { wa: "0812-3456-7***", bank: "BCA", rek: "7203-xxxx a/n A*** S***", scam: true, jumlah: 5 }
-  };
-  const BELUM = { wa: "Belum terdata", bank: "Rekening", rek: "Belum terdata", scam: false };
-  const cariAkun = (u) => AKUN[u.trim().toLowerCase()] || BELUM;
   const store = {
-    get(k, s = sessionStorage) { try { return JSON.parse(s.getItem(k)); } catch { return null; } },
-    set(k, v, s = sessionStorage) { try { s.setItem(k, JSON.stringify(v)); } catch { /* storage penuh/diblokir */ } }
+    get(k) { try { return JSON.parse(sessionStorage.getItem(k)); } catch { return null; } },
+    set(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch { /* storage diblokir */ } }
   };
   const words = (t) => t.trim().match(/\S+/g) || [];
   const setErr = (id, msg) => { const e = $("#err-" + id); if (e) e.textContent = msg || ""; };
+  const flat = (v) => Array.isArray(v) ? v.map(flat).join(" ") : (v && typeof v === "object") ? Object.values(v).map(flat).join(" ") : String(v);
+  const PESAN_GAGAL = "Tidak dapat terhubung ke server. Pastikan backend berjalan, lalu coba lagi.";
+
+  /* Pembungkus fetch: selalu mengembalikan { ok, status, data } dan tidak melempar error. */
+  async function api(path, { method = "GET", json, form } = {}) {
+    try {
+      const opt = { method };
+      if (json) { opt.headers = { "Content-Type": "application/json" }; opt.body = JSON.stringify(json); }
+      if (form) opt.body = form;
+      const res = await fetch(API + path, opt);
+      const data = await res.json().catch(() => ({}));
+      return { ok: res.ok, status: res.status, data };
+    } catch {
+      return { ok: false, status: 0, data: { detail: PESAN_GAGAL } };
+    }
+  }
 
   function lapor() {
     const f = $("#form-laporan"), user = $("#lawan"), kr = $("#kronologi");
     const inp = $("#bukti"), drop = $("#drop"), list = $("#berkas");
     const files = [];
+    let akun = { wa: "", bank: "", rek: "" }; // data mentah dari server, ikut dikirim saat submit
+    let seq = 0, timer;
     const prm = new URLSearchParams(location.search).get("akun");
     if (prm) user.value = prm;
 
-    function renderAkun() {
-      const d = cariAkun(user.value);
-      $("#a-nama").textContent = user.value.trim() || "—";
-      $("#a-wa").textContent = d.wa; $("#a-bank").textContent = d.bank; $("#a-rek").textContent = d.rek;
+    function tampil(d) {
+      akun = { wa: d.whatsapp || "", bank: d.bank || "", rek: d.rekening || "" };
+      $("#a-wa").textContent = akun.wa || "Belum terdata";
+      $("#a-bank").textContent = akun.bank || "Rekening";
+      $("#a-rek").textContent = akun.rek || "Belum terdata";
       const badge = d.scam ? "scam-user.svg" : "verified-user.svg";
       $("#badge").src = "assets/images/" + badge;
       $("#cek").src = "assets/images/" + (d.scam ? badge : "check-account.svg");
-      $("#note-aman").hidden = d.scam; $("#note-scam").hidden = !d.scam;
-      if (d.scam) $("#n-jml").textContent = d.jumlah;
+      $("#note-aman").hidden = !!d.scam; $("#note-scam").hidden = !d.scam;
+      if (d.scam) $("#n-jml").textContent = d.jumlah_scam_7_hari;
     }
-    user.addEventListener("input", renderAkun);
+    function cekAkun(tunda) {
+      const q = user.value.trim();
+      $("#a-nama").textContent = q || "—";
+      clearTimeout(timer);
+      if (q.length < 3) { seq++; tampil(KOSONG); return; }
+      timer = setTimeout(async () => {
+        const n = ++seq;
+        const r = await api("/akun/?q=" + encodeURIComponent(q));
+        if (n === seq) tampil(r.ok ? r.data : KOSONG); // abaikan jawaban lama
+      }, tunda);
+    }
+    user.addEventListener("input", () => cekAkun(400));
     user.addEventListener("blur", () => { if (user.value.trim()) user.readOnly = true; });
     user.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); user.blur(); } });
     $("#edit-lawan").addEventListener("click", () => { user.readOnly = false; user.focus(); user.select(); });
-    renderAkun();
+    cekAkun(0);
 
     kr.addEventListener("input", () => {
       let w = words(kr.value);
@@ -90,32 +114,49 @@
     ["dragleave", "drop"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
     drop.addEventListener("drop", (e) => addFiles(e.dataTransfer.files));
 
-    f.addEventListener("submit", (e) => {
+    f.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const cek = $("#pernyataan");
+      const cek = $("#pernyataan"), btn = f.querySelector("button[type=submit]");
       const er = [
         ["lawan", user, user.value.trim().length < 3 ? "Isi username lawan transaksi." : ""],
         ["kronologi", kr, kr.value.trim().length < 20 ? "Tulis kronologi minimal 20 karakter." : ""],
         ["bukti", inp, files.length ? "" : "Unggah minimal 1 bukti transaksi."],
         ["pernyataan", cek, cek.checked ? "" : "Centang pernyataan untuk melanjutkan."]
       ];
-      er.forEach(([id, , m]) => setErr(id, m));
+      er.forEach(([id, , m]) => setErr(id, m)); setErr("form", "");
       const gagal = er.find((x) => x[2]);
       if (gagal) { if (gagal[0] === "lawan") user.readOnly = false; gagal[1].focus(); gagal[1].scrollIntoView({ block: "center", behavior: "smooth" }); return; }
-      const d = cariAkun(user.value);
-      store.set(KEY, {
-        akun: user.value.trim(), wa: d.wa, bank: d.bank, rek: d.rek, status: f.elements.status.value,
-        kronologi: kr.value.trim(), bukti: files.map((x) => ({ nama: x.file.name, ukuran: x.file.size })), pelapor: PELAPOR
-      });
+
+      const fd = new FormData();
+      fd.append("akun_target", user.value.trim());
+      fd.append("whatsapp_target", akun.wa); fd.append("bank_target", akun.bank); fd.append("rekening_target", akun.rek);
+      fd.append("status_transaksi", f.elements.status.value);
+      fd.append("kronologi", kr.value.trim());
+      fd.append("nomor_pelapor", PELAPOR);
+      fd.append("pernyataan", "true");
+      files.forEach((x) => fd.append("bukti", x.file));
+
+      btn.disabled = true;
+      const r = await api("/laporan/", { method: "POST", form: fd });
+      btn.disabled = false;
+      if (!r.ok) {
+        const peta = { akun_target: "lawan", kronologi: "kronologi", bukti: "bukti", pernyataan: "pernyataan" };
+        let ada = false;
+        if (r.status === 400) Object.entries(r.data).forEach(([k, v]) => { setErr(peta[k] || "form", flat(v)); ada = true; });
+        if (!ada) setErr("form", r.data.detail || "Laporan gagal dikirim. Coba lagi.");
+        return;
+      }
+      store.set(KEY, { laporanId: r.data.laporan_id, pelapor: r.data.nomor_pelapor });
       location.href = "confirm-otp.html";
     });
   }
 
   function otp() {
     const d = store.get(KEY);
-    if (!d) { location.replace("lapor.html"); return; }
+    if (!d || !d.laporanId) { location.replace("lapor.html"); return; }
     $("#whatsapp-number").textContent = d.pelapor;
-    const boxes = [...document.querySelectorAll(".otp-input-row input")], err = $("#otp-error"), re = $("#resend-otp");
+    const boxes = [...document.querySelectorAll(".otp-input-row input")];
+    const err = $("#otp-error"), ok = $("#otp-ok"), re = $("#resend-otp"), btn = $("#otp-form button[type=submit]");
     boxes.forEach((b, i) => {
       b.addEventListener("input", () => { b.value = b.value.replace(/\D/g, "").slice(-1); err.textContent = ""; if (b.value && boxes[i + 1]) boxes[i + 1].focus(); });
       b.addEventListener("keydown", (e) => { if (e.key === "Backspace" && !b.value && boxes[i - 1]) boxes[i - 1].focus(); });
@@ -125,39 +166,53 @@
         e.preventDefault(); [...t].forEach((c, k) => { boxes[k].value = c; }); boxes[Math.min(t.length, 5)].focus();
       });
     });
-    let s = 45, salah = 0;
-    (function tick() {
-      re.disabled = false;
-      if (s > 0) { s--; setTimeout(tick, 1000); }
-    })();
-    re.addEventListener("click", () => {
-      salah = 0; err.textContent = "";
-      s = 45;
-      re.disabled = true; re.textContent = "Kirim Ulang (00:45)";
-      const t = setInterval(() => { s--; re.textContent = s > 0 ? "Kirim Ulang (00:" + String(s).padStart(2, "0") + ")" : "Kirim Ulang"; if (s <= 0) { re.disabled = false; clearInterval(t); } }, 1000);
+
+    let s = 45, t;
+    const tampilHitung = () => {
+      re.disabled = s > 0;
+      re.textContent = s > 0 ? "Kirim Ulang (00:" + String(s).padStart(2, "0") + ")" : "Kirim Ulang";
+    };
+    function mulaiHitung() { // sama dengan jeda kirim ulang di server (45 detik)
+      clearInterval(t); s = 45; tampilHitung();
+      t = setInterval(() => { s--; tampilHitung(); if (s <= 0) clearInterval(t); }, 1000);
+    }
+    mulaiHitung();
+
+    const sesiHabis = "Sesi laporan tidak ditemukan atau sudah selesai. Mulai lagi dari formulir.";
+    re.addEventListener("click", async () => {
+      if (re.disabled) return;
+      err.textContent = ""; ok.textContent = ""; re.disabled = true;
+      const r = await api("/otp/kirim/", { method: "POST", json: { laporan_id: d.laporanId } });
+      if (r.ok) { ok.textContent = r.data.detail; mulaiHitung(); return; }
+      err.textContent = r.status === 404 ? sesiHabis : (r.data.detail || "Gagal mengirim ulang kode.");
+      tampilHitung();
     });
-    $("#otp-form").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const k = boxes.map((b) => b.value).join("");
-      if (k.length < 6) { err.textContent = "Masukkan 6 digit kode OTP."; return; }
-      if (salah >= 5) { err.textContent = "Terlalu banyak percobaan. Minta kode baru."; return; }
-      if (k !== DEMO_OTP) { salah++; err.textContent = "Kode OTP salah. Periksa kembali."; return; }
-      const now = new Date();
-      const tiket = Object.assign({}, d, { id: "LP-" + now.getFullYear() + "-" + Math.random().toString(36).slice(2, 6).toUpperCase(), waktu: now.toISOString(), statusLaporan: "Menunggu Tinjauan" });
-      store.set(LIST, (store.get(LIST, localStorage) || []).concat(tiket), localStorage);
-      store.set(TIKET, tiket); sessionStorage.removeItem(KEY);
+
+    $("#otp-form").addEventListener("submit", async (e) => {
+      e.preventDefault(); ok.textContent = "";
+      const kode = boxes.map((b) => b.value).join("");
+      if (kode.length < 6) { err.textContent = "Masukkan 6 digit kode OTP."; return; }
+      btn.disabled = true;
+      const r = await api("/otp/verifikasi/", { method: "POST", json: { laporan_id: d.laporanId, kode } });
+      btn.disabled = false;
+      if (!r.ok) { err.textContent = r.status === 404 ? sesiHabis : (r.data.detail || "Terjadi kesalahan. Coba lagi."); return; }
+      store.set(TIKET, r.data.nomor_tiket);
+      sessionStorage.removeItem(KEY);
       location.href = "success.html";
     });
   }
 
-  function sukses() {
-    const t = store.get(TIKET);
-    if (!t) { location.replace("lapor.html"); return; }
-    $("#t-id").textContent = "#" + t.id; $("#t-akun").textContent = t.akun;
-    const otpStatus = document.getElementById("otp-status");
-    if (otpStatus) otpStatus.textContent = "Verifikasi OTP valid. Laporan " + t.id + " telah tayang di database.";
-    $("#t-kat").textContent = t.status === "scam" ? "Penipuan WTS / Scam Transfer" : "Transaksi Aman / Rekomendasi";
-    const p = Object.fromEntries(new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Asia/Jakarta" }).formatToParts(new Date(t.waktu)).map((x) => [x.type, x.value]));
+  async function sukses() {
+    const tiket = new URLSearchParams(location.search).get("tiket") || store.get(TIKET);
+    if (!tiket) { location.replace("lapor.html"); return; }
+    const status = $("#otp-status");
+    const r = await api("/laporan/" + encodeURIComponent(tiket) + "/");
+    if (!r.ok) { status.textContent = r.status === 404 ? "Laporan tidak ditemukan." : PESAN_GAGAL; return; }
+    const t = r.data;
+    $("#t-id").textContent = "#" + t.nomor_tiket; $("#t-akun").textContent = t.akun_target;
+    status.textContent = "Verifikasi OTP valid. Laporan " + t.nomor_tiket + " telah tayang di database.";
+    $("#t-kat").textContent = t.kategori;
+    const p = Object.fromEntries(new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Asia/Jakarta" }).formatToParts(new Date(t.diterbitkan)).map((x) => [x.type, x.value]));
     $("#t-waktu").textContent = p.day + " " + p.month + " " + p.year + ", " + p.hour + ":" + p.minute + " WIB";
     $("#t-pelapor").textContent = t.pelapor + " (Identitas Disamarkan)";
   }
