@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ubah pengaturan akun toko / penjual TrustX.">
+    <title>Pengaturan Toko - TrustX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="seller.css">
+    <script src="akun.js" defer></script>
+</head>
+<body class="buyer" data-page="akun">
+<div class="wrap">
+    <header class="top auth-top">
+        <a class="ib auth-top-back" id="back" href="profil.html" aria-label="Kembali">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Kembali
+        </a>
+        <h1>Pengaturan Akun Toko</h1>
+    </header>
+
+    <main class="auth-main">
+        <div class="auth-card">
+            <p class="section-intro">Edit informasi toko dan nomor WhatsApp akun yang sedang login.</p>
+
+            <form id="pengaturanForm" class="form-stack" novalidate>
+                <!-- Nama toko (seller) -->
+                <div class="field" id="tokoField">
+                    <label for="tokoNama">Nama Toko</label>
+                    <div class="auth-field">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l1.5-5h15L21 9M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0M5 21V12H7v9m10 0V12h2v9"/></svg>
+                        <input type="text" id="tokoNama" name="toko_nama" autocomplete="off" placeholder="Contoh: Gadget Murah">
+                    </div>
+                </div>
+
+                <!-- Nomor WhatsApp (seller & buyer) -->
+                <div class="field">
+                    <label for="wa">Nomor WhatsApp</label>
+                    <div class="auth-field">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 3A2.5 2.5 0 0 0 3 5.5v13A2.5 2.5 0 0 0 5.5 21h13a2.5 2.5 0 0 0 2.5-2.5v-13A2.5 2.5 0 0 0 18.5 3h-13z"/></svg>
+                        <input type="tel" id="wa" name="nomor_whatsapp" autocomplete="tel" required placeholder="081234567890">
+                    </div>
+                    <p class="auth-note">Nomor WhatsApp digunakan untuk verifikasi OTP dan notifikasi.</p>
+                </div>
+
+                <p class="err" id="pengaturanMessage" role="alert"></p>
+                <button type="submit" class="check-btn">Simpan Pengaturan</button>
+            </form>
+        </div>
+    </main>
+</div>
+<script src="seller.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const A = window.TrustXAkun;
+        // Halaman pengaturan toko hanya untuk akun yang sudah login
+        if (!A.wajibMasuk()) return;
+
+        const u = A.pengguna();
+        // Hanya penjual yang punya settingan toko
+        if (u.role !== "seller") {
+            const r = await A.saya();
+            if (r.ok) {
+                document.querySelector("main").innerHTML =
+                    `<div class="auth-card"><p class="section-intro">Halaman ini hanya untuk <strong>penjual</strong>.</p><a class="check-btn" href="profil.html">Kembali ke profil</a></div>`;
+                return;
+            }
+            location.replace("profil.html");
+            return;
+        }
+
+        const toko = document.getElementById("tokoNama");
+        const wa = document.getElementById("wa");
+        const out = document.getElementById("pengaturanMessage");
+        const form = document.getElementById("pengaturanForm");
+
+        // Isi form dengan data yang ada di server
+        toko.value = u.toko_nama || "";
+        wa.value = u.nomor_whatsapp || "";
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            out.textContent = "";
+            const btn = form.querySelector("button[type=submit]");
+            btn.disabled = true;
+
+            const payload = {
+                toko_nama: toko.value.trim(),
+                nomor_whatsapp: wa.value.trim()
+            };
+
+            const r = await A.api("profil/", { method: "PUT", json: payload });
+            btn.disabled = false;
+
+            if (!r.ok) {
+                out.textContent = A.pesan(r.data);
+                return;
+            }
+            out.textContent = "Pengaturan toko berhasil disimpan.";
+            // Perbarui data di akun.js supaya profil.html ikut terupdate
+            A.set("user", r.data.user);
+            A.pengguna = () => r.data.user;
+        });
+    });
+</script>
+</body>
+</html>

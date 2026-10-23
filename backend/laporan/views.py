@@ -43,7 +43,7 @@ def buat_laporan(request):
     serializer = LaporanBaruSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     laporan = serializer.save()
-    otp.buat_dan_kirim(laporan)
+    otp.buat_dan_kirim(laporan, laporan.nomor_pelapor)
     return Response(
         {'laporan_id': laporan.id, 'nomor_pelapor': samarkan(laporan.nomor_pelapor)},
         status=status.HTTP_201_CREATED,
@@ -63,7 +63,7 @@ def kirim_otp(request):
     """POST /api/otp/kirim/ {laporan_id} -> kirim ulang kode"""
     laporan = _laporan_menunggu(request.data.get('laporan_id'))
     try:
-        otp.buat_dan_kirim(laporan)
+        otp.buat_dan_kirim(laporan, laporan.nomor_pelapor)
     except otp.OTPError as e:
         return Response({'detail': str(e)}, status=status.HTTP_429_TOO_MANY_REQUESTS)
     return Response({'detail': 'Kode baru dikirim ke WhatsApp Anda.'})

@@ -169,16 +169,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const login = document.getElementById("loginForm");
 
     if (login) {
-        login.addEventListener("submit", (e) => {
+        login.addEventListener("submit", async (e) => {
             e.preventDefault();
 
             const email = document.getElementById("loginEmail");
             const pass = document.getElementById("loginPassword");
             const out = document.getElementById("loginMessage");
+            const btn = login.querySelector('button[type="submit"]');
 
             if (!email.value.trim() || !email.validity.valid) {
-                out.textContent =
-                    "Masukkan alamat email yang valid.";
+                out.textContent = "Masukkan alamat email yang valid.";
                 email.focus();
                 return;
             }
@@ -189,14 +189,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const peran = localStorage.getItem("trustx_peran") || "buyer";
+            if (!window.TrustXAkun) {
+                out.textContent = "Halaman ini perlu dijalankan lewat Live Server.";
+                return;
+            }
 
-            // Login front-end (masa uji) — tanpa backend.
-            out.textContent =
-                "Login berhasil. Mengarah ke halaman beranda...";
+            btn.disabled = true;
+            const r = await window.TrustXAkun.masuk(email.value.trim(), pass.value);
+            btn.disabled = false;
+
+            if (!r.ok) {
+                out.textContent = window.TrustXAkun.pesan(r.data);
+                pass.focus();
+                return;
+            }
+
+            const peran = r.data.user.role || localStorage.getItem("trustx_peran") || "buyer";
+            localStorage.setItem("trustx_peran", peran);
+            out.textContent = "Login berhasil. Mengarah ke halaman beranda...";
             setTimeout(() => {
-                window.location.href = beranda(peran);
-            }, 600);
+                window.location.href = peran === "seller" ? "index-seller.html" : "index.html";
+            }, 500);
         });
     }
 
@@ -206,15 +219,35 @@ document.addEventListener("DOMContentLoaded", () => {
     const register = document.getElementById("registerForm");
 
     if (register) {
-        register.addEventListener("submit", (e) => {
+        const namaToko = document.getElementById("tokoField");
+
+        // Nama toko hanya relevan untuk penjual
+        function aturToko() {
+            if (!namaToko) return;
+            const penjual = pilihPeran() === "seller";
+            namaToko.hidden = !penjual;
+            const inp = document.getElementById("tokoNama");
+            if (inp) {
+                inp.required = penjual;
+                if (!penjual) inp.value = "";
+            }
+        }
+
+        document.querySelectorAll(".role-btn").forEach((b) => b.addEventListener("click", aturToko));
+        aturToko();
+
+        register.addEventListener("submit", async (e) => {
             e.preventDefault();
 
             const name = document.getElementById("registerName");
             const wa = document.getElementById("registerWa");
+            const email = document.getElementById("registerEmail");
             const pass = document.getElementById("registerPassword");
             const confirm = document.getElementById("confirmPassword");
             const terms = document.getElementById("terms");
+            const toko = document.getElementById("tokoNama");
             const out = document.getElementById("registerMessage");
+            const btn = register.querySelector('button[type="submit"]');
 
             if (!name.value.trim()) {
                 out.textContent = "Masukkan nama lengkap.";
@@ -223,39 +256,65 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             if (!/^\+?[0-9][0-9\s-]{7,17}$/.test(wa.value.trim())) {
-                out.textContent =
-                    "Masukkan nomor WhatsApp yang valid.";
+                out.textContent = "Masukkan nomor WhatsApp yang valid.";
                 wa.focus();
                 return;
             }
 
+            if (!email.value.trim() || !email.validity.valid) {
+                out.textContent = "Masukkan alamat email yang valid.";
+                email.focus();
+                return;
+            }
+
             if (pass.value.length < 8) {
-                out.textContent =
-                    "Kata sandi harus minimal 8 karakter.";
+                out.textContent = "Kata sandi harus minimal 8 karakter.";
                 pass.focus();
                 return;
             }
 
             if (pass.value !== confirm.value) {
-                out.textContent =
-                    "Konfirmasi kata sandi tidak sama.";
+                out.textContent = "Konfirmasi kata sandi tidak sama.";
                 confirm.focus();
                 return;
             }
 
             if (terms && !terms.checked) {
-                out.textContent =
-                    "Setujui syarat dan ketentuan untuk melanjutkan.";
+                out.textContent = "Setujui syarat dan ketentuan untuk melanjutkan.";
                 terms.focus();
                 return;
             }
 
-            // Simpan peran terpilih agar beranda tujuan konsisten.
-            localStorage.setItem("trustx_peran", pilihPeran());
+            if (!window.TrustXAkun) {
+                out.textContent = "Halaman ini perlu dijalankan lewat Live Server.";
+                return;
+            }
 
-            out.textContent =
-                "Validasi berhasil. Kode OTP akan dikirim ke WhatsApp " +
-                "setelah backend terhubung.";
+            const peran = pilihPeran();
+            btn.disabled = true;
+            const r = await window.TrustXAkun.daftar({
+                nama: name.value.trim(),
+                email: email.value.trim(),
+                wa: wa.value.trim(),
+                password: pass.value,
+                confirmPassword: confirm.value,
+                role: peran,
+                toko_nama: toko ? toko.value.trim() : ""
+            });
+            btn.disabled = false;
+
+            if (!r.ok) {
+                out.textContent = window.TrustXAkun.pesan(r.data);
+                return;
+            }
+
+            // Simpan peran + email agar halaman OTP tahu akun mana yang diverifikasi
+            localStorage.setItem("trustx_peran", peran);
+            window.TrustXAkun.emailMenunggu.set(email.value.trim());
+            out.textContent = "Pendaftaran berhasil. Mengarah ke verifikasi OTP...";
+            setTimeout(() => {
+                window.location.href = "verifikasi-otp.html";
+            }, 600);
         });
     }
 });
