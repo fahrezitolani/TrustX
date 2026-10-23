@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Verifikasi nomor WhatsApp akun TrustX dengan kode OTP 6 digit.">
+    <title>Verifikasi OTP - TrustX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="seller.css">
+    <script src="akun.js" defer></script>
+</head>
+<body class="seller otp" data-page="otp">
+    <header class="top auth-top">
+        <a class="ib auth-top-back" href="daftar.html" aria-label="Kembali">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Kembali
+        </a>
+        <h1>Verifikasi Akun</h1>
+        <a class="ib auth-top-link" href="bantuan.html">[Bantuan]</a>
+    </header>
+
+    <main class="auth-main">
+        <div class="auth-card otp-card">
+            <img class="otp-logo" src="./assets/images/logo-trustx.svg" alt="Logo TrustX">
+            <svg class="otp-lock" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1" opacity=".55"/>
+                <rect x="8" y="11" width="8" height="6.5" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M9.6 11V9.2a2.4 2.4 0 0 1 4.8 0V11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+
+            <h1 class="otp-title">Masukkan Kode Verifikasi Akun</h1>
+            <p class="otp-desc">Kami telah mengirimkan kode 6 digit ke nomor WhatsApp:</p>
+            <p class="otp-wa"><strong id="whatsapp-number">0812-xxxx-7890</strong></p>
+
+            <form id="otp-form" class="otp-form" novalidate>
+                <fieldset class="otp-fieldset" aria-label="Kode OTP 6 digit">
+                    <legend class="vh">Kode OTP 6 digit</legend>
+                    <div class="otp-input-row">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 2">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 3">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 4">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 5">
+                        <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 6">
+                    </div>
+                    <p class="otp-error" id="otp-error" role="alert"></p>
+                    <p class="otp-ok" id="otp-ok" role="status"></p>
+                </fieldset>
+
+                <div class="otp-resend-wrap">
+                    Tidak menerima kode?
+                    <button type="button" class="otp-resend" id="resend-otp">Kirim Ulang (00:45)</button>
+                </div>
+                <button type="submit" class="otp-btn">Verifikasi &amp; Aktifkan Akun</button>
+            </form>
+
+            <div class="otp-note" aria-label="Catatan verifikasi">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg>
+                <span>Verifikasi nomor WhatsApp diperlukan untuk menjaga validitas laporan serta mencegah spam data dari akun bot.</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Halaman ini memakai helper yang sama dengan confirm-otp.html (lapor.js),
+        // tetapi memanggil endpoint akun lewat window.TrustXAkun.
+        document.addEventListener("DOMContentLoaded", () => {
+            const A = window.TrustXAkun;
+            const email = A.emailMenunggu.get();
+            if (!email) { location.replace("daftar.html"); return; }
+
+            const boxes = [...document.querySelectorAll(".otp-input-row input")];
+            const err = document.getElementById("otp-error");
+            const ok = document.getElementById("otp-ok");
+            const re = document.getElementById("resend-otp");
+            const btn = document.getElementById("otp-form").querySelector('button[type="submit"]');
+
+            // Tampilkan nomor WhatsApp yang disamarkan dari data akun
+            const simpan = A.pengguna();
+            if (simpan && simpan.telepon) document.getElementById("whatsapp-number").textContent = simpan.telepon;
+
+            boxes.forEach((b, i) => {
+                b.addEventListener("input", () => {
+                    b.value = b.value.replace(/\D/g, "").slice(-1);
+                    err.textContent = "";
+                    if (b.value && boxes[i + 1]) boxes[i + 1].focus();
+                });
+                b.addEventListener("keydown", (e) => {
+                    if (e.key === "Backspace" && !b.value && boxes[i - 1]) boxes[i - 1].focus();
+                });
+                b.addEventListener("paste", (e) => {
+                    const t = (e.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 6);
+                    if (!t) return;
+                    e.preventDefault();
+                    [...t].forEach((c, k) => { boxes[k].value = c; });
+                    boxes[Math.min(t.length, 5)].focus();
+                });
+            });
+
+            let s = 45, t;
+            const tampilHitung = () => {
+                re.disabled = s > 0;
+                re.textContent = s > 0 ? "Kirim Ulang (00:" + String(s).padStart(2, "0") + ")" : "Kirim Ulang";
+            };
+            function mulaiHitung() {
+                clearInterval(t); s = 45; tampilHitung();
+                t = setInterval(() => { s--; tampilHitung(); if (s <= 0) clearInterval(t); }, 1000);
+            }
+            mulaiHitung();
+
+            re.addEventListener("click", async () => {
+                if (re.disabled) return;
+                err.textContent = ""; ok.textContent = ""; re.disabled = true;
+                const r = await A.kirimOtp(email);
+                if (r.ok) { ok.textContent = r.data.detail; mulaiHitung(); return; }
+                err.textContent = A.pesan(r.data);
+                tampilHitung();
+            });
+
+            document.getElementById("otp-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                ok.textContent = "";
+                const kode = boxes.map((b) => b.value).join("");
+                if (kode.length < 6) { err.textContent = "Masukkan 6 digit kode OTP."; return; }
+
+                btn.disabled = true;
+                const r = await A.verifikasiOtp(email, kode);
+                btn.disabled = false;
+
+                if (!r.ok) { err.textContent = A.pesan(r.data); return; }
+                ok.textContent = "Akun terverifikasi. Mengarah ke beranda...";
+                setTimeout(() => { location.href = A.beranda(r.data.user); }, 600);
+            });
+        });
+    </script>
+</body>
+</html>

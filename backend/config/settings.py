@@ -38,10 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
     'laporan',
     'reputasi',
 ]
+
+AUTH_USER_MODEL = 'akun.User'  # model pengguna fitur Autentikasi & Akun
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -140,5 +143,12 @@ CORS_ALLOW_ALL_ORIGINS = DEBUG
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer'],
-    'DEFAULT_AUTHENTICATION_CLASSES': [],  # login dikerjakan fitur 1
+    # token dipakai karena frontend statis dibuka dari origin berbeda
+    'DEFAULT_AUTHENTICATION_CLASSES': ['akun.authentication.TokenAuthentication'],
+    # TTL token (hari); 0 atau None = tanpa TTL (tidak disarankan untuk produksi)
+    'AKTUN_API_TOKEN_TTL_HARI': 30,
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '60/min',   # batas umum untuk pengguna belum login
+        'otp': '6/min',     # endpoint kirim/verifikasi OTP
+    },
 }
