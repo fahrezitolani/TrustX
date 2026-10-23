@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'laporan',
-    'akun',
+    'reputasi',
 ]
 
 AUTH_USER_MODEL = 'akun.User'  # model pengguna fitur Autentikasi & Akun

@@ -6,7 +6,7 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('laporan.urls')),
-    path('api/akun/', include('akun.urls')),
+    path('api/akun/', include('reputasi.urls')),
 ]
 
 if settings.DEBUG:  # tampilkan file bukti saat development
