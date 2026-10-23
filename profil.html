@@ -214,7 +214,7 @@
 
                     <div class="profile-identity-content">
                         <strong>WhatsApp</strong>
-                        <p>Nomor WhatsApp terhubung</p>
+                        <p id="whatsappNumber">Nomor WhatsApp terhubung</p>
                     </div>
 
                     <span class="profile-verified">
@@ -264,9 +264,9 @@
                     <span aria-hidden="true">›</span>
                 </a>
 
-                <a href="Landing-pages.html" class="btn out profile-logout">
+                <button type="button" class="btn out" id="logoutButton">
                     Keluar dari Akun
-                </a>
+                </button>
 
             </div>
         </section>
@@ -278,8 +278,37 @@
 
     </main>
 
+    <script src="akun.js" defer></script>
     <script>
-        
+    document.addEventListener("DOMContentLoaded", async () => {
+        // Halaman profil hanya untuk yang sudah masuk
+        if (!window.TrustXAkun.wajibMasuk()) return;
+        const A = window.TrustXAkun;
+
+        // Tampilkan data akun yang sedang login
+        const r = await A.saya();
+        if (!r.ok) { location.replace("login.html"); return; }
+        const u = r.data;
+        const nama = document.getElementById("namaProfil");
+        const wa = document.getElementById("whatsappNumber");
+        if (nama) nama.textContent = u.first_name || u.username;
+        if (wa && u.telepon) wa.textContent = u.telepon;
+        const avatar = document.querySelector(".profile-avatar");
+        if (avatar) avatar.src = "https://ui-avatars.com/api/?name=" +
+            encodeURIComponent(u.first_name || u.username) + "&background=162350&color=fff&size=160";
+        const idPengguna = document.querySelector(".profile-name .safe");
+        if (idPengguna) idPengguna.textContent = "ID Pengguna: #TX-" + String(u.id).padStart(5, "0");
+
+        // Tombol keluar
+        const keluar = document.getElementById("logoutButton");
+        if (keluar) {
+            keluar.addEventListener("click", async () => {
+                await A.keluar();
+                location.href = "Landing-pages.html";
+            });
+        }
+    });
+
     const shareButton = document.querySelector("#shareProfile");
     const shareMessage = document.querySelector("#shareMessage");
 
