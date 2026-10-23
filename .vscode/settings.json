@@ -5,5 +5,6 @@
     "**/*.sass",
     "**/*.ts",
     "backend/**"
-  ]
+  ],
+  "liveServer.settings.port": 5501
 }
