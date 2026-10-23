@@ -160,11 +160,11 @@ Nama file dan struktur direktori dapat berbeda sesuai implementasi aktual.
 
 | No. | Nama Anggota | Fitur/Bagian | Kontribusi |
 |---|---|---|---|
-| 1 | Siti Revalisa | Autentikasi dan Akun | Mengembangkan fitur registrasi, login dan logout, verifikasi OTP, profil pengguna, serta pengaturan akun toko/penjual. |
+| 1 | Dwi Fisnilla | Autentikasi dan Akun | Mengembangkan fitur registrasi, login dan logout, verifikasi OTP, profil pengguna, serta pengaturan akun toko/penjual. |
 | 2 | Samuel Sebastian Sibarani | Pencarian Reputasi Akun, PRD, dan README | Mengembangkan landing page, kolom pencarian, pencarian berdasarkan username media sosial atau nomor WhatsApp, halaman hasil pencarian, detail profil dan reputasi akun. Selain itu, menyusun Product Requirements Document (PRD) dan dokumentasi README proyek. |
 | 3 | Muhammad Febriyanto | Pelaporan Transaksi | Mengembangkan form laporan dugaan penipuan dan transaksi aman, input kronologi dan informasi akun, unggah bukti transaksi, konfirmasi pengiriman laporan, serta validasi laporan pada sisi frontend. |
 | 4 | Muh. Fahrezi Tolani | Dashboard Laporan | Mengembangkan dashboard laporan pengguna, daftar riwayat laporan, filter berdasarkan status, detail laporan, dan tampilan pelacakan status laporan. |
-| 5 | Dwi Fisnilla | Sanggahan | Mengembangkan form pengajuan sanggahan, input kronologi, unggah bukti pendukung, daftar sanggahan, status sanggahan, serta tampilan tanggapan atau hasil peninjauan laporan. |
+| 5 | Siti Revalisa | Sanggahan | Mengembangkan form pengajuan sanggahan, input kronologi, unggah bukti pendukung, daftar sanggahan, status sanggahan, serta tampilan tanggapan atau hasil peninjauan laporan. |
 
 Pembagian tersebut menunjukkan fokus kontribusi utama setiap anggota. Fitur yang saling terhubung tetap perlu diintegrasikan dan diuji bersama agar alur penggunaan aplikasi konsisten.
 
