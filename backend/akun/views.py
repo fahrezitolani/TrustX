@@ -188,6 +188,25 @@ def verifikasi_otp(request):
                     status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def toko_saya(request):
+    """GET /api/akun/toko-saya/ -> data toko milik penjual yang sedang login."""
+    user = request.user
+    if user.role != "seller":
+        return Response({"detail": "Hanya penjual yang dapat mengakses endpoint ini."},
+                        status=status.HTTP_403_FORBIDDEN)
+    return Response({
+        "id": user.id,
+        "username": user.username,
+        "toko_nama": user.toko_nama,
+        "nomor_whatsapp": user.nomor_whatsapp,
+        "email": user.email,
+        "role": user.role,
+        "terverifikasi": user.terverifikasi,
+    })
+
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 @authentication_classes([])
