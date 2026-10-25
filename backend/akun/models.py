@@ -15,10 +15,13 @@ class User(AbstractUser):
         ("seller", "Penjual"),
     ]
 
-    nomor_whatsapp = models.CharField(max_length=30, unique=True)
+    nomor_whatsapp = models.CharField(max_length=30, unique=True, null=True, blank=True)
     role = models.CharField(max_length=10, choices=ROLES, default="buyer")
     toko_nama = models.CharField(max_length=120, blank=True)
     terverifikasi = models.BooleanField(default=False)  # true setelah OTP lolos
+    # Identitas dari login sosial; NULL = akun dibuat lewat form biasa
+    google_id = models.CharField(max_length=64, unique=True, null=True, blank=True)
+    x_id = models.CharField(max_length=64, unique=True, null=True, blank=True)
 
     class Meta:
         verbose_name = "Pengguna"
