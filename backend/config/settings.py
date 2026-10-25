@@ -15,6 +15,17 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Muat kredensial dari .env (tanpa dependency tambahan).
+import os
+_env = BASE_DIR / ".env"
+if _env.exists():
+    for _line in _env.read_text(encoding='utf-8').splitlines():
+        _line = _line.strip()
+        if not _line or _line.startswith('#') or '=' not in _line:
+            continue
+        _k, _v = _line.split('=', 1)
+        os.environ.setdefault(_k.strip(), _v.strip())
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
@@ -138,6 +149,15 @@ MAILERS = {
 # Upload bukti laporan
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Kredensial OAuth (isi di .env lalu restart). Kosong = fitur sosial login nonaktif.
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', '')
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET', '')
+X_CLIENT_ID = os.getenv('X_CLIENT_ID', '')
+X_CLIENT_SECRET = os.getenv('X_CLIENT_SECRET', '')
+OAUTH_CALLBACK_BASE = os.getenv('OAUTH_CALLBACK_BASE', 'http://localhost:8000')
+# Alamat frontend statis (Live Server). Dipakai callback OAuth untuk redirect balik.
+FRONTEND_BASE = os.getenv('FRONTEND_BASE', 'http://127.0.0.1:5501')
 
 # Frontend dibuka dari alamat lain (file / Live Server), jadi CORS dibuka saat development
 CORS_ALLOW_ALL_ORIGINS = DEBUG
