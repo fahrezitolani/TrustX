@@ -88,3 +88,804 @@ margin:0;font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-seri
 body.lapor[data-page=otp]{--mw:480px}
 @media (min-width:768px){body.lapor[data-page=lapor]{--mw:720px}.lapor main{padding:28px 24px 56px}.lapor .card{padding:24px}.lapor .otp-row input{max-width:70px;height:72px}}
 @media (min-width:1024px){body.lapor[data-page=lapor]{--mw:1040px}.lapor form.lp{grid-template-columns:1fr 1fr;gap:32px;align-items:start}.lapor .col{display:grid;gap:28px;align-content:start}.lapor form.lp>.card,.lapor form.lp>.btn{grid-column:1/-1}.lapor form.lp>.btn{justify-self:center;max-width:420px}}
+
+
+
+/* ==========================================
+   TRUSTX - LAPORAN BUYER & SELLER
+   File: lapor.css
+   ========================================== */
+
+:root {
+    --lap-navy: #162350;
+    --lap-navy-2: #22346b;
+    --lap-ink: #172033;
+    --lap-muted: #667089;
+    --lap-line: #e3e7f0;
+    --lap-bg: #f4f6fa;
+    --lap-soft: #eef1f8;
+    --lap-accent: #4f6bd8;
+    --lap-red: #c42b2b;
+    --lap-red-bg: #fdeeee;
+    --lap-amber: #8a5a00;
+    --lap-amber-bg: #fff4d9;
+    --lap-green: #17703a;
+    --lap-green-bg: #e3f6ea;
+    --lap-radius: 16px;
+    --lap-shadow: 0 4px 18px rgb(22 35 80 / 6%);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-width: 320px;
+    scroll-behavior: smooth;
+}
+
+body.laporan-page {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background: var(--lap-bg);
+    color: var(--lap-ink);
+    font-family: Inter, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.laporan-page a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.laporan-page button {
+    font: inherit;
+}
+
+.laporan-page a:focus-visible,
+.laporan-page button:focus-visible {
+    outline: 3px solid rgb(79 107 216 / 35%);
+    outline-offset: 3px;
+}
+
+/* HEADER */
+
+.laporan-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    width: 100%;
+    min-height: 76px;
+    padding: 12px 5%;
+    background: #fff;
+    border-bottom: 1px solid var(--lap-line);
+}
+
+.laporan-brand {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 10px;
+    color: var(--lap-navy);
+    text-decoration: none;
+}
+
+.laporan-brand img {
+    display: block;
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
+
+.laporan-brand span {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.35;
+}
+
+.laporan-brand strong {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.laporan-brand small {
+    color: var(--lap-muted);
+    font-size: 11px;
+}
+
+.laporan-desktop-nav {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.laporan-desktop-nav a,
+.laporan-profile-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    color: var(--lap-muted);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.laporan-desktop-nav a:hover,
+.laporan-desktop-nav a.active,
+.laporan-profile-link:hover {
+    background: var(--lap-soft);
+    color: var(--lap-navy);
+}
+
+.laporan-profile-link {
+    flex-shrink: 0;
+    border: 1px solid var(--lap-line);
+}
+
+.laporan-mobile-nav {
+    display: none;
+}
+
+/* MAIN CONTENT */
+
+.laporan-main {
+    width: min(100% - 40px, 1000px);
+    margin: 0 auto;
+    padding: 34px 0 48px;
+}
+
+.laporan-intro {
+    margin-bottom: 24px;
+}
+
+.laporan-eyebrow {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: var(--lap-accent);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+}
+
+.laporan-intro h1 {
+    margin: 0 0 8px;
+    color: var(--lap-navy);
+    font-size: clamp(25px, 3vw, 34px);
+    line-height: 1.25;
+    letter-spacing: -0.7px;
+}
+
+.laporan-intro p {
+    max-width: 650px;
+    margin: 0;
+    color: var(--lap-muted);
+    font-size: 14px;
+}
+
+/* STATISTICS */
+
+.laporan-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.laporan-stat-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid var(--lap-line);
+    border-radius: var(--lap-radius);
+    box-shadow: var(--lap-shadow);
+}
+
+.laporan-stat-card span {
+    color: var(--lap-muted);
+    font-size: 13px;
+}
+
+.laporan-stat-card strong {
+    color: var(--lap-navy);
+    font-size: 28px;
+    line-height: 1.2;
+}
+
+/* REPORT PANEL */
+
+.laporan-panel {
+    min-width: 0;
+    padding: 24px;
+    background: #fff;
+    border: 1px solid var(--lap-line);
+    border-radius: var(--lap-radius);
+    box-shadow: var(--lap-shadow);
+}
+
+.laporan-panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.laporan-panel-heading h2 {
+    margin: 0 0 4px;
+    color: var(--lap-navy);
+    font-size: 20px;
+}
+
+.laporan-panel-heading p {
+    margin: 0;
+    color: var(--lap-muted);
+    font-size: 13px;
+}
+
+/* BUTTONS */
+
+.laporan-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 42px;
+    padding: 10px 16px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.laporan-button:active {
+    transform: scale(0.98);
+}
+
+.laporan-button-primary {
+    background: var(--lap-navy);
+    color: #fff;
+}
+
+.laporan-button-primary:hover {
+    background: var(--lap-navy-2);
+}
+
+.laporan-button-secondary {
+    background: #fff;
+    border-color: var(--lap-line);
+    color: var(--lap-navy);
+}
+
+.laporan-button-secondary:hover {
+    background: var(--lap-soft);
+}
+
+/* FILTERS */
+
+.laporan-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.laporan-filter {
+    flex-shrink: 0;
+    min-height: 38px;
+    padding: 8px 14px;
+    background: #fff;
+    border: 1px solid var(--lap-line);
+    border-radius: 999px;
+    color: var(--lap-muted);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.laporan-filter:hover {
+    background: var(--lap-soft);
+    color: var(--lap-navy);
+}
+
+.laporan-filter.active {
+    background: var(--lap-navy);
+    border-color: var(--lap-navy);
+    color: #fff;
+}
+
+/* REPORT ITEMS */
+
+.laporan-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.laporan-item {
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid var(--lap-line);
+    border-radius: 14px;
+    background: #fff;
+    overflow-wrap: anywhere;
+}
+
+.laporan-item-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.laporan-item h3 {
+    margin: 0 0 5px;
+    color: var(--lap-navy);
+    font-size: 17px;
+    line-height: 1.4;
+}
+
+.laporan-item p {
+    margin: 8px 0;
+    color: var(--lap-muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.laporan-item .laporan-category {
+    color: var(--lap-ink);
+    font-weight: 600;
+}
+
+.laporan-id {
+    color: var(--lap-muted);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.laporan-badge {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.badge-response {
+    background: var(--lap-red-bg);
+    color: var(--lap-red);
+}
+
+.badge-review {
+    background: var(--lap-amber-bg);
+    color: var(--lap-amber);
+}
+
+.badge-done {
+    background: var(--lap-green-bg);
+    color: var(--lap-green);
+}
+
+.laporan-item-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--lap-line);
+}
+
+.laporan-item-footer > span {
+    color: var(--lap-muted);
+    font-size: 12px;
+}
+
+.laporan-item-footer > a:not(.laporan-button) {
+    color: var(--lap-accent);
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.laporan-item-footer > a:not(.laporan-button):hover {
+    text-decoration: underline;
+}
+
+.laporan-empty {
+    margin: 20px 0 0;
+    padding: 24px;
+    border: 1px dashed var(--lap-line);
+    border-radius: 12px;
+    color: var(--lap-muted);
+    text-align: center;
+}
+
+/* NOTICE */
+
+.laporan-notice {
+    margin-top: 20px;
+    padding: 18px 20px;
+    background: var(--lap-soft);
+    border: 1px solid var(--lap-line);
+    border-radius: 14px;
+}
+
+.laporan-notice strong {
+    color: var(--lap-navy);
+    font-size: 13px;
+}
+
+.laporan-notice p {
+    margin: 5px 0 0;
+    color: var(--lap-muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+/* TABLET & MOBILE */
+
+@media (max-width: 767px) {
+    .laporan-header {
+        min-height: 64px;
+        padding: 10px 16px;
+        gap: 8px;
+    }
+
+    .laporan-brand img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .laporan-brand strong {
+        font-size: 16px;
+    }
+
+    .laporan-desktop-nav {
+        display: none;
+    }
+
+    .laporan-profile-link {
+        min-height: 36px;
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+
+    .laporan-main {
+        width: 100%;
+        padding: 24px 16px;
+        padding-bottom: calc(100px + env(safe-area-inset-bottom));
+    }
+
+    .laporan-intro {
+        margin-bottom: 20px;
+    }
+
+    .laporan-intro h1 {
+        font-size: 27px;
+    }
+
+    .laporan-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 18px;
+    }
+
+    .laporan-stat-card {
+        gap: 6px;
+        padding: 12px 10px;
+        border-radius: 12px;
+    }
+
+    .laporan-stat-card span {
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+    .laporan-stat-card strong {
+        font-size: 23px;
+    }
+
+    .laporan-panel {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .laporan-panel-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .laporan-panel-heading .laporan-button {
+        width: 100%;
+    }
+
+    .laporan-filters {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        margin-right: -2px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+
+    .laporan-filter {
+        white-space: nowrap;
+    }
+
+    .laporan-item {
+        padding: 15px;
+        border-radius: 12px;
+    }
+
+    .laporan-item h3 {
+        font-size: 16px;
+    }
+
+    .laporan-item-footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .laporan-item-footer .laporan-button {
+        width: 100%;
+    }
+
+    /* NAVIGASI BAWAH MOBILE */
+    .laporan-mobile-nav {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 200;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        min-height: 64px;
+        padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+        background: #fff;
+        border-top: 1px solid var(--lap-line);
+        box-shadow: 0 -4px 18px rgb(22 35 80 / 7%);
+    }
+
+    .laporan-mobile-nav a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
+        padding: 5px 2px;
+        border-radius: 10px;
+        color: var(--lap-muted);
+        font-size: 11px;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .laporan-mobile-nav a > span {
+        font-size: 20px;
+        line-height: 1.2;
+    }
+
+    .laporan-mobile-nav a.active,
+    .laporan-mobile-nav a[aria-current="page"] {
+        background: var(--lap-soft);
+        color: var(--lap-navy);
+    }
+}
+
+/* HP KECIL */
+
+@media (max-width: 380px) {
+    .laporan-main {
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+
+    .laporan-stats {
+        gap: 6px;
+    }
+
+    .laporan-stat-card {
+        padding: 10px 7px;
+    }
+
+    .laporan-stat-card span {
+        font-size: 10px;
+    }
+
+    .laporan-stat-card strong {
+        font-size: 20px;
+    }
+
+    .laporan-panel {
+        padding: 12px;
+    }
+
+    .laporan-mobile-nav a {
+        font-size: 10px;
+    }
+}
+
+/* LAPTOP / DESKTOP */
+
+@media (min-width: 768px) {
+    .laporan-mobile-nav {
+        display: none;
+    }
+}
+
+@media (min-width: 1200px) {
+    .laporan-header {
+        padding-right: max(5%, calc((100% - 1200px) / 2));
+        padding-left: max(5%, calc((100% - 1200px) / 2));
+    }
+}
+
+
+/* ==============================
+   NAVIGASI BUYER TRUSTX
+   ============================== */
+
+.laporan-page .laporan-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.laporan-page .laporan-desktop-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.laporan-page .laporan-desktop-nav a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    color: var(--lap-muted, #667089);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.laporan-page .laporan-desktop-nav a svg {
+    width: 19px;
+    height: 19px;
+    flex: 0 0 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.laporan-page .laporan-desktop-nav a:hover,
+.laporan-page .laporan-desktop-nav a.active,
+.laporan-page .laporan-desktop-nav a[aria-current="page"] {
+    background: var(--lap-soft, #eef1f8);
+    color: var(--lap-navy, #162350);
+}
+
+/* Sembunyikan navigasi mobile di laptop secara default */
+.laporan-page .laporan-mobile-nav {
+    display: none;
+}
+
+/* Tidak perlu tombol Profil kedua di header */
+.laporan-page .laporan-profile-link {
+    display: none;
+}
+
+/* ==============================
+   NAVIGASI HP
+   ============================== */
+
+@media (max-width: 767px) {
+    .laporan-page .laporan-header {
+        gap: 10px;
+    }
+
+    .laporan-page .laporan-desktop-nav {
+        display: none;
+    }
+
+    .laporan-page .laporan-mobile-nav {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 200;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+        padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+        background: #fff;
+        border-top: 1px solid var(--lap-line, #e3e7f0);
+        box-shadow: 0 -4px 18px rgb(22 35 80 / 8%);
+    }
+
+    .laporan-page .laporan-mobile-nav a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        min-width: 0;
+        min-height: 48px;
+        padding: 5px 2px;
+        border-radius: 10px;
+        color: var(--lap-muted, #667089);
+        font-size: 11px;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .laporan-page .laporan-mobile-nav a svg {
+        display: block;
+        width: 21px;
+        height: 21px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .laporan-page .laporan-mobile-nav a:hover,
+    .laporan-page .laporan-mobile-nav a.active,
+    .laporan-page .laporan-mobile-nav a[aria-current="page"] {
+        background: var(--lap-soft, #eef1f8);
+        color: var(--lap-navy, #162350);
+    }
+
+    /* Ruang agar isi halaman tidak tertutup navigasi bawah */
+    .laporan-page .laporan-main {
+        padding-bottom: 90px;
+    }
+}
+
+/* ==============================
+   LAPTOP / DESKTOP
+   ============================== */
+
+@media (min-width: 768px) {
+    .laporan-page .laporan-desktop-nav {
+        display: flex;
+    }
+
+    .laporan-page .laporan-mobile-nav {
+        display: none;
+    }
+}

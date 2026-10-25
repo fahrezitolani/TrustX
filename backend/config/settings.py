@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'laporan',
     'reputasi',
+    'akun',
 ]
 
 AUTH_USER_MODEL = 'akun.User'  # model pengguna fitur Autentikasi & Akun

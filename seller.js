@@ -204,3 +204,5 @@
     if (page === "detail-seller") initDetail();
   });
 })();
+
+
