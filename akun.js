@@ -104,5 +104,27 @@
     get: () => store.get("trustx_otp_email")
   };
 
+  // Tangkap hasil login sosial: login.html?oauth_token=... atau ?oauth_error=...
+  async function tangkapOAuth() {
+    const q = new URLSearchParams(location.search);
+    const out = document.getElementById("loginMessage");
+    const err = q.get("oauth_error");
+    if (err) {
+      if (out) out.textContent = err;
+      history.replaceState(null, "", location.pathname);
+      return;
+    }
+    const token = q.get("oauth_token");
+    if (!token) return;
+    store.set(TOKEN, token);
+    history.replaceState(null, "", location.pathname);
+    const r = await api("/saya/");
+    if (r.ok) store.set(USER, r.data);
+    location.replace(Akun.beranda(r.ok ? r.data : null));
+  }
+
   window.TrustXAkun = Akun;
+
+  // Hanya login.html yang menerima ?oauth_token / ?oauth_error
+  if (document.body.dataset.page === "login") tangkapOAuth();
 })();
