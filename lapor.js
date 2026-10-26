@@ -452,31 +452,12 @@
    ===================================================================== */
 (() => {
   const filters = document.querySelectorAll(".sr-filter");
-  const reports = document.querySelectorAll(".sr-report");
-  const emptyMessage = document.querySelector(".sr-empty");
   if (!filters.length) return;
-
-  filters.forEach((button) => {
-    button.addEventListener("click", () => {
-      const selected = button.dataset.filter;
-      let visibleCount = 0;
-
-      filters.forEach((filter) => {
-        const active = filter === button;
-        filter.classList.toggle("active", active);
-        filter.setAttribute("aria-pressed", String(active));
-      });
-
-      reports.forEach((report) => {
-        const visible = selected === "all" || report.dataset.status === selected;
-        report.hidden = !visible;
-        if (visible) visibleCount++;
-      });
-
-      if (emptyMessage) emptyMessage.hidden = visibleCount > 0;
-    });
-  });
+  // Filter dipertahankan di sanggahan.js (initFilters) agar kartu dinamis ikut tersaring.
+  // Blok ini sengaja dinonaktifkan untuk menghindari listener ganda pada .sr-filter.
+  return;
 })();
+
 
 
 /* =====================================================================
