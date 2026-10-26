@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,15 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Lihat laporan komunitas TrustX sebelum melakukan transaksi.">
     <title>Laporan Komunitas - TrustX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
     <link rel="stylesheet" href="lapor.css">
     <link rel="stylesheet" href="report.css">
-    <script src="./reports.js" defer></script>
+    <!-- Cukup dimuat sekali. Memuat dua kali membuat semua kode berjalan dobel. -->
+
+    <script src="./lapor.js" defer></script>
 </head>
 
-<body class="laporan-page buyer-page">
+<body class="laporan-page buyer-page" data-page="laporan-buyer">
     <header class="laporan-header">
         <a class="laporan-brand" href="index.html">
-            <img src="./assets/images/logo-trustx.svg" alt="Logo TrustX">
+            <img src="./assets/images/logo-trustx.svg" alt="" width="42" height="42">
             <span><strong>TrustX</strong><small>Cek Dulu</small></span>
         </a>
 
@@ -23,8 +26,6 @@
             <a href="laporanpage.html" class="active" aria-current="page">Laporan</a>
             <a href="profil.html">Profil</a>
         </nav>
-
-        <a class="laporan-profile-link" href="profil.html">Profil</a>
     </header>
 
     <main class="laporan-main">
@@ -40,15 +41,15 @@
         <section class="laporan-stats" aria-label="Ringkasan laporan">
             <article class="laporan-stat-card">
                 <span>Total laporan</span>
-                <strong>0</strong>
+                <strong data-stat="total">0</strong>
             </article>
             <article class="laporan-stat-card">
-                <span>Sedang ditinjau</span>
-                <strong>0</strong>
+                <span>Tertipu/Scam</span>
+                <strong data-stat="scam">0</strong>
             </article>
             <article class="laporan-stat-card">
-                <span>Selesai ditinjau</span>
-                <strong>0</strong>
+                <span>Aman/Rekomendasi</span>
+                <strong data-stat="aman">0</strong>
             </article>
         </section>
 
@@ -67,63 +68,13 @@
                 <button type="button" class="laporan-filter active"
                     data-filter="semua" aria-pressed="true">Semua</button>
                 <button type="button" class="laporan-filter"
-                    data-filter="review" aria-pressed="false">Ditinjau</button>
+                    data-filter="scam" aria-pressed="false">Tertipu/Scam</button>
                 <button type="button" class="laporan-filter"
-                    data-filter="done" aria-pressed="false">Selesai</button>
+                    data-filter="aman" aria-pressed="false">Aman/Rekomendasi</button>
             </div>
 
-            <div class="laporan-list">
-                <article class="laporan-item" data-status="review">
-                    <div class="laporan-item-top">
-                        <span class="laporan-badge badge-review">Sedang Ditinjau</span>
-                        <span class="laporan-id">LP-1028</span>
-                    </div>
-                    <h3>@gadget_murah</h3>
-                    <p class="laporan-category">Kategori: Dugaan barang tidak dikirim</p>
-                    <p>
-                        Pelapor menyatakan barang belum diterima setelah
-                        pembayaran dilakukan. Laporan masih dalam proses pemeriksaan.
-                    </p>
-                    <div class="laporan-item-footer">
-                        <span>18 Oktober 2026</span>
-                        <a href="detail-profile.html">Lihat profil</a>
-                    </div>
-                </article>
-
-                <article class="laporan-item" data-status="done">
-                    <div class="laporan-item-top">
-                        <span class="laporan-badge badge-done">Selesai Ditinjau</span>
-                        <span class="laporan-id">LP-1021</span>
-                    </div>
-                    <h3>@fashion_preorder</h3>
-                    <p class="laporan-category">Kategori: Pesanan tidak sesuai</p>
-                    <p>
-                        Laporan mengenai ketidaksesuaian barang telah ditinjau.
-                        Informasi disajikan sebagai referensi bagi komunitas.
-                    </p>
-                    <div class="laporan-item-footer">
-                        <span>15 Oktober 2026</span>
-                        <a href="detail-profile.html">Lihat profil</a>
-                    </div>
-                </article>
-
-                <article class="laporan-item" data-status="done">
-                    <div class="laporan-item-top">
-                        <span class="laporan-badge badge-done">Selesai Ditinjau</span>
-                        <span class="laporan-id">LP-1014</span>
-                    </div>
-                    <h3>@aksesoris_store</h3>
-                    <p class="laporan-category">Kategori: Dugaan penipuan</p>
-                    <p>
-                        Laporan telah diperiksa oleh tim. Status peninjauan
-                        tidak otomatis menentukan kesalahan suatu akun.
-                    </p>
-                    <div class="laporan-item-footer">
-                        <span>12 Oktober 2026</span>
-                        <a href="detail-profile.html">Lihat profil</a>
-                    </div>
-                </article>
-            </div>
+            <!-- Kartu diisi otomatis oleh lapor.js dari database -->
+            <div class="laporan-list" aria-live="polite"></div>
 
             <p class="laporan-empty" hidden>
                 Tidak ada laporan untuk kategori ini.
@@ -146,7 +97,5 @@
         </a>
         <a href="profil.html" data-ic="user">Profil</a>
     </nav>
-
-    <script src="lapor.js"></script>
 </body>
 </html>

@@ -1,6 +1,19 @@
 "use strict";
-/* Interaksi fitur Pelaporan Transaksi (lapor.html, confirm-otp.html, success.html).
-   Terhubung ke backend Django (folder backend/). Jalankan dulu: python manage.py runserver */
+
+/* =====================================================================
+   0. Perbaikan global: atribut [hidden] selalu menyembunyikan elemen,
+      walaupun CSS memberi display:flex/grid pada kartu atau pesan kosong.
+   ===================================================================== */
+(() => {
+  const style = document.createElement("style");
+  style.textContent = "[hidden]{display:none !important}";
+  document.head.appendChild(style);
+})();
+
+/* =====================================================================
+   1. Pelaporan Transaksi (lapor.html, confirm-otp.html, success.html)
+   Terhubung ke backend Django. Jalankan dulu: python manage.py runserver
+   ===================================================================== */
 (() => {
   const API = "http://127.0.0.1:8000/api"; // ganti saat backend sudah di-deploy
   const KEY = "trustx_draft", TIKET = "trustx_tiket";
@@ -221,52 +234,10 @@
 })();
 
 
-document.addEventListener("DOMContentLoaded", () => {
-    const filters = document.querySelectorAll(".laporan-filter");
-    const reports = document.querySelectorAll(".laporan-item");
-    const emptyMessage = document.querySelector(".laporan-empty");
-
-    if (!filters.length || !reports.length) return;
-
-    filters.forEach((button) => {
-        button.addEventListener("click", () => {
-            const selectedFilter = button.dataset.filter;
-
-            // Perbarui tombol filter yang aktif
-            filters.forEach((item) => {
-                const isActive = item === button;
-
-                item.classList.toggle("active", isActive);
-                item.setAttribute("aria-pressed", String(isActive));
-            });
-
-            // Tampilkan laporan yang sesuai
-            let visibleCount = 0;
-
-            reports.forEach((report) => {
-                const status = report.dataset.status;
-                const shouldShow =
-                    selectedFilter === "semua" ||
-                    selectedFilter === status;
-
-                report.hidden = !shouldShow;
-
-                if (shouldShow) {
-                    visibleCount++;
-                }
-            });
-
-            // Tampilkan pesan jika hasil kosong
-            if (emptyMessage) {
-                emptyMessage.hidden = visibleCount > 0;
-            }
-        });
-    });
-});
-
-
-/* TrustX Seller — ikon, data demo, beranda, dan detail profil penjual.
-   Data di bawah hanya contoh demonstrasi; ganti dengan data dari backend. */
+/* =====================================================================
+   2. TrustX Seller: ikon, data demo, beranda, dan detail profil penjual.
+   Data di bawah hanya contoh demonstrasi; ganti dengan data dari backend.
+   ===================================================================== */
 (function () {
   "use strict";
 
@@ -369,6 +340,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <blockquote>${esc(f.text)}</blockquote>
         <footer><span>${svg("clock")}${esc(f.time)}</span>
         <span${f.metaClass === "red" ? ' style="color:var(--red);font-weight:700"' : ' style="color:var(--navy);font-weight:700"'}>${svg(f.metaIcon)}${esc(f.meta)}</span></footer></li>`).join("");
+    injectIcons(feed);
 
     const tabs = document.querySelectorAll(".tab");
     const q = document.getElementById("q");
@@ -464,49 +436,57 @@ document.addEventListener("DOMContentLoaded", () => {
     injectIcons();
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
+  const start = () => {
     injectIcons();
     const page = document.body.dataset.page;
     if (page === "home") initHome();
     if (page === "detail-seller") initDetail();
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
+})();
+
+
+/* =====================================================================
+   3. Halaman Laporan seller: filter laporan
+   ===================================================================== */
+(() => {
+  const filters = document.querySelectorAll(".sr-filter");
+  const reports = document.querySelectorAll(".sr-report");
+  const emptyMessage = document.querySelector(".sr-empty");
+  if (!filters.length) return;
+
+  filters.forEach((button) => {
+    button.addEventListener("click", () => {
+      const selected = button.dataset.filter;
+      let visibleCount = 0;
+
+      filters.forEach((filter) => {
+        const active = filter === button;
+        filter.classList.toggle("active", active);
+        filter.setAttribute("aria-pressed", String(active));
+      });
+
+      reports.forEach((report) => {
+        const visible = selected === "all" || report.dataset.status === selected;
+        report.hidden = !visible;
+        if (visible) visibleCount++;
+      });
+
+      if (emptyMessage) emptyMessage.hidden = visibleCount > 0;
+    });
   });
 })();
 
 
-// halaman Laporan seller
-// Filter laporan.
-    const filters = document.querySelectorAll(".sr-filter");
-    const reports = document.querySelectorAll(".sr-report");
-    const emptyMessage = document.querySelector(".sr-empty");
-
-    filters.forEach((button) => {
-        button.addEventListener("click", () => {
-            const selected = button.dataset.filter;
-            let visibleCount = 0;
-
-            filters.forEach((filter) => {
-                const active = filter === button;
-                filter.classList.toggle("active", active);
-                filter.setAttribute("aria-pressed", String(active));
-            });
-
-            reports.forEach((report) => {
-                const visible =
-                    selected === "all" ||
-                    report.dataset.status === selected;
-
-                report.hidden = !visible;
-
-                if (visible) visibleCount++;
-            });
-
-            emptyMessage.hidden = visibleCount > 0;
-        });
-    });
-
-
-document.addEventListener("DOMContentLoaded", () => {
+/* =====================================================================
+   4. Form sanggahan penjual (hasil_peninjauan.html)
+   ===================================================================== */
+(() => {
+  const init = () => {
     const form = document.getElementById("appealForm");
+    if (!form) return;
+
     const reportId = document.getElementById("reportId");
     const story = document.getElementById("appealStory");
     const reason = document.getElementById("appealReason");
@@ -517,176 +497,286 @@ document.addEventListener("DOMContentLoaded", () => {
     const fileList = document.getElementById("fileList");
     const history = document.getElementById("appealHistory");
 
-    if (!form) return;
-
+    // Tautan dari halaman detail memakai ?id=, jadi terima ?id= maupun ?laporan=.
     const params = new URLSearchParams(window.location.search);
-    const requestedId = params.get("laporan") || "LP-8821";
+    const requestedId = (params.get("id") || params.get("laporan") || "LP-8821").trim();
 
     // Mencegah ID laporan yang tidak sesuai format.
-    reportId.value = /^LP-\d{4,}$/i.test(requestedId)
-        ? requestedId
-        : "LP-8821";
+    reportId.value = /^LP-\d{4,}$/i.test(requestedId) ? requestedId.toUpperCase() : "LP-8821";
 
     function showMessage(text, success = false) {
-        message.textContent = text;
-        message.className = "appeal-message is-visible";
-
-        if (success) {
-            message.classList.add("is-success");
-        }
+      message.textContent = text;
+      message.className = "appeal-message is-visible";
+      if (success) message.classList.add("is-success");
     }
 
     function getHistory() {
-        try {
-            return JSON.parse(
-                localStorage.getItem("trustxSanggahan") || "[]"
-            );
-        } catch {
-            return [];
-        }
+      try {
+        return JSON.parse(localStorage.getItem("trustxSanggahan") || "[]");
+      } catch {
+        return [];
+      }
     }
 
     function renderHistory() {
-        const records = getHistory().filter(
-            item => item.reportId === reportId.value
-        );
+      const records = getHistory().filter((item) => item.reportId === reportId.value);
 
-        if (records.length === 0) {
-            history.innerHTML = `
-                <p class="appeal-history-empty">
-                    Belum ada pengajuan sanggahan untuk laporan ini.
-                </p>
-            `;
-            return;
-        }
+      if (records.length === 0) {
+        history.innerHTML = `
+          <p class="appeal-history-empty">
+            Belum ada pengajuan sanggahan untuk laporan ini.
+          </p>`;
+        return;
+      }
 
-        history.replaceChildren();
+      history.replaceChildren();
 
-        records.slice().reverse().forEach(item => {
-            const article = document.createElement("article");
-            article.className = "appeal-history-item";
+      records.slice().reverse().forEach((item) => {
+        const article = document.createElement("article");
+        article.className = "appeal-history-item";
 
-            const top = document.createElement("div");
-            top.className = "appeal-history-top";
+        const top = document.createElement("div");
+        top.className = "appeal-history-top";
 
-            const title = document.createElement("strong");
-            title.textContent = `${item.reportId} · ${item.date}`;
+        const title = document.createElement("strong");
+        title.textContent = `${item.reportId} · ${item.date}`;
 
-            const status = document.createElement("span");
-            status.className = "appeal-status";
-            status.textContent = item.status;
+        const status = document.createElement("span");
+        status.className = "appeal-status";
+        status.textContent = item.status;
 
-            const description = document.createElement("p");
-            description.textContent =
-                `Alasan: ${item.reasonLabel}. ` +
-                `Bukti: ${item.fileNames.join(", ")}`;
+        const description = document.createElement("p");
+        description.textContent =
+          `Alasan: ${item.reasonLabel}. ` +
+          `Bukti: ${item.fileNames.join(", ")}`;
 
-            const note = document.createElement("p");
-            note.textContent =
-                "Pengajuan tersimpan secara lokal dan belum diterima server.";
+        const note = document.createElement("p");
+        note.textContent = "Pengajuan tersimpan secara lokal dan belum diterima server.";
 
-            top.append(title, status);
-            article.append(top, description, note);
-            history.append(article);
-        });
+        top.append(title, status);
+        article.append(top, description, note);
+        history.append(article);
+      });
     }
 
     story.addEventListener("input", () => {
-        storyCount.textContent = story.value.length;
+      storyCount.textContent = story.value.length;
     });
 
     files.addEventListener("change", () => {
-        fileList.replaceChildren();
-        const selected = Array.from(files.files);
-
-        selected.forEach(file => {
-            const li = document.createElement("li");
-            li.textContent =
-                `${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
-            fileList.append(li);
-        });
+      fileList.replaceChildren();
+      Array.from(files.files).forEach((file) => {
+        const li = document.createElement("li");
+        li.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+        fileList.append(li);
+      });
     });
 
-    form.addEventListener("submit", event => {
-        event.preventDefault();
-        message.className = "appeal-message";
-        message.textContent = "";
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      message.className = "appeal-message";
+      message.textContent = "";
 
-        const selectedFiles = Array.from(files.files);
-        const maxSize = 5 * 1024 * 1024;
-        const allowedTypes = [
-            "image/jpeg",
-            "image/png",
-            "application/pdf"
-        ];
+      const selectedFiles = Array.from(files.files);
+      const maxSize = 5 * 1024 * 1024;
+      const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
 
-        if (story.value.trim().length < 20) {
-            showMessage("Kronologi harus berisi minimal 20 karakter.");
-            story.focus();
-            return;
-        }
+      if (story.value.trim().length < 20) {
+        showMessage("Kronologi harus berisi minimal 20 karakter.");
+        story.focus();
+        return;
+      }
 
-        if (selectedFiles.length < 1 || selectedFiles.length > 3) {
-            showMessage("Pilih minimal 1 dan maksimal 3 berkas bukti.");
-            files.focus();
-            return;
-        }
+      if (selectedFiles.length < 1 || selectedFiles.length > 3) {
+        showMessage("Pilih minimal 1 dan maksimal 3 berkas bukti.");
+        files.focus();
+        return;
+      }
 
-        const invalidFile = selectedFiles.some(file =>
-            !allowedTypes.includes(file.type) || file.size > maxSize
-        );
+      const invalidFile = selectedFiles.some((file) =>
+        !allowedTypes.includes(file.type) || file.size > maxSize
+      );
 
-        if (invalidFile) {
-            showMessage(
-                "Berkas harus JPG, PNG, atau PDF dengan ukuran maksimal 5 MB per berkas."
-            );
-            files.focus();
-            return;
-        }
+      if (invalidFile) {
+        showMessage("Berkas harus JPG, PNG, atau PDF dengan ukuran maksimal 5 MB per berkas.");
+        files.focus();
+        return;
+      }
 
-        if (!consent.checked) {
-            showMessage("Centang pernyataan kebenaran informasi terlebih dahulu.");
-            consent.focus();
-            return;
-        }
+      if (!consent.checked) {
+        showMessage("Centang pernyataan kebenaran informasi terlebih dahulu.");
+        consent.focus();
+        return;
+      }
 
-        const reasonLabel =
-            reason.options[reason.selectedIndex].text;
+      const record = {
+        reportId: reportId.value,
+        reasonLabel: reason.options[reason.selectedIndex].text,
+        story: story.value.trim(),
+        fileNames: selectedFiles.map((file) => file.name),
+        date: new Date().toLocaleDateString("id-ID"),
+        status: "Menunggu pengiriman ke server"
+      };
 
-        const record = {
-            reportId: reportId.value,
-            reasonLabel,
-            story: story.value.trim(),
-            fileNames: selectedFiles.map(file => file.name),
-            date: new Date().toLocaleDateString("id-ID"),
-            status: "Menunggu pengiriman ke server"
-        };
+      try {
+        const records = getHistory();
+        records.push(record);
+        localStorage.setItem("trustxSanggahan", JSON.stringify(records));
+      } catch {
+        showMessage("Riwayat tidak dapat disimpan di browser ini. Coba kosongkan penyimpanan browser.");
+        return;
+      }
 
-        try {
-            const records = getHistory();
-            records.push(record);
-            localStorage.setItem(
-                "trustxSanggahan",
-                JSON.stringify(records)
-            );
-        } catch {
-            showMessage(
-                "Riwayat tidak dapat disimpan di browser ini. Coba kosongkan penyimpanan browser."
-            );
-            return;
-        }
+      renderHistory();
+      showMessage(
+        "Validasi berhasil. Data pengajuan tersimpan di browser, tetapi belum dikirim ke server TrustX.",
+        true
+      );
 
-        renderHistory();
-        showMessage(
-            "Validasi berhasil. Data pengajuan tersimpan di browser, tetapi belum dikirim ke server TrustX.",
-            true
-        );
-
-        form.reset();
-        reportId.value = record.reportId;
-        storyCount.textContent = "0";
-        fileList.replaceChildren();
+      form.reset();
+      reportId.value = record.reportId;
+      storyCount.textContent = "0";
+      fileList.replaceChildren();
     });
 
     renderHistory();
-});
+  };
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+
+
+/* =====================================================================
+   5. Halaman Laporan Komunitas (buyer / laporanpage.html)
+   Menampilkan laporan terbit dari database, lengkap dengan statistik dan filter.
+   - Langsung berhenti di halaman yang tidak punya .laporan-list.
+   - Data dari: GET http://127.0.0.1:8000/api/laporan-akun/
+     (?akun=@nama_akun di URL halaman menyaring ke satu akun).
+   ===================================================================== */
+(() => {
+  const list = document.querySelector(".laporan-list");
+  if (!list) return;
+
+  // Tanpa "/" di akhir, supaya `${API_BASE}/laporan-akun/` tidak menjadi "api//laporan-akun/".
+  const API_BASE = "http://127.0.0.1:8000/api";
+  const emptyEl = document.querySelector(".laporan-empty");
+  const filterBtns = document.querySelectorAll(".laporan-filter");
+
+  const TX = { scam: "Tertipu/Scam", aman: "Aman/Rekomendasi" };
+  const BADGE = { scam: "badge-response", aman: "badge-done" };
+  const FILTER_EMPTY = "Tidak ada laporan untuk kategori ini.";
+
+  let activeFilter = "semua";
+  let emptyText = "Memuat laporan...";
+
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  const tgl = (iso) => iso
+    ? new Date(iso).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })
+    : "-";
+
+  // Terima dua bentuk data: hasil endpoint ringkas ({laporan:[...]})
+  // atau serializer biasa (nama field sama dengan model Laporan).
+  function normalize(r) {
+    return {
+      id: r.nomor_tiket || (typeof r.id === "string" ? r.id : ""),
+      akun: r.akun || r.akun_target || "",
+      tx: r.statusTransaksi || r.status_transaksi,
+      kronologi: r.kronologi || "",
+      bukti: r.jumlahBukti ?? (Array.isArray(r.bukti) ? r.bukti.length : 0),
+      dibuat: r.dibuat,
+      diterbitkan: r.diterbitkan,
+      statusLaporan: r.status_laporan || "terbit",
+    };
+  }
+
+  function buildCard(r) {
+    const card = document.createElement("article");
+    card.className = "laporan-item";
+    card.dataset.status = r.tx;
+    card.innerHTML = `
+      <div class="laporan-item-top">
+        <span class="laporan-badge ${BADGE[r.tx]}">${esc(TX[r.tx])}</span>
+        <span class="laporan-id">${esc(r.id)}</span>
+      </div>
+      <h3>${esc(r.akun)}</h3>
+      <p class="laporan-category">Diterbitkan ${esc(tgl(r.diterbitkan || r.dibuat))}</p>
+      <p>${esc(r.kronologi)}</p>
+      <div class="laporan-item-footer">
+        <span>${esc(r.bukti)} bukti terlampir</span>
+        <a class="laporan-button laporan-button-secondary"
+           href="lapor.html?akun=${encodeURIComponent(r.akun)}">Lapor akun ini</a>
+      </div>`;
+    return card;
+  }
+
+  // Hitung ulang statistik, terapkan filter, dan atur pesan kosong.
+  function sync() {
+    const cards = [...list.querySelectorAll(".laporan-item")];
+
+    const count = { total: cards.length, scam: 0, aman: 0 };
+    cards.forEach((c) => { if (c.dataset.status === "scam" || c.dataset.status === "aman") count[c.dataset.status]++; });
+    Object.entries(count).forEach(([key, val]) => {
+      const el = document.querySelector(`[data-stat="${key}"]`);
+      if (el) el.textContent = val;
+    });
+
+    let visible = 0;
+    cards.forEach((c) => {
+      const show = activeFilter === "semua" || c.dataset.status === activeFilter;
+      c.hidden = !show;
+      if (show) visible++;
+    });
+
+    if (emptyEl) {
+      emptyEl.textContent = cards.length ? FILTER_EMPTY : emptyText;
+      emptyEl.hidden = visible > 0;
+    }
+  }
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      activeFilter = btn.dataset.filter;
+      filterBtns.forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle("active", on);
+        b.setAttribute("aria-pressed", String(on));
+      });
+      sync();
+    });
+  });
+
+  async function loadLaporan() {
+    const akun = (new URLSearchParams(location.search).get("akun") || "").trim();
+    const url = `${API_BASE}/laporan-akun/` + (akun ? `?akun=${encodeURIComponent(akun)}` : "");
+
+    try {
+      const res = await fetch(url, { headers: { Accept: "application/json" } });
+      if (!res.ok) throw new Error("Status " + res.status);
+
+      const data = await res.json();
+      const rows = Array.isArray(data) ? data : (data.laporan || data.results || []);
+      const target = akun.toLowerCase();
+
+      const items = rows
+        .map(normalize)
+        .filter((r) => r.id && TX[r.tx]
+          && r.statusLaporan === "terbit"
+          && (!target || r.akun.toLowerCase() === target))
+        .sort((a, b) => new Date(b.diterbitkan || b.dibuat) - new Date(a.diterbitkan || a.dibuat));
+
+      emptyText = "Belum ada laporan yang diterbitkan.";
+      list.replaceChildren(...items.map(buildCard));
+    } catch (err) {
+      console.error("Gagal memuat laporan:", err);
+      emptyText = "Laporan belum dapat dimuat. Periksa koneksi ke server.";
+    }
+    sync();
+  }
+
+  sync(); // tampilkan "Memuat laporan..." selagi menunggu server
+  loadLaporan();
+})();
+

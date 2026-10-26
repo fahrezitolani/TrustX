@@ -8,4 +8,5 @@ urlpatterns = [
     path('laporan/<str:nomor_tiket>/', views.detail_tiket),
     path('otp/kirim/', views.kirim_otp),
     path('otp/verifikasi/', views.verifikasi_otp),
+    path('laporan-akun/', views.laporan_akun),
 ]

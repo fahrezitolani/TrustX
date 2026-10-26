@@ -8,9 +8,11 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
         <link rel="stylesheet" href="./seller.css">
         <script src="./seller.js" defer></script>
-        <script src="./reports.js" defer></script>
+        <!-- lapor.js: ikon navigasi (data-ic). sanggahan.js: kartu laporan + sanggahan. Masing-masing cukup sekali. -->
+        <script src="./lapor.js" defer></script>
+        <script src="./sanggahan.js" defer></script>
 
-        <title>TrustX - Beranda Penjual</title>
+        <title>TrustX - Laporan Penjual</title>
     </head>
     <body class="seller" data-page="report">
         <div class="wrap">
@@ -23,8 +25,8 @@
                     </span>
                 </a>
                 <nav class="bnav" aria-label="Navigasi utama">
-                    <a href="./index-seller.html" aria-current="page" data-ic="shield">Beranda</a>
-                    <a href="./dashboard-laporanseller.html" data-ic="doc">Laporan</a>
+                    <a href="./index-seller.html" data-ic="shield">Beranda</a>
+                    <a href="./dashboard-laporanseller.html" aria-current="page" data-ic="doc">Laporan</a>
                     <a href="./detail-profile-seller.html?q=@seller_gadget_murah" data-ic="store">Akun Toko</a>
                 </nav>
                 <div class="acts">
@@ -32,70 +34,66 @@
                     <a class="ib dark" href="./profil.html" aria-label="Profil" data-ic="user"></a>
                 </div>
             </header>
-    <main>
-    <section class="sr-heading">
-        <span class="sr-eyebrow">PUSAT LAPORAN TRUSTX</span>
-        <h1>Laporan Terkait Toko</h1>
-        <p>Pantau laporan komunitas, pelajari hasil peninjauan, dan sampaikan klarifikasi dengan bukti yang relevan.</p>
-    </section>
 
-    
-    <section class="sr-stats" aria-label="Ringkasan laporan">
-        <article class="sr-stat">
-            <span>Total laporan</span>
-            <strong data-stat="total">0</strong>
-            <small>Seluruh laporan toko</small>
-        </article>
-        <article class="sr-stat">
-            <span>Perlu tanggapan</span>
-            <strong data-stat="response">0</strong>
-            <small>Perlu ditindaklanjuti</small>
-        </article>
-        <article class="sr-stat">
-            <span>Sedang ditinjau</span>
-            <strong data-stat="review">0</strong>
-            <small>Dalam pemeriksaan</small>
-        </article>
-        <article class="sr-stat">
-            <span>Selesai ditinjau</span>
-            <strong data-stat="done">0</strong>
-            <small>Hasil sudah tersedia</small>
-        </article>
-    </section>
+            <main>
+                <section class="sr-heading">
+                    <span class="sr-eyebrow">PUSAT LAPORAN TRUSTX</span>
+                    <h1>Laporan Terkait Toko</h1>
+                    <p>Pantau laporan komunitas, pelajari hasil peninjauan, dan sampaikan klarifikasi dengan bukti yang relevan.</p>
+                </section>
 
-    <section class="sr-panel">
-        <div class="sr-panel-heading">
-            <div>
-                <h2>Daftar Laporan</h2>
-                <p>Pilih laporan untuk membaca hasil peninjauan atau mengajukan sanggahan.</p>
-            </div>
+                <section class="sr-stats" aria-label="Ringkasan laporan">
+                    <article class="sr-stat">
+                        <span>Total Sanggahan</span>
+                        <strong data-stat="total">0</strong>
+                        <small>Seluruh laporan toko</small>
+                    </article>
+                    <article class="sr-stat">
+                        <span>Perlu tanggapan</span>
+                        <strong data-stat="response">0</strong>
+                        <small>Perlu ditindaklanjuti</small>
+                    </article>
+                    <article class="sr-stat">
+                        <span>Sedang ditinjau</span>
+                        <strong data-stat="review">0</strong>
+                        <small>Dalam pemeriksaan</small>
+                    </article>
+                    <article class="sr-stat">
+                        <span>Selesai ditinjau</span>
+                        <strong data-stat="done">0</strong>
+                        <small>Hasil sudah tersedia</small>
+                    </article>
+                </section>
+
+                <section class="sr-panel">
+                    <div class="sr-panel-heading">
+                        <div>
+                            <h2>Daftar Laporan</h2>
+                            <p>Pilih laporan untuk membaca hasil peninjauan atau mengajukan sanggahan.</p>
+                        </div>
+                    </div>
+
+                    <div class="sr-filters" role="group" aria-label="Filter status laporan">
+                        <button type="button" class="sr-filter active" data-filter="all" aria-pressed="true">Semua</button>
+                        <button type="button" class="sr-filter" data-filter="response" aria-pressed="false">Perlu tanggapan</button>
+                        <button type="button" class="sr-filter" data-filter="review" aria-pressed="false">Ditinjau</button>
+                        <button type="button" class="sr-filter" data-filter="done" aria-pressed="false">Selesai</button>
+                    </div>
+
+                    <!-- Kartu diisi otomatis oleh sanggahan.js (laporan + sanggahan dari database) -->
+                    <div class="sr-report-list" aria-live="polite"></div>
+
+                    <p class="sr-empty" hidden>Memuat laporan...</p>
+                </section>
+
+                <aside class="sr-notice">
+                    <span data-ic="shieldcheck"></span>
+                    <div>
+                        <strong>Hak klarifikasi penjual</strong>
+                        <p>Sampaikan kronologi yang jelas dan bukti yang relevan. Hindari mengunggah data pribadi yang tidak diperlukan.</p>
+                    </div>
+                </aside>
+            </main>
         </div>
-
-        <div class="sr-filters" role="group" aria-label="Filter status laporan">
-            <button type="button" class="sr-filter active" data-filter="all" aria-pressed="true">Semua</button>
-            <button type="button" class="sr-filter" data-filter="response" aria-pressed="false">Perlu tanggapan</button>
-            <button type="button" class="sr-filter" data-filter="review" aria-pressed="false">Ditinjau</button>
-            <button type="button" class="sr-filter" data-filter="done" aria-pressed="false">Selesai</button>
-        </div>
-
-        <div class="sr-report-list">
-            <article class="sr-report" data-status="response">
-                
-            </article>
-        </div>
-
-        <p class="sr-empty" hidden>Tidak ada laporan dengan status tersebut.</p>
-    </section>
-
-    <aside class="sr-notice">
-        <span data-ic="shieldcheck"></span>
-        <div>
-            <strong>Hak klarifikasi penjual</strong>
-            <p>Sampaikan kronologi yang jelas dan bukti yang relevan. Hindari mengunggah data pribadi yang tidak diperlukan.</p>
-        </div>
-    </aside>
-</main>
-</div>
-
-</body>
+    </body>
 </html>

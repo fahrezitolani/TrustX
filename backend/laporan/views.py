@@ -86,3 +86,31 @@ def detail_tiket(request, nomor_tiket):
     """GET /api/laporan/<nomor_tiket>/ -> data untuk success.html"""
     laporan = get_object_or_404(Laporan, nomor_tiket=nomor_tiket, status_laporan=Laporan.StatusLaporan.TERBIT)
     return Response(TiketSerializer(laporan).data)
+
+
+def _jumlah_bukti(laporan):
+    """Hitung bukti terlampir. Sesuaikan nama relasi dengan models.py kamu."""
+    for nama in ("bukti", "bukti_set"):
+        rel = getattr(laporan, nama, None)
+        if rel is not None and hasattr(rel, "count"):
+            return rel.count()
+    return 0
+
+
+@api_view(['GET'])
+def laporan_akun(request):
+    """GET /api/laporan-akun/ (?akun=@nama) -> daftar laporan terbit untuk laporanpage.html"""
+    terbit = Laporan.objects.filter(status_laporan=Laporan.StatusLaporan.TERBIT)
+    akun = request.query_params.get('akun', '').strip()
+    if akun:
+        terbit = terbit.filter(akun_target__iexact=akun)
+    terbit = terbit.order_by('-diterbitkan')
+
+    return Response({'laporan': [{
+        'nomor_tiket': l.nomor_tiket,
+        'akun': l.akun_target,
+        'statusTransaksi': l.status_transaksi,
+        'kronologi': l.kronologi,
+        'jumlahBukti': _jumlah_bukti(l),
+        'diterbitkan': l.diterbitkan.isoformat() if l.diterbitkan else None,
+    } for l in terbit]})
