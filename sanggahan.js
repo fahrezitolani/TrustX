@@ -143,9 +143,63 @@ function updateStats(items, total) {
 let activeFilter = "all";
 let emptyText = "Memuat laporan...";
 
+function showToast(message, type = "info") {
+  const container = document.getElementById("toastContainer");
+  if (!container) return;
+
+  const toast = document.createElement("div");
+  toast.className = `toast toast-${type}`;
+  let iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+  if (type === "success") {
+    iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>';
+  } else if (type === "error") {
+    iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+  }
+
+  toast.innerHTML = `<span class="toast-icon">${iconSvg}</span><span class="toast-message">${esc(message)}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(10px) scale(0.95)";
+    setTimeout(() => toast.remove(), 300);
+  }, 3200);
+}
+
+function showSkeleton(count = 2) {
+  const list = document.querySelector(".sr-report-list");
+  const emptyEl = document.getElementById("srEmptyState");
+  const errorEl = document.getElementById("srErrorState");
+  if (emptyEl) emptyEl.hidden = true;
+  if (errorEl) errorEl.hidden = true;
+  if (!list) return;
+
+  const skeletons = [];
+  for (let i = 0; i < count; i++) {
+    skeletons.push(`
+      <article class="skeleton-card" aria-hidden="true">
+        <div class="skeleton-row">
+          <div class="skeleton-bar skeleton-badge"></div>
+          <div class="skeleton-bar skeleton-id"></div>
+        </div>
+        <div class="skeleton-bar skeleton-title"></div>
+        <div class="skeleton-bar skeleton-meta"></div>
+        <div class="skeleton-bar skeleton-desc-1"></div>
+        <div class="skeleton-footer">
+          <div class="skeleton-bar skeleton-footer-left"></div>
+          <div class="skeleton-bar skeleton-footer-right"></div>
+        </div>
+      </article>
+    `);
+  }
+  list.innerHTML = skeletons.join("");
+}
+
 function applyFilter() {
   const list = document.querySelector(".sr-report-list");
   const emptyEl = document.querySelector(".sr-empty");
+  const emptyState = document.getElementById("srEmptyState");
+  const emptyTitle = document.getElementById("srEmptyTitle");
+  const emptyTextEl = document.getElementById("srEmptyText");
   if (!list) return;
 
   const cards = [...list.querySelectorAll(".sr-report")];
@@ -156,14 +210,29 @@ function applyFilter() {
     if (show) visible++;
   });
 
-  if (emptyEl) {
-    emptyEl.textContent = cards.length ? "Tidak ada laporan untuk kategori ini." : emptyText;
-    emptyEl.hidden = visible > 0;
+  if (emptyEl) emptyEl.hidden = true; // Sembunyikan pesan teks lama
+
+  if (emptyState) {
+    if (visible === 0) {
+      emptyState.hidden = false;
+      const filterNames = { all: "semua", response: "Perlu Tanggapan", review: "Ditinjau", done: "Selesai" };
+      if (cards.length === 0) {
+        if (emptyTitle) emptyTitle.textContent = "Belum Ada Laporan Toko";
+        if (emptyTextEl) emptyTextEl.textContent = "Belum ada laporan keluhan yang tercatat untuk toko ini di sistem TrustX.";
+      } else {
+        if (emptyTitle) emptyTitle.textContent = `Tidak Ada Laporan (${filterNames[activeFilter] || activeFilter})`;
+        if (emptyTextEl) emptyTextEl.textContent = `Tidak ditemukan laporan dengan status "${filterNames[activeFilter] || activeFilter}". Klik tombol di bawah untuk mereset filter.`;
+      }
+    } else {
+      emptyState.hidden = true;
+    }
   }
 }
 
 function initFilters() {
   const filters = document.querySelectorAll(".sr-filter");
+  const filterNames = { all: "Semua", response: "Perlu Tanggapan", review: "Ditinjau", done: "Selesai" };
+
   filters.forEach(btn => btn.addEventListener("click", () => {
     activeFilter = btn.dataset.filter;
     filters.forEach(f => {
@@ -171,8 +240,31 @@ function initFilters() {
       f.classList.toggle("active", on);
       f.setAttribute("aria-pressed", String(on));
     });
+    showToast(`Filter laporan toko: ${filterNames[activeFilter] || activeFilter}`, "info");
     applyFilter();
   }));
+
+  const btnReset = document.getElementById("btnResetFilterSeller");
+  if (btnReset) {
+    btnReset.addEventListener("click", () => {
+      activeFilter = "all";
+      filters.forEach(f => {
+        const on = f.dataset.filter === "all";
+        f.classList.toggle("active", on);
+        f.setAttribute("aria-pressed", String(on));
+      });
+      showToast("Filter berhasil direset ke Semua", "info");
+      applyFilter();
+    });
+  }
+
+  const btnRetry = document.getElementById("btnRetrySeller");
+  if (btnRetry) {
+    btnRetry.addEventListener("click", () => {
+      showToast("Mencoba memuat ulang laporan toko...", "info");
+      loadSanggahan();
+    });
+  }
 }
 
 async function getJSON(url) {
@@ -183,9 +275,12 @@ async function getJSON(url) {
 
 async function loadSanggahan() {
   const list = document.querySelector(".sr-report-list");
+  const errorEl = document.getElementById("srErrorState");
+  const errorTextEl = document.getElementById("srErrorText");
+  const emptyState = document.getElementById("srEmptyState");
   if (!list) return;
 
-  applyFilter(); // tampilkan "Memuat laporan..." selagi menunggu server
+  showSkeleton(2);
 
   const [rLap, rSg] = await Promise.allSettled([
     getJSON(`${API_BASE}/laporan-akun/?akun=${encodeURIComponent(AKUN_SAYA)}`),
@@ -196,10 +291,17 @@ async function loadSanggahan() {
   if (rSg.status === "rejected") console.error("Gagal memuat sanggahan:", rSg.reason);
 
   if (rLap.status === "rejected" && rSg.status === "rejected") {
-    emptyText = "Data belum dapat dimuat. Periksa koneksi ke server.";
-    applyFilter();
+    list.innerHTML = "";
+    if (emptyState) emptyState.hidden = true;
+    if (errorEl) {
+      errorEl.hidden = false;
+      if (errorTextEl) errorTextEl.textContent = "Tidak dapat terhubung ke server Django di http://127.0.0.1:8000. Pastikan server backend sedang aktif.";
+    }
+    showToast("Gagal terhubung ke server backend", "error");
     return;
   }
+
+  if (errorEl) errorEl.hidden = true;
 
   const dLap = rLap.status === "fulfilled" ? rLap.value : [];
   const dSg = rSg.status === "fulfilled" ? rSg.value : [];
@@ -208,8 +310,6 @@ async function loadSanggahan() {
 
   if (rSg.status === "fulfilled") updateStats(sanggahan, dSg.count);
 
-  // Sanggahan yang laporannya belum ditemukan: ambil laporan dari toko (store_name) sanggahan itu,
-  // supaya tidak bergantung pada AKUN_SAYA yang masih hard-code.
   const ada = new Set(laporan.map(l => String(l.nomor_tiket).toLowerCase()));
   const toko = [...new Set(sanggahan
     .filter(sg => sg.store_name && !ada.has(String(sg.report_id).toLowerCase()))
@@ -226,7 +326,6 @@ async function loadSanggahan() {
     });
   });
 
-  // Satu laporan -> sanggahan terbarunya (API mengurutkan terbaru dulu)
   const sgPerLaporan = new Map();
   sanggahan.forEach(sg => {
     const key = String(sg.report_id).toLowerCase();
@@ -238,7 +337,6 @@ async function loadSanggahan() {
     return { l, sg, waktu: new Date(l.diterbitkan || 0) };
   });
 
-  // Sanggahan yang laporannya tidak ada di daftar tetap ditampilkan
   const dipakai = new Set(laporan.map(l => String(l.nomor_tiket).toLowerCase()));
   sgPerLaporan.forEach((sg, key) => {
     if (!dipakai.has(key)) entries.push({ l: null, sg, waktu: new Date(sg.created_at || 0) });
@@ -246,10 +344,10 @@ async function loadSanggahan() {
 
   entries.sort((a, b) => b.waktu - a.waktu);
 
-  list.querySelectorAll("[data-dynamic]").forEach(n => n.remove());
+  list.innerHTML = "";
   entries.forEach(e => list.append(buildCard(e.l, e.sg)));
 
-  emptyText = "Belum ada laporan terhadap akun ini.";
+  showToast(`${entries.length} laporan toko berhasil disinkronkan`, "success");
   applyFilter();
 }
 

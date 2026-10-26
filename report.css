@@ -1,0 +1,997 @@
+/* =====================================================================
+   TrustX - Pusat Laporan & Dashboard Komunitas (report.css)
+   Sistem styling untuk:
+   1. Layout Laporan & Navigasi
+   2. Ringkasan Statistik
+   3. Panel & Tab Filter (Tuduhan, Riwayat, Semua)
+   4. Kartu Laporan Dinamis
+   5. Skeleton Loading (Pulsing Animation)
+   6. Empty State Interaktif (dengan Tombol Reset)
+   7. Error State Interaktif (dengan Tombol Coba Lagi / Retry)
+   8. Notifikasi Toast Mengambang (Floating Toast)
+   9. Pop-up Modal Detail Laporan
+   ===================================================================== */
+
+:root {
+  --navy: #162350;
+  --navy-dark: #0c142c;
+  --navy-light: #21336e;
+  --accent: #4f6bd8;
+  --accent-hover: #3d56b8;
+  --accent-soft: #eef2ff;
+  --surface: #ffffff;
+  --bg: #f8fafc;
+  --line: #e2e8f0;
+  --ink: #1e293b;
+  --muted: #64748b;
+  --red: #dc2626;
+  --red-bg: #fee2e2;
+  --red-text: #991b1b;
+  --green: #16a34a;
+  --green-bg: #dcfce7;
+  --green-text: #166534;
+  --blue: #2563eb;
+  --blue-bg: #dbeafe;
+  --blue-text: #1e40af;
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 14px -2px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 16px 36px -4px rgba(15, 23, 42, 0.12);
+  --font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Reset & Global Scope */
+body.laporan-page {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Header */
+.laporan-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.laporan-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--navy);
+}
+
+.laporan-brand img {
+  border-radius: 8px;
+}
+
+.laporan-brand span {
+  display: flex;
+  flex-direction: column;
+}
+
+.laporan-brand strong {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.laporan-brand small {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.laporan-desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.laporan-desktop-nav a {
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.laporan-desktop-nav a:hover {
+  color: var(--navy);
+  background: var(--accent-soft);
+}
+
+.laporan-desktop-nav a.active {
+  color: var(--navy);
+  background: var(--accent-soft);
+  font-weight: 700;
+}
+
+/* Main Container */
+.laporan-main {
+  width: min(100% - 32px, 900px);
+  margin: 0 auto;
+  padding: 36px 0 100px;
+}
+
+/* Intro Section */
+.laporan-intro {
+  margin-bottom: 28px;
+}
+
+.laporan-eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.laporan-intro h1 {
+  margin: 0 0 10px;
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--navy);
+  letter-spacing: -0.025em;
+}
+
+.laporan-intro p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 640px;
+}
+
+/* Ringkasan Statistik */
+.laporan-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.laporan-stat-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.laporan-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.laporan-stat-card span {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.laporan-stat-card strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--navy);
+}
+
+/* Panel Laporan */
+.laporan-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 32px;
+}
+
+.laporan-panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.laporan-panel-heading h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.laporan-panel-heading p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.laporan-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.18s ease;
+}
+
+.laporan-button-primary {
+  background: var(--navy);
+  color: #ffffff;
+}
+
+.laporan-button-primary:hover {
+  background: var(--navy-light);
+  transform: translateY(-1px);
+}
+
+.laporan-button-secondary {
+  background: var(--accent-soft);
+  color: var(--navy);
+  border-color: #dbe4ff;
+}
+
+.laporan-button-secondary:hover {
+  background: #dbe4ff;
+}
+
+/* Filter Tabs */
+.laporan-filters {
+  display: flex;
+  gap: 8px;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+}
+
+.laporan-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.laporan-filter:hover {
+  border-color: var(--accent);
+  color: var(--navy);
+  background: var(--accent-soft);
+}
+
+.laporan-filter.active,
+.laporan-filter[aria-pressed="true"] {
+  background: var(--navy);
+  color: #ffffff;
+  border-color: var(--navy);
+  box-shadow: 0 2px 6px rgba(22, 35, 80, 0.2);
+}
+
+.laporan-filter .filter-count {
+  display: inline-block;
+  padding: 1px 7px;
+  font-size: 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.laporan-filter:not(.active) .filter-count {
+  background: var(--line);
+  color: var(--ink);
+}
+
+/* Daftar Laporan */
+.laporan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 120px;
+}
+
+/* Kartu Laporan */
+.laporan-item {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px 22px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.laporan-item:hover {
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.laporan-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.laporan-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.laporan-badge.badge-scam,
+.laporan-badge.badge-response,
+.laporan-badge.badge-tuduhan {
+  background: var(--red-bg);
+  color: var(--red-text);
+}
+
+.laporan-badge.badge-aman,
+.laporan-badge.badge-done,
+.laporan-badge.badge-riwayat {
+  background: var(--green-bg);
+  color: var(--green-text);
+}
+
+.laporan-id {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+.laporan-item h3 {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.laporan-category {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.laporan-item p {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #334155;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.laporan-item-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.laporan-item-footer .actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.laporan-btn-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #f1f5f9;
+  color: var(--navy);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.laporan-btn-detail:hover {
+  background: var(--accent-soft);
+  border-color: #cbd5e1;
+}
+
+/* =====================================================================
+   SKELETON LOADING (ANIMASI DENYUT ABU-ABU)
+   ===================================================================== */
+.skeleton-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: var(--shadow-sm);
+  animation: skeletonPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.skeleton-bar {
+  background: #e2e8f0;
+  border-radius: 6px;
+}
+
+.skeleton-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.skeleton-badge {
+  width: 90px;
+  height: 22px;
+  border-radius: 999px;
+}
+
+.skeleton-id {
+  width: 70px;
+  height: 18px;
+}
+
+.skeleton-title {
+  width: 45%;
+  height: 22px;
+}
+
+.skeleton-meta {
+  width: 30%;
+  height: 14px;
+}
+
+.skeleton-desc-1 {
+  width: 100%;
+  height: 14px;
+}
+
+.skeleton-desc-2 {
+  width: 85%;
+  height: 14px;
+}
+
+.skeleton-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.skeleton-footer-left {
+  width: 110px;
+  height: 16px;
+}
+
+.skeleton-footer-right {
+  width: 95px;
+  height: 30px;
+  border-radius: 8px;
+}
+
+/* =====================================================================
+   EMPTY STATE (DENGAN TOMBOL RESET)
+   ===================================================================== */
+.laporan-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  background: #ffffff;
+  border: 2px dashed #cbd5e1;
+  border-radius: 18px;
+  margin: 12px 0;
+  animation: fadeIn 0.3s ease;
+}
+
+.laporan-empty-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  font-size: 26px;
+}
+
+.laporan-empty-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.laporan-empty-state h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.laporan-empty-state p {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 420px;
+  line-height: 1.5;
+}
+
+.btn-reset-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: var(--navy);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  border: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(22, 35, 80, 0.15);
+}
+
+.btn-reset-filter:hover {
+  background: var(--navy-light);
+  transform: translateY(-1px);
+}
+
+/* =====================================================================
+   ERROR STATE (DENGAN TOMBOL RETRY)
+   ===================================================================== */
+.laporan-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 44px 24px;
+  text-align: center;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 18px;
+  margin: 12px 0;
+  animation: fadeIn 0.3s ease;
+}
+
+.laporan-error-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #fee2e2;
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.laporan-error-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.laporan-error-state h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 800;
+  color: #991b1b;
+}
+
+.laporan-error-state p {
+  margin: 0 0 20px;
+  font-size: 13px;
+  color: #7f1d1d;
+  max-width: 440px;
+  line-height: 1.6;
+}
+
+.btn-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  border: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+.btn-retry:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+/* =====================================================================
+   TOAST NOTIFICATION (POPUP FEEDBACK)
+   ===================================================================== */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  max-width: min(90vw, 360px);
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: #1e293b;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  animation: toastSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast-info {
+  background: #0f172a;
+  border-left: 4px solid #38bdf8;
+}
+
+.toast-success {
+  background: #064e3b;
+  border-left: 4px solid #34d399;
+}
+
+.toast-error {
+  background: #7f1d1d;
+  border-left: 4px solid #f87171;
+}
+
+.toast-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toast-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.toast-message {
+  flex: 1;
+  line-height: 1.4;
+}
+
+@keyframes toastSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =====================================================================
+   POP-UP MODAL DETAIL LAPORAN
+   ===================================================================== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(12, 20, 44, 0.65);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-backdrop[hidden] {
+  display: none !important;
+}
+
+.report-modal {
+  position: relative;
+  width: min(100%, 520px);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.3);
+  animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: #f8fafc;
+  color: var(--muted);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.modal-close:hover {
+  background: var(--red-bg);
+  color: var(--red);
+  border-color: #fca5a5;
+}
+
+.modal-id {
+  display: inline-block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+
+.report-modal h2 {
+  margin: 0 36px 14px 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.3;
+}
+
+.modal-status-badge {
+  margin-bottom: 14px;
+}
+
+.modal-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.modal-info-card {
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.modal-info-card span {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.modal-info-card strong {
+  display: block;
+  font-size: 13px;
+  color: var(--navy);
+  overflow-wrap: anywhere;
+}
+
+.modal-chronology-box {
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+
+.modal-chronology-box h4 {
+  margin: 0 0 6px;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.modal-chronology-box p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #334155;
+  white-space: pre-wrap;
+}
+
+.report-modal > .secondary {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.report-modal > .secondary:hover {
+  background: #e2e8f0;
+}
+
+/* Notice Aside */
+.laporan-notice {
+  margin-top: 28px;
+  padding: 18px 20px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+}
+
+.laporan-notice strong {
+  display: block;
+  font-size: 14px;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+
+.laporan-notice p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #1e3a8a;
+}
+
+/* Navigasi Mobile */
+.laporan-mobile-nav {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .laporan-main {
+    padding: 24px 0 100px;
+  }
+  .laporan-stats {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .laporan-panel {
+    padding: 18px;
+  }
+  .laporan-panel-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .laporan-desktop-nav {
+    display: none;
+  }
+  .laporan-mobile-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line);
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  }
+  .laporan-mobile-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+  }
+  .laporan-mobile-nav a.active {
+    color: var(--navy);
+    background: var(--accent-soft);
+  }
+  .modal-info-grid {
+    grid-template-columns: 1fr;
+  }
+}

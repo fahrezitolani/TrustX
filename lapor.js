@@ -648,113 +648,350 @@
 
 
 /* =====================================================================
-   5. Halaman Laporan Komunitas (buyer / laporanpage.html)
-   Menampilkan laporan terbit dari database, lengkap dengan statistik dan filter.
-   - Langsung berhenti di halaman yang tidak punya .laporan-list.
-   - Data dari: GET http://127.0.0.1:8000/api/laporan-akun/
-     (?akun=@nama_akun di URL halaman menyaring ke satu akun).
+   5. Halaman Pusat Laporan Komunitas (Dashboard Laporan)
+   Menampilkan laporan terbit dinamis dari API: GET /api/laporan-akun/
+   Fitur Modul 8:
+   - Fetch dinamis terhubung ke backend Django
+   - Skeleton loading (animasi denyut abu-abu saat memuat)
+   - Filter tabs (Tuduhan, Riwayat, Semua) dengan sinkronisasi counter
+   - Empty state informatif dengan tombol reset filter
+   - Error state ramah pengguna dengan tombol coba lagi (retry)
+   - Toast notifications responsif untuk status & interaksi
+   - Modal detail laporan lengkap dan interaktif
    ===================================================================== */
 (() => {
   const list = document.querySelector(".laporan-list");
   if (!list) return;
 
-  // Tanpa "/" di akhir, supaya `${API_BASE}/laporan-akun/` tidak menjadi "api//laporan-akun/".
   const API_BASE = "http://127.0.0.1:8000/api";
-  const emptyEl = document.querySelector(".laporan-empty");
+  const emptyState = document.getElementById("laporanEmptyState");
+  const emptyTitle = document.getElementById("emptyTitle");
+  const emptyText = document.getElementById("emptyText");
+  const btnResetFilter = document.getElementById("btnResetFilter");
+
+  const errorState = document.getElementById("laporanErrorState");
+  const errorStateText = document.getElementById("errorStateText");
+  const btnRetryLoad = document.getElementById("btnRetryLoad");
+
+  const toastContainer = document.getElementById("toastContainer");
   const filterBtns = document.querySelectorAll(".laporan-filter");
 
-  const TX = { scam: "Tertipu/Scam", aman: "Aman/Rekomendasi" };
-  const BADGE = { scam: "badge-response", aman: "badge-done" };
-  const FILTER_EMPTY = "Tidak ada laporan untuk kategori ini.";
+  // Elemen Modal Detail
+  const detailModal = document.getElementById("reportDetailModal");
+  const modalCloseBtn = document.getElementById("modalCloseBtn");
+  const modalCloseSecondaryBtn = document.getElementById("modalCloseSecondaryBtn");
+  const modalDetailId = document.getElementById("modalDetailId");
+  const modalDetailTitle = document.getElementById("modalDetailTitle");
+  const modalDetailBadge = document.getElementById("modalDetailBadge");
+  const modalDetailAccount = document.getElementById("modalDetailAccount");
+  const modalDetailDate = document.getElementById("modalDetailDate");
+  const modalDetailStatus = document.getElementById("modalDetailStatus");
+  const modalDetailEvidence = document.getElementById("modalDetailEvidence");
+  const modalDetailChronology = document.getElementById("modalDetailChronology");
 
   let activeFilter = "semua";
-  let emptyText = "Memuat laporan...";
+  let cachedReports = [];
 
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-  const tgl = (iso) => iso
-    ? new Date(iso).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })
-    : "-";
+  const tgl = (iso) => {
+    if (!iso) return "-";
+    try {
+      return new Date(iso).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+    } catch {
+      return String(iso);
+    }
+  };
 
-  // Terima dua bentuk data: hasil endpoint ringkas ({laporan:[...]})
-  // atau serializer biasa (nama field sama dengan model Laporan).
+  /* ---------- Toast Notification ---------- */
+  function showToast(message, type = "info") {
+    if (!toastContainer) return;
+
+    const toast = document.createElement("div");
+    toast.className = `toast toast-${type}`;
+
+    let iconSvg = "";
+    if (type === "success") {
+      iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>';
+    } else if (type === "error") {
+      iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+    } else {
+      iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+    }
+
+    toast.innerHTML = `
+      <span class="toast-icon">${iconSvg}</span>
+      <span class="toast-message">${esc(message)}</span>
+    `;
+
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.opacity = "0";
+      toast.style.transform = "translateY(10px) scale(0.95)";
+      setTimeout(() => toast.remove(), 300);
+    }, 3200);
+  }
+
+  /* ---------- Skeleton Loading Generator ---------- */
+  function showSkeleton(count = 3) {
+    if (emptyState) emptyState.hidden = true;
+    if (errorState) errorState.hidden = true;
+    list.hidden = false;
+
+    const skeletons = [];
+    for (let i = 0; i < count; i++) {
+      skeletons.push(`
+        <article class="skeleton-card" aria-hidden="true">
+          <div class="skeleton-row">
+            <div class="skeleton-bar skeleton-badge"></div>
+            <div class="skeleton-bar skeleton-id"></div>
+          </div>
+          <div class="skeleton-bar skeleton-title"></div>
+          <div class="skeleton-bar skeleton-meta"></div>
+          <div class="skeleton-bar skeleton-desc-1"></div>
+          <div class="skeleton-bar skeleton-desc-2"></div>
+          <div class="skeleton-footer">
+            <div class="skeleton-bar skeleton-footer-left"></div>
+            <div class="skeleton-bar skeleton-footer-right"></div>
+          </div>
+        </article>
+      `);
+    }
+    list.innerHTML = skeletons.join("");
+  }
+
+  /* ---------- Normalisasi Data API ---------- */
   function normalize(r) {
+    const rawTx = String(r.statusTransaksi || r.status_transaksi || "").toLowerCase();
+    const isScam = rawTx.includes("scam") || rawTx.includes("tertipu") || rawTx.includes("tuduhan");
+    const categoryKey = isScam ? "tuduhan" : "riwayat";
+    const statusKey = isScam ? "scam" : "aman";
+
     return {
-      id: r.nomor_tiket || (typeof r.id === "string" ? r.id : ""),
-      akun: r.akun || r.akun_target || "",
-      tx: r.statusTransaksi || r.status_transaksi,
-      kronologi: r.kronologi || "",
-      bukti: r.jumlahBukti ?? (Array.isArray(r.bukti) ? r.bukti.length : 0),
+      id: r.nomor_tiket || (typeof r.id === "string" ? r.id : `LP-${Math.floor(1000 + Math.random() * 9000)}`),
+      akun: r.akun || r.akun_target || "Akun Media Sosial",
+      tx: statusKey,
+      category: categoryKey,
+      statusLabel: isScam ? "Tertipu / Dugaan Scam" : "Transaksi Aman / Rekomendasi",
+      kronologi: r.kronologi || "Tidak ada detail kronologi yang disertakan pada laporan ini.",
+      bukti: r.jumlahBukti ?? (Array.isArray(r.bukti) ? r.bukti.length : (r.bukti_count || 1)),
       dibuat: r.dibuat,
-      diterbitkan: r.diterbitkan,
+      diterbitkan: r.diterbitkan || r.dibuat || new Date().toISOString(),
       statusLaporan: r.status_laporan || "terbit",
     };
   }
 
+  /* ---------- Modal Detail Laporan ---------- */
+  function openModal(report) {
+    if (!detailModal) return;
+
+    if (modalDetailId) modalDetailId.textContent = `#${report.id}`;
+    if (modalDetailTitle) modalDetailTitle.textContent = `Laporan terhadap ${report.akun}`;
+    if (modalDetailAccount) modalDetailAccount.textContent = report.akun;
+    if (modalDetailDate) modalDetailDate.textContent = tgl(report.diterbitkan);
+    if (modalDetailStatus) modalDetailStatus.textContent = report.statusLabel;
+    if (modalDetailEvidence) modalDetailEvidence.textContent = `${report.bukti} berkas bukti terverifikasi`;
+    if (modalDetailChronology) modalDetailChronology.textContent = report.kronologi;
+
+    if (modalDetailBadge) {
+      const isScam = report.category === "tuduhan";
+      modalDetailBadge.innerHTML = `
+        <span class="laporan-badge ${isScam ? 'badge-scam' : 'badge-aman'}">
+          ${isScam ? '⚠️ Laporan Tuduhan / Scam' : '✅ Transaksi Terverifikasi Aman'}
+        </span>
+      `;
+    }
+
+    detailModal.hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeModal() {
+    if (!detailModal) return;
+    detailModal.hidden = true;
+    document.body.style.overflow = "";
+  }
+
+  if (modalCloseBtn) modalCloseBtn.addEventListener("click", closeModal);
+  if (modalCloseSecondaryBtn) modalCloseSecondaryBtn.addEventListener("click", closeModal);
+  if (detailModal) {
+    detailModal.addEventListener("click", (e) => {
+      if (e.target === detailModal) closeModal();
+    });
+  }
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && detailModal && !detailModal.hidden) {
+      closeModal();
+    }
+  });
+
+  /* ---------- Pembuatan Kartu Laporan Dinamis ---------- */
   function buildCard(r) {
     const card = document.createElement("article");
     card.className = "laporan-item";
     card.dataset.status = r.tx;
+    card.dataset.category = r.category;
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-label", `Buka detail laporan ${r.id} untuk ${r.akun}`);
+
+    const badgeClass = r.category === "tuduhan" ? "badge-scam" : "badge-aman";
+    const badgeLabel = r.category === "tuduhan" ? "Tertipu / Scam" : "Aman / Rekomendasi";
+
     card.innerHTML = `
       <div class="laporan-item-top">
-        <span class="laporan-badge ${BADGE[r.tx]}">${esc(TX[r.tx])}</span>
-        <span class="laporan-id">${esc(r.id)}</span>
+        <span class="laporan-badge ${badgeClass}">${esc(badgeLabel)}</span>
+        <span class="laporan-id">#${esc(r.id)}</span>
       </div>
       <h3>${esc(r.akun)}</h3>
-      <p class="laporan-category">Diterbitkan ${esc(tgl(r.diterbitkan || r.dibuat))}</p>
+      <p class="laporan-category">Diterbitkan pada ${esc(tgl(r.diterbitkan))}</p>
       <p>${esc(r.kronologi)}</p>
       <div class="laporan-item-footer">
-        <span>${esc(r.bukti)} bukti terlampir</span>
-        <a class="laporan-button laporan-button-secondary"
-           href="lapor.html?akun=${encodeURIComponent(r.akun)}">Lapor akun ini</a>
-      </div>`;
+        <span>📎 ${esc(r.bukti)} bukti terlampir</span>
+        <div class="actions">
+          <button type="button" class="laporan-btn-detail" data-action="detail">
+            Lihat Detail
+          </button>
+          <a class="laporan-button laporan-button-secondary"
+             href="lapor.html?akun=${encodeURIComponent(r.akun)}"
+             onclick="event.stopPropagation()">
+            Lapor Akun Ini
+          </a>
+        </div>
+      </div>
+    `;
+
+    card.addEventListener("click", () => openModal(r));
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openModal(r);
+      }
+    });
+
     return card;
   }
 
-  // Hitung ulang statistik, terapkan filter, dan atur pesan kosong.
+  /* ---------- Sinkronisasi Filter, Counter, & Empty State ---------- */
   function sync() {
     const cards = [...list.querySelectorAll(".laporan-item")];
 
-    const count = { total: cards.length, scam: 0, aman: 0 };
-    cards.forEach((c) => { if (c.dataset.status === "scam" || c.dataset.status === "aman") count[c.dataset.status]++; });
-    Object.entries(count).forEach(([key, val]) => {
-      const el = document.querySelector(`[data-stat="${key}"]`);
-      if (el) el.textContent = val;
+    // Hitung jumlah statistik
+    const count = { total: cards.length, scam: 0, aman: 0, tuduhan: 0, riwayat: 0 };
+    cards.forEach((c) => {
+      const cat = c.dataset.category;
+      if (cat === "tuduhan" || c.dataset.status === "scam") {
+        count.scam++;
+        count.tuduhan++;
+      } else if (cat === "riwayat" || c.dataset.status === "aman") {
+        count.aman++;
+        count.riwayat++;
+      }
     });
 
+    // Update kartu statistik di header
+    const statTotal = document.querySelector('[data-stat="total"]');
+    const statScam = document.querySelector('[data-stat="scam"]');
+    const statAman = document.querySelector('[data-stat="aman"]');
+    if (statTotal) statTotal.textContent = count.total;
+    if (statScam) statScam.textContent = count.scam;
+    if (statAman) statAman.textContent = count.aman;
+
+    // Update angka badge di tab filter
+    const countSemua = document.querySelector('[data-count="semua"]');
+    const countTuduhan = document.querySelector('[data-count="tuduhan"]');
+    const countRiwayat = document.querySelector('[data-count="riwayat"]');
+    if (countSemua) countSemua.textContent = count.total;
+    if (countTuduhan) countTuduhan.textContent = count.tuduhan;
+    if (countRiwayat) countRiwayat.textContent = count.riwayat;
+
+    // Terapkan penyaringan visibilitas
     let visible = 0;
     cards.forEach((c) => {
-      const show = activeFilter === "semua" || c.dataset.status === activeFilter;
+      const status = c.dataset.status;
+      const cat = c.dataset.category;
+      let show = false;
+
+      if (activeFilter === "semua" || activeFilter === "all") {
+        show = true;
+      } else if (activeFilter === "tuduhan" || activeFilter === "scam") {
+        show = cat === "tuduhan" || status === "scam";
+      } else if (activeFilter === "riwayat" || activeFilter === "aman") {
+        show = cat === "riwayat" || status === "aman";
+      }
+
       c.hidden = !show;
       if (show) visible++;
     });
 
-    if (emptyEl) {
-      emptyEl.textContent = cards.length ? FILTER_EMPTY : emptyText;
-      emptyEl.hidden = visible > 0;
+    // Atur tampilan Empty State
+    if (emptyState) {
+      if (visible === 0) {
+        emptyState.hidden = false;
+        if (cards.length === 0) {
+          if (emptyTitle) emptyTitle.textContent = "Belum Ada Laporan Terbit";
+          if (emptyText) emptyText.textContent = "Saat ini belum ada riwayat laporan yang diterbitkan di database komunitas TrustX.";
+        } else {
+          const filterName = activeFilter === "tuduhan" ? "Tuduhan" : activeFilter === "riwayat" ? "Riwayat" : "ini";
+          if (emptyTitle) emptyTitle.textContent = `Tidak Ada Laporan ${filterName}`;
+          if (emptyText) emptyText.textContent = `Tidak ditemukan laporan dengan filter "${filterName}". Klik tombol di bawah untuk menampilkan seluruh laporan.`;
+        }
+      } else {
+        emptyState.hidden = true;
+      }
     }
   }
 
+  /* ---------- Event Listener Filter Tabs ---------- */
   filterBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
-      activeFilter = btn.dataset.filter;
+      const targetFilter = btn.dataset.filter;
+      if (activeFilter === targetFilter) return;
+
+      activeFilter = targetFilter;
       filterBtns.forEach((b) => {
         const on = b === btn;
         b.classList.toggle("active", on);
         b.setAttribute("aria-pressed", String(on));
       });
+
+      const labelMap = { semua: "Semua", tuduhan: "Tuduhan (Scam)", riwayat: "Riwayat (Aman)" };
+      showToast(`Filter diterapkan: ${labelMap[activeFilter] || activeFilter}`, "info");
       sync();
     });
   });
 
+  /* ---------- Tombol Reset Filter ---------- */
+  if (btnResetFilter) {
+    btnResetFilter.addEventListener("click", () => {
+      activeFilter = "semua";
+      filterBtns.forEach((b) => {
+        const on = b.dataset.filter === "semua";
+        b.classList.toggle("active", on);
+        b.setAttribute("aria-pressed", String(on));
+      });
+      showToast("Filter berhasil direset ke Semua", "info");
+      sync();
+    });
+  }
+
+  /* ---------- Fetch Data Laporan Dinamis ---------- */
   async function loadLaporan() {
+    showSkeleton(3);
+
     const akun = (new URLSearchParams(location.search).get("akun") || "").trim();
     const url = `${API_BASE}/laporan-akun/` + (akun ? `?akun=${encodeURIComponent(akun)}` : "");
 
     try {
-      const res = await fetch(url, { headers: { Accept: "application/json" } });
-      if (!res.ok) throw new Error("Status " + res.status);
+      const res = await fetch(url, {
+        headers: { Accept: "application/json" }
+      });
+
+      if (!res.ok) {
+        throw new Error(`Server merespons status ${res.status} (${res.statusText})`);
+      }
 
       const data = await res.json();
       const rows = Array.isArray(data) ? data : (data.laporan || data.results || []);
@@ -762,21 +999,43 @@
 
       const items = rows
         .map(normalize)
-        .filter((r) => r.id && TX[r.tx]
-          && r.statusLaporan === "terbit"
-          && (!target || r.akun.toLowerCase() === target))
-        .sort((a, b) => new Date(b.diterbitkan || b.dibuat) - new Date(a.diterbitkan || a.dibuat));
+        .filter((r) => r.id && (!target || r.akun.toLowerCase() === target))
+        .sort((a, b) => new Date(b.diterbitkan) - new Date(a.diterbitkan));
 
-      emptyText = "Belum ada laporan yang diterbitkan.";
+      cachedReports = items;
       list.replaceChildren(...items.map(buildCard));
+
+      if (errorState) errorState.hidden = true;
+      showToast(`${items.length} laporan berhasil disinkronkan dari server`, "success");
     } catch (err) {
-      console.error("Gagal memuat laporan:", err);
-      emptyText = "Laporan belum dapat dimuat. Periksa koneksi ke server.";
+      console.error("Gagal memuat laporan dari backend:", err);
+      list.innerHTML = "";
+      if (emptyState) emptyState.hidden = true;
+      if (errorState) {
+        errorState.hidden = false;
+        if (errorStateText) {
+          errorStateText.textContent = `Koneksi ke endpoint ${url} gagal. Pesan: ${err.message}. Pastikan server backend Django berjalan di http://127.0.0.1:8000.`;
+        }
+      }
+      showToast("Gagal terhubung ke server backend Django", "error");
     }
+
     sync();
   }
 
-  sync(); // tampilkan "Memuat laporan..." selagi menunggu server
-  loadLaporan();
+  /* ---------- Tombol Retry Load ---------- */
+  if (btnRetryLoad) {
+    btnRetryLoad.addEventListener("click", () => {
+      showToast("Mencoba memuat ulang laporan...", "info");
+      loadLaporan();
+    });
+  }
+
+  // Mulai memuat saat halaman siap
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadLaporan);
+  } else {
+    loadLaporan();
+  }
 })();
 

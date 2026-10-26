@@ -7,6 +7,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
         <link rel="stylesheet" href="./seller.css">
+        <link rel="stylesheet" href="./report.css">
         <script src="./seller.js" defer></script>
         <!-- lapor.js: ikon navigasi (data-ic). sanggahan.js: kartu laporan + sanggahan. Masing-masing cukup sekali. -->
         <script src="./lapor.js" defer></script>
@@ -83,6 +84,36 @@
                     <!-- Kartu diisi otomatis oleh sanggahan.js (laporan + sanggahan dari database) -->
                     <div class="sr-report-list" aria-live="polite"></div>
 
+                    <!-- EMPTY STATE DENGAN TOMBOL RESET -->
+                    <div id="srEmptyState" class="laporan-empty-state" hidden>
+                        <div class="laporan-empty-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.3-4.3"></path>
+                            </svg>
+                        </div>
+                        <h3 id="srEmptyTitle">Tidak Ada Laporan Ditemukan</h3>
+                        <p id="srEmptyText">Belum ada laporan toko pada kategori ini atau filter tidak cocok.</p>
+                        <button type="button" id="btnResetFilterSeller" class="btn-reset-filter">
+                            Reset Filter (Tampilkan Semua)
+                        </button>
+                    </div>
+
+                    <!-- ERROR STATE DENGAN TOMBOL RETRY -->
+                    <div id="srErrorState" class="laporan-error-state" hidden>
+                        <div class="laporan-error-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 9v4m0 4h.01"></path>
+                                <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path>
+                            </svg>
+                        </div>
+                        <h3>Gagal Memuat Laporan Toko</h3>
+                        <p id="srErrorText">Tidak dapat terhubung ke server http://127.0.0.1:8000. Pastikan server Django aktif.</p>
+                        <button type="button" id="btnRetrySeller" class="btn-retry">
+                            Coba Lagi (Retry)
+                        </button>
+                    </div>
+
                     <p class="sr-empty" hidden>Memuat laporan...</p>
                 </section>
 
@@ -95,5 +126,8 @@
                 </aside>
             </main>
         </div>
+
+        <!-- TOAST NOTIFICATION CONTAINER -->
+        <div id="toastContainer" class="toast-container" aria-live="polite"></div>
     </body>
 </html>
