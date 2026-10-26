@@ -1031,6 +1031,50 @@
     });
   }
 
+  /* ---------- Web Notification API (Ikon Lonceng Notifikasi) ---------- */
+  const btnNotification = document.getElementById("btnNotification");
+  if (btnNotification) {
+    btnNotification.addEventListener("click", async () => {
+      if (!("Notification" in window)) {
+        showToast("Browser Anda tidak mendukung Web Notification API.", "info");
+        return;
+      }
+
+      if (Notification.permission === "granted") {
+        try {
+          new Notification("TrustX - Pusat Laporan", {
+            body: "Notifikasi aktif: Anda akan menerima pemberitahuan pembaruan status laporan.",
+            icon: "./assets/images/logo-trustx.svg"
+          });
+        } catch (e) {}
+        showToast("Notifikasi aktif: Anda akan menerima pemberitahuan pembaruan status laporan.", "success");
+        return;
+      }
+
+      if (Notification.permission === "denied") {
+        showToast("Notifikasi diblokir: Izinkan notifikasi di pengaturan browser untuk menerima pembaruan.", "error");
+        return;
+      }
+
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission === "granted") {
+          try {
+            new Notification("TrustX - Pusat Laporan", {
+              body: "Notifikasi aktif: Anda akan menerima pemberitahuan pembaruan status laporan.",
+              icon: "./assets/images/logo-trustx.svg"
+            });
+          } catch (e) {}
+          showToast("Notifikasi aktif: Anda akan menerima pemberitahuan pembaruan status laporan.", "success");
+        } else {
+          showToast("Notifikasi diblokir: Izinkan notifikasi di pengaturan browser untuk menerima pembaruan.", "error");
+        }
+      } catch (err) {
+        showToast("Gagal meminta izin notifikasi.", "error");
+      }
+    });
+  }
+
   // Mulai memuat saat halaman siap
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", loadLaporan);

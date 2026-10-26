@@ -995,3 +995,76 @@ body.laporan-page {
     grid-template-columns: 1fr;
   }
 }
+
+/* =====================================================================
+   PENYELARASAN UI/UX BUYER DENGAN SELLER (Modul 8)
+   ===================================================================== */
+.buyer-report-page .sr-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.buyer-report-page .sr-panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.buyer-report-page .sr-panel-heading .min-w-0 {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.buyer-report-page .sr-panel-heading .min-w-0 h2 {
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.buyer-report-page .sr-panel-heading .min-w-0 p {
+  white-space: normal;
+}
+
+.buyer-report-page .sr-panel-heading .laporan-button {
+  flex-shrink: 0;
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+@media (min-width: 960px) {
+  .buyer-report-page .sr-notice {
+    margin-top: 0;
+    align-self: start;
+  }
+}
+
+@media (max-width: 900px) {
+  .buyer-report-page .sr-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .buyer-report-page .sr-stats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .buyer-report-page .sr-panel-heading {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .buyer-report-page .sr-panel-heading .laporan-button {
+    width: 100%;
+    text-align: center;
+  }
+}

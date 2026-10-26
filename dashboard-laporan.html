@@ -4,155 +4,169 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Lihat laporan komunitas TrustX sebelum melakukan transaksi jual-beli.">
-    <title>Pusat Laporan Komunitas - TrustX</title>
+    <title>TrustX - Laporan Pembeli</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
-    <link rel="stylesheet" href="lapor.css">
-    <link rel="stylesheet" href="report.css">
+    <link rel="stylesheet" href="./seller.css">
+    <link rel="stylesheet" href="./report.css">
+    <script src="./seller.js" defer></script>
     <script src="./lapor.js" defer></script>
 </head>
 
-<body class="laporan-page buyer-page" data-page="laporan-buyer">
-    <!-- HEADER -->
-    <header class="laporan-header">
-        <a class="laporan-brand" href="index.html">
-            <img src="./assets/images/logo-trustx.svg" alt="TrustX Logo" width="42" height="42">
-            <span>
-                <strong>TrustX</strong>
-                <small>Cek Dulu</small>
-            </span>
-        </a>
+<body class="seller buyer-report-page" data-page="report">
+    <div class="wrap">
+        <!-- HEADER -->
+        <header class="top">
+            <a class="brand" href="./index.html">
+                <img src="./assets/images/logo-trustx.svg" alt="TrustX Logo" width="44" height="44">
+                <span>
+                    <strong>TrustX</strong>
+                    <small>Cek Dulu</small>
+                </span>
+            </a>
 
-        <nav class="laporan-desktop-nav" aria-label="Navigasi buyer">
-            <a href="index.html">Beranda</a>
-            <a href="dashboard-laporan.html" class="active" aria-current="page">Laporan</a>
-            <a href="profil.html">Profil</a>
-        </nav>
-    </header>
+            <!-- NAVIGASI UTAMA (Otomatis jadi bottom nav di mobile dan top nav di desktop) -->
+            <nav class="bnav" aria-label="Navigasi utama">
+                <a href="./index.html" data-ic="shield">Beranda</a>
+                <a href="./dashboard-laporan.html" aria-current="page" data-ic="doc">Laporan</a>
+                <a href="./profil.html" data-ic="user">Profil Pembeli</a>
+            </nav>
 
-    <!-- MAIN CONTENT -->
-    <main class="laporan-main">
-        <section class="laporan-intro">
-            <span class="laporan-eyebrow">PUSAT INFORMASI KOMUNITAS</span>
-            <h1>Pusat Laporan Komunitas</h1>
-            <p>
-                Pantau laporan dugaan penipuan serta riwayat transaksi aman yang dibagikan pengguna untuk perlindungan bersama.
-            </p>
-        </section>
+            <!-- AKSI TOP NAVBAR (Lonceng Notifikasi & Profil Avatar) -->
+            <div class="acts">
+                <button class="ib" id="btnNotification" type="button" aria-label="Notifikasi" data-ic="bell"></button>
+                <a class="ib dark" href="./profil.html" aria-label="Profil Pembeli" data-ic="user"></a>
+            </div>
+        </header>
 
-        <!-- STATISTIK RINGKASAN -->
-        <section class="laporan-stats" aria-label="Ringkasan laporan">
-            <article class="laporan-stat-card">
-                <span>Total Laporan</span>
-                <strong data-stat="total">0</strong>
-            </article>
-            <article class="laporan-stat-card">
-                <span>Tuduhan / Scam</span>
-                <strong data-stat="scam">0</strong>
-            </article>
-            <article class="laporan-stat-card">
-                <span>Riwayat / Aman</span>
-                <strong data-stat="aman">0</strong>
-            </article>
-        </section>
+        <!-- MAIN CONTENT (2 Kolom di Desktop: Kiri = Heading + Panel, Kanan = Stats + Notice) -->
+        <main>
+            <!-- 1. HEADING INTRO -->
+            <section class="sr-heading">
+                <span class="sr-eyebrow">PUSAT INFORMASI KOMUNITAS</span>
+                <h1>Pusat Laporan Komunitas</h1>
+                <p>
+                    Pantau laporan dugaan penipuan serta riwayat transaksi aman yang dibagikan pengguna untuk perlindungan bersama.
+                </p>
+            </section>
 
-        <!-- PANEL LAPORAN -->
-        <section class="laporan-panel">
-            <div class="laporan-panel-heading">
+            <!-- 2. STATISTIK RINGKASAN (3 KARTU KONSISTEN DENGAN SISI SELLER) -->
+            <section class="sr-stats" aria-label="Ringkasan laporan">
+                <article class="sr-stat">
+                    <span>Total Laporan</span>
+                    <strong data-stat="total">0</strong>
+                </article>
+                <article class="sr-stat">
+                    <span>Tuduhan / Scam</span>
+                    <strong data-stat="scam">0</strong>
+                </article>
+                <article class="sr-stat">
+                    <span>Riwayat / Aman</span>
+                    <strong data-stat="aman">0</strong>
+                </article>
+            </section>
+
+            <!-- 3. PANEL LAPORAN -->
+            <section class="sr-panel">
+                <div class="sr-panel-heading flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <div class="min-w-0 flex-1">
+                        <h2 class="text-xl font-bold text-slate-900">Daftar Laporan</h2>
+                        <p class="text-sm text-slate-500 mt-1">Pilih kategori laporan untuk meninjau detail peninjauan.</p>
+                    </div>
+                    <a class="w-auto flex-shrink-0 self-start sm:self-auto laporan-button laporan-button-primary btn btn-primary" href="lapor.html">
+                        + Buat Laporan
+                    </a>
+                </div>
+
+                <!-- TAB FILTER (Semua, Tuduhan, Riwayat) -->
+                <div class="laporan-filters" role="group" aria-label="Filter status laporan">
+                    <button type="button" class="laporan-filter active" data-filter="semua" aria-pressed="true">
+                        Semua <span class="filter-count" data-count="semua">0</span>
+                    </button>
+                    <button type="button" class="laporan-filter" data-filter="tuduhan" aria-pressed="false">
+                        Tuduhan <span class="filter-count" data-count="tuduhan">0</span>
+                    </button>
+                    <button type="button" class="laporan-filter" data-filter="riwayat" aria-pressed="false">
+                        Riwayat <span class="filter-count" data-count="riwayat">0</span>
+                    </button>
+                </div>
+
+                <!-- CONTAINER KARTU LAPORAN -->
+                <div class="laporan-list" aria-live="polite">
+                    <!-- Skeleton Loading Default -->
+                    <article class="skeleton-card" aria-hidden="true">
+                        <div class="skeleton-row">
+                            <div class="skeleton-bar skeleton-badge"></div>
+                            <div class="skeleton-bar skeleton-id"></div>
+                        </div>
+                        <div class="skeleton-bar skeleton-title"></div>
+                        <div class="skeleton-bar skeleton-meta"></div>
+                        <div class="skeleton-bar skeleton-desc-1"></div>
+                        <div class="skeleton-bar skeleton-desc-2"></div>
+                        <div class="skeleton-footer">
+                            <div class="skeleton-bar skeleton-footer-left"></div>
+                            <div class="skeleton-bar skeleton-footer-right"></div>
+                        </div>
+                    </article>
+                    <article class="skeleton-card" aria-hidden="true">
+                        <div class="skeleton-row">
+                            <div class="skeleton-bar skeleton-badge"></div>
+                            <div class="skeleton-bar skeleton-id"></div>
+                        </div>
+                        <div class="skeleton-bar skeleton-title"></div>
+                        <div class="skeleton-bar skeleton-meta"></div>
+                        <div class="skeleton-bar skeleton-desc-1"></div>
+                        <div class="skeleton-bar skeleton-desc-2"></div>
+                        <div class="skeleton-footer">
+                            <div class="skeleton-bar skeleton-footer-left"></div>
+                            <div class="skeleton-bar skeleton-footer-right"></div>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- EMPTY STATE DENGAN TOMBOL RESET -->
+                <div id="laporanEmptyState" class="laporan-empty-state" hidden>
+                    <div class="laporan-empty-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.3-4.3"></path>
+                        </svg>
+                    </div>
+                    <h3 id="emptyTitle">Tidak Ada Laporan Ditemukan</h3>
+                    <p id="emptyText">Belum ada data laporan pada kategori ini atau filter yang dipilih tidak memiliki hasil.</p>
+                    <button type="button" id="btnResetFilter" class="btn-reset-filter">
+                        Reset Filter (Tampilkan Semua)
+                    </button>
+                </div>
+
+                <!-- ERROR STATE DENGAN TOMBOL RETRY -->
+                <div id="laporanErrorState" class="laporan-error-state" hidden>
+                    <div class="laporan-error-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 9v4m0 4h.01"></path>
+                            <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path>
+                        </svg>
+                    </div>
+                    <h3>Gagal Memuat Data Laporan</h3>
+                    <p id="errorStateText">Tidak dapat terhubung ke server http://127.0.0.1:8000. Pastikan server Django aktif dan endpoint API dapat diakses.</p>
+                    <button type="button" id="btnRetryLoad" class="btn-retry">
+                        Coba Lagi (Retry)
+                    </button>
+                </div>
+            </section>
+
+            <!-- 4. EDUKASI / NOTICE CARD (Konsisten dengan Hak Klarifikasi Seller) -->
+            <aside class="sr-notice">
+                <span data-ic="shieldcheck"></span>
                 <div>
-                    <h2>Daftar Laporan Terkini</h2>
-                    <p>Pilih kategori laporan untuk meninjau detail peninjauan.</p>
+                    <strong>Gunakan Informasi Secara Bijak</strong>
+                    <p>
+                        Laporan komunitas merupakan bahan pertimbangan dan peringatan dini. Tetap verifikasi identitas akun dan gunakan rekening bersama (rekber) resmi sebelum bertransaksi.
+                    </p>
                 </div>
-                <a class="laporan-button laporan-button-primary" href="lapor.html">
-                    + Buat Laporan
-                </a>
-            </div>
-
-            <!-- TAB FILTER (Tuduhan, Riwayat, Semua) -->
-            <div class="laporan-filters" role="group" aria-label="Filter status laporan">
-                <button type="button" class="laporan-filter active" data-filter="semua" aria-pressed="true">
-                    Semua <span class="filter-count" data-count="semua">0</span>
-                </button>
-                <button type="button" class="laporan-filter" data-filter="tuduhan" aria-pressed="false">
-                    Tuduhan <span class="filter-count" data-count="tuduhan">0</span>
-                </button>
-                <button type="button" class="laporan-filter" data-filter="riwayat" aria-pressed="false">
-                    Riwayat <span class="filter-count" data-count="riwayat">0</span>
-                </button>
-            </div>
-
-            <!-- CONTAINER KARTU LAPORAN -->
-            <div class="laporan-list" aria-live="polite">
-                <!-- Skeleton Loading Default -->
-                <article class="skeleton-card" aria-hidden="true">
-                    <div class="skeleton-row">
-                        <div class="skeleton-bar skeleton-badge"></div>
-                        <div class="skeleton-bar skeleton-id"></div>
-                    </div>
-                    <div class="skeleton-bar skeleton-title"></div>
-                    <div class="skeleton-bar skeleton-meta"></div>
-                    <div class="skeleton-bar skeleton-desc-1"></div>
-                    <div class="skeleton-bar skeleton-desc-2"></div>
-                    <div class="skeleton-footer">
-                        <div class="skeleton-bar skeleton-footer-left"></div>
-                        <div class="skeleton-bar skeleton-footer-right"></div>
-                    </div>
-                </article>
-                <article class="skeleton-card" aria-hidden="true">
-                    <div class="skeleton-row">
-                        <div class="skeleton-bar skeleton-badge"></div>
-                        <div class="skeleton-bar skeleton-id"></div>
-                    </div>
-                    <div class="skeleton-bar skeleton-title"></div>
-                    <div class="skeleton-bar skeleton-meta"></div>
-                    <div class="skeleton-bar skeleton-desc-1"></div>
-                    <div class="skeleton-bar skeleton-desc-2"></div>
-                    <div class="skeleton-footer">
-                        <div class="skeleton-bar skeleton-footer-left"></div>
-                        <div class="skeleton-bar skeleton-footer-right"></div>
-                    </div>
-                </article>
-            </div>
-
-            <!-- EMPTY STATE DENGAN TOMBOL RESET -->
-            <div id="laporanEmptyState" class="laporan-empty-state" hidden>
-                <div class="laporan-empty-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.3-4.3"></path>
-                    </svg>
-                </div>
-                <h3 id="emptyTitle">Tidak Ada Laporan Ditemukan</h3>
-                <p id="emptyText">Belum ada data laporan pada kategori ini atau filter yang dipilih tidak memiliki hasil.</p>
-                <button type="button" id="btnResetFilter" class="btn-reset-filter">
-                    Reset Filter (Tampilkan Semua)
-                </button>
-            </div>
-
-            <!-- ERROR STATE DENGAN TOMBOL RETRY -->
-            <div id="laporanErrorState" class="laporan-error-state" hidden>
-                <div class="laporan-error-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 9v4m0 4h.01"></path>
-                        <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path>
-                    </svg>
-                </div>
-                <h3>Gagal Memuat Data Laporan</h3>
-                <p id="errorStateText">Tidak dapat terhubung ke server http://127.0.0.1:8000. Pastikan server Django aktif dan endpoint API dapat diakses.</p>
-                <button type="button" id="btnRetryLoad" class="btn-retry">
-                    Coba Lagi (Retry)
-                </button>
-            </div>
-        </section>
-
-        <!-- NOTICE -->
-        <aside class="laporan-notice">
-            <strong>Gunakan Informasi Secara Bijak</strong>
-            <p>
-                Laporan komunitas merupakan bahan pertimbangan dan peringatan dini. Tetap verifikasi identitas akun dan gunakan rekening bersama (rekber) resmi sebelum bertransaksi.
-            </p>
-        </aside>
-    </main>
+            </aside>
+        </main>
+    </div>
 
     <!-- MODAL DETAIL LAPORAN -->
     <div id="reportDetailModal" class="modal-backdrop" hidden>
@@ -195,12 +209,5 @@
 
     <!-- TOAST NOTIFICATION CONTAINER -->
     <div id="toastContainer" class="toast-container" aria-live="polite"></div>
-
-    <!-- NAVIGASI MOBILE -->
-    <nav class="laporan-mobile-nav" aria-label="Navigasi buyer">
-        <a href="index.html" data-ic="shield">Beranda</a>
-        <a href="dashboard-laporan.html" class="active" aria-current="page" data-ic="doc">Laporan</a>
-        <a href="profil.html" data-ic="user">Profil</a>
-    </nav>
 </body>
 </html>

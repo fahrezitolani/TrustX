@@ -28,10 +28,10 @@
                 <nav class="bnav" aria-label="Navigasi utama">
                     <a href="./index-seller.html" data-ic="shield">Beranda</a>
                     <a href="./dashboard-laporanseller.html" aria-current="page" data-ic="doc">Laporan</a>
-                    <a href="./detail-profile-seller.html?q=@seller_gadget_murah" data-ic="store">Akun Toko</a>
+                    <a href="./detail-profile-seller.html?q=@buyer_gadget" data-ic="store">Profil Penjual</a>
                 </nav>
                 <div class="acts">
-                    <button class="ib" type="button" aria-label="Notifikasi" data-ic="bell"></button>
+                    <button class="ib" id="btnNotificationSeller" type="button" aria-label="Notifikasi" data-ic="bell"></button>
                     <a class="ib dark" href="./profil.html" aria-label="Profil" data-ic="user"></a>
                 </div>
             </header>
@@ -125,6 +125,45 @@
                     </div>
                 </aside>
             </main>
+        </div>
+
+        <!-- MODAL DETAIL LAPORAN TOKO -->
+        <div id="reportDetailModal" class="modal-backdrop" hidden>
+            <div class="report-modal" role="dialog" aria-modal="true" aria-labelledby="modalDetailTitle">
+                <button type="button" class="modal-close" id="modalCloseBtn" aria-label="Tutup Detail">&times;</button>
+                <span class="modal-id" id="modalDetailId">#LP-0000</span>
+                <h2 id="modalDetailTitle">Detail Laporan Akun</h2>
+                
+                <div id="modalDetailBadge" class="modal-status-badge"></div>
+
+                <div class="modal-info-grid">
+                    <div class="modal-info-card">
+                        <span>Akun Dilaporkan</span>
+                        <strong id="modalDetailAccount">-</strong>
+                    </div>
+                    <div class="modal-info-card">
+                        <span>Tanggal Terbit</span>
+                        <strong id="modalDetailDate">-</strong>
+                    </div>
+                    <div class="modal-info-card">
+                        <span>Kategori Status</span>
+                        <strong id="modalDetailStatus">-</strong>
+                    </div>
+                    <div class="modal-info-card">
+                        <span>Bukti Terlampir</span>
+                        <strong id="modalDetailEvidence">0 bukti</strong>
+                    </div>
+                </div>
+
+                <div class="modal-chronology-box">
+                    <h4>Kronologi Transaksi</h4>
+                    <p id="modalDetailChronology">-</p>
+                </div>
+
+                <button type="button" class="secondary" id="modalCloseSecondaryBtn">
+                    Tutup Detail Laporan
+                </button>
+            </div>
         </div>
 
         <!-- TOAST NOTIFICATION CONTAINER -->

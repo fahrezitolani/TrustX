@@ -8,12 +8,13 @@
 (() => { // SANGGAHAN_IIFE: dibungkus agar tidak bentrok dengan variabel global lain
 
 const API_BASE = "http://127.0.0.1:8000/api";
-const AKUN_SAYA = "@seller_gadget_murah"; // TODO: ganti dengan akun seller yang login
+// Sesi aktif seller: @buyer_gadget (atau dari query param ?akun=)
+const AKUN_SAYA = new URLSearchParams(location.search).get("akun") || "@buyer_gadget";
 const AJUKAN_SANGGAHAN = "sanggahan.html";
 
 // Pemetaan status sanggahan di database -> filter, badge, dan label di dashboard
 const STATUS = {
-  pending:   { filter: "response", badge: "response", label: "Menunggu Ditinjau" },
+  pending:   { filter: "review",   badge: "review",   label: "Menunggu Ditinjau" },
   reviewing: { filter: "review",   badge: "review",   label: "Sedang Ditinjau" },
   accepted:  { filter: "done",     badge: "done",     label: "Diterima" },
   rejected:  { filter: "done",     badge: "done",     label: "Ditolak" },
@@ -27,7 +28,7 @@ const ALASAN = {
   "lainnya": "Alasan lainnya",
 };
 
-const TX = { scam: "Tertipu/Scam", aman: "Aman/Rekomendasi" };
+const TX = { scam: "Tertipu / Scam", aman: "Aman / Rekomendasi" };
 
 // Escape teks dari pengguna supaya tidak bisa menyisipkan HTML/script
 function esc(s) {
@@ -37,9 +38,12 @@ function esc(s) {
 }
 
 function tanggal(iso) {
-  return iso
-    ? new Date(iso).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })
-    : "-";
+  if (!iso) return "-";
+  try {
+    return new Date(iso).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+  } catch {
+    return String(iso);
+  }
 }
 
 // Tampilan 1: isi LAPORAN
@@ -49,15 +53,19 @@ function laporanView(l, id) {
       <div class="sr-report-top"><span class="sr-id">${esc(id)}</span></div>
       <p class="sr-meta">Data laporan ini tidak ditemukan.</p>`;
   }
+  const isScam = l.statusTransaksi === "scam" || /scam|tertipu|tuduhan/i.test(l.statusTransaksi);
+  const badgeClass = isScam ? "response" : "done";
+  const badgeLabel = isScam ? "Tertipu / Scam" : "Aman / Rekomendasi";
+
   return `
     <div class="sr-report-top">
-      <span class="sr-badge">${esc(TX[l.statusTransaksi] || l.statusTransaksi)}</span>
-      <span class="sr-id">${esc(l.nomor_tiket)}</span>
+      <span class="sr-badge ${badgeClass}">${esc(badgeLabel)}</span>
+      <span class="sr-id">#${esc(l.nomor_tiket)}</span>
     </div>
     <h3>${esc(l.akun)}</h3>
-    <p class="sr-meta">Diterbitkan ${tanggal(l.diterbitkan)}</p>
+    <p class="sr-meta">Diterbitkan pada ${tanggal(l.diterbitkan)}</p>
     <p>${esc(l.kronologi)}</p>
-    <p class="sr-meta">${esc(l.jumlahBukti)} bukti terlampir</p>`;
+    <p class="sr-meta">📎 ${esc(l.jumlahBukti ?? 0)} bukti terlampir</p>`;
 }
 
 // Tampilan 2: isi SANGGAHAN
@@ -71,7 +79,7 @@ function sanggahanView(sg) {
   return `
     <div class="sr-report-top">
       <span class="sr-badge ${st.badge}">${esc(st.label)}</span>
-      <span class="sr-id">${esc(sg.report_id)}</span>
+      <span class="sr-id">#${esc(sg.report_id)}</span>
     </div>
     <h3>Sanggahan: ${esc(alasan)}</h3>
     <p class="sr-meta">Toko: ${esc(sg.store_name)} · ${tanggal(sg.created_at)}</p>
@@ -93,46 +101,138 @@ function sanggahanView(sg) {
     </div>` : ""}`;
 }
 
+// Modal Detail Laporan Akun
+function openReportDetailModal(l, sg) {
+  const modal = document.getElementById("reportDetailModal");
+  if (!modal) return;
+
+  const id = l ? l.nomor_tiket : (sg ? sg.report_id : "-");
+  const akun = l ? l.akun : (sg ? sg.store_name : AKUN_SAYA);
+  const diterbitkan = l ? l.diterbitkan : (sg ? sg.created_at : null);
+  const kronologi = l ? l.kronologi : (sg ? sg.story : "-");
+  const bukti = l ? (l.jumlahBukti ?? 0) : (sg && sg.bukti ? sg.bukti.length : 0);
+  const isScam = l ? (l.statusTransaksi === "scam" || /scam|tertipu|tuduhan/i.test(l.statusTransaksi)) : true;
+
+  const mId = document.getElementById("modalDetailId");
+  const mTitle = document.getElementById("modalDetailTitle");
+  const mAccount = document.getElementById("modalDetailAccount");
+  const mDate = document.getElementById("modalDetailDate");
+  const mStatus = document.getElementById("modalDetailStatus");
+  const mEvidence = document.getElementById("modalDetailEvidence");
+  const mChronology = document.getElementById("modalDetailChronology");
+  const mBadge = document.getElementById("modalDetailBadge");
+
+  if (mId) mId.textContent = `#${id}`;
+  if (mTitle) mTitle.textContent = `Detail Laporan ${akun}`;
+  if (mAccount) mAccount.textContent = akun;
+  if (mDate) mDate.textContent = tanggal(diterbitkan);
+  if (mStatus) mStatus.textContent = isScam ? "Tertipu / Dugaan Scam" : "Transaksi Aman / Rekomendasi";
+  if (mEvidence) mEvidence.textContent = `${bukti} bukti terlampir`;
+  if (mChronology) mChronology.textContent = kronologi;
+
+  if (mBadge) {
+    mBadge.innerHTML = `
+      <span class="laporan-badge ${isScam ? "badge-scam" : "badge-aman"}">
+        ${isScam ? "Tertipu / Scam" : "Aman / Rekomendasi"}
+      </span>
+    `;
+  }
+
+  modal.hidden = false;
+  document.body.classList.add("modal-open");
+}
+
+function initDetailModal() {
+  const modal = document.getElementById("reportDetailModal");
+  if (!modal) return;
+  const closeBtn = document.getElementById("modalCloseBtn");
+  const closeSecBtn = document.getElementById("modalCloseSecondaryBtn");
+
+  const closeModal = () => {
+    modal.hidden = true;
+    document.body.classList.remove("modal-open");
+  };
+
+  if (closeBtn) closeBtn.addEventListener("click", closeModal);
+  if (closeSecBtn) closeSecBtn.addEventListener("click", closeModal);
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !modal.hidden) closeModal();
+  });
+}
+
 function buildCard(l, sg) {
   const id = l ? l.nomor_tiket : sg.report_id;
-  const filter = sg ? (STATUS[sg.status] || STATUS.pending).filter : "none";
+  const isPendingResponse = !sg && l && (l.statusTransaksi === "scam" || /scam|tertipu|tuduhan/i.test(l.statusTransaksi));
+  const filter = sg ? (STATUS[sg.status] || STATUS.pending).filter : (isPendingResponse ? "response" : "all");
 
   const card = document.createElement("article");
   card.className = "sr-report";
   card.dataset.status = filter;
   card.dataset.dynamic = "true";
 
+  const targetToko = (l && l.akun) || (sg && sg.store_name) || AKUN_SAYA;
+
   let aksi = "";
   if (sg) {
-    aksi = `<button type="button" class="sr-btn sr-btn-secondary" aria-expanded="false">Lihat sanggahan</button>`;
-  } else if (l && l.statusTransaksi === "scam") {
-    aksi = `<a class="sr-btn sr-btn-secondary" href="${AJUKAN_SANGGAHAN}?id=${encodeURIComponent(id)}">Ajukan sanggahan</a>`;
+    aksi = `
+      <button type="button" class="sr-btn sr-btn-secondary btn-detail-report">Lihat Detail</button>
+      <button type="button" class="sr-btn sr-btn-secondary btn-toggle-sanggahan" aria-expanded="false">Lihat sanggahan</button>
+    `;
+  } else {
+    aksi = `
+      <button type="button" class="sr-btn sr-btn-secondary btn-detail-report">Lihat Detail</button>
+      <a class="sr-btn sr-btn-primary" href="${AJUKAN_SANGGAHAN}?id=${encodeURIComponent(id)}&toko=${encodeURIComponent(targetToko)}">Ajukan Sanggahan</a>
+    `;
   }
 
-  // Urutan: LAPORAN dulu, lalu tombol, lalu SANGGAHAN (muncul di bawah laporan saat diklik)
   card.innerHTML = `
     <div class="sr-view sr-view-laporan">${laporanView(l, id)}</div>
     <div class="sr-actions">${aksi}</div>
     <div class="sr-view sr-view-sanggahan" hidden
          style="margin-top:12px;padding-top:12px;border-top:1px dashed #cbd5e1">${sg ? sanggahanView(sg) : ""}</div>`;
 
-  const btn = card.querySelector("button");
-  if (btn) {
-    const vSanggahan = card.querySelector(".sr-view-sanggahan");
-    btn.addEventListener("click", () => {
-      const buka = vSanggahan.hidden; // laporan tetap tampil, hanya sanggahan yang dibuka/ditutup
-      vSanggahan.hidden = !buka;
-      btn.setAttribute("aria-expanded", String(buka));
-      btn.textContent = buka ? "Sembunyikan sanggahan" : "Lihat sanggahan";
+  const btnToggle = card.querySelector(".btn-toggle-sanggahan");
+  if (btnToggle) {
+    btnToggle.addEventListener("click", () => {
+      const view = card.querySelector(".sr-view-sanggahan");
+      if (!view) return;
+      const buka = view.hidden;
+      view.hidden = !buka;
+      btnToggle.setAttribute("aria-expanded", String(buka));
+      btnToggle.textContent = buka ? "Sembunyikan sanggahan" : "Lihat sanggahan";
     });
   }
+
+  const btnDetail = card.querySelector(".btn-detail-report");
+  if (btnDetail) {
+    btnDetail.addEventListener("click", () => {
+      openReportDetailModal(l, sg);
+    });
+  }
+
   return card;
 }
 
-// Angka ringkasan dihitung dari status sanggahan
-function updateStats(items, total) {
-  const c = { total: total ?? items.length, response: 0, review: 0, done: 0 };
-  items.forEach(i => { c[(STATUS[i.status] || STATUS.pending).filter]++; });
+// Angka ringkasan dihitung dari status laporan dan sanggahan
+function updateStats(entries) {
+  const c = { total: entries.length, response: 0, review: 0, done: 0 };
+  entries.forEach(({ l, sg }) => {
+    if (sg) {
+      const st = (STATUS[sg.status] || STATUS.pending).filter;
+      if (c[st] !== undefined) c[st]++;
+    } else if (l) {
+      const isScam = l.statusTransaksi === "scam" || /scam|tertipu|tuduhan/i.test(l.statusTransaksi);
+      if (isScam) {
+        c.response++;
+      }
+    }
+  });
+
   Object.entries(c).forEach(([key, val]) => {
     const el = document.querySelector(`[data-stat="${key}"]`);
     if (el) el.textContent = val;
@@ -141,7 +241,6 @@ function updateStats(items, total) {
 
 // Filter dihitung ulang dari kartu yang ada sekarang (termasuk yang dimuat dari server)
 let activeFilter = "all";
-let emptyText = "Memuat laporan...";
 
 function showToast(message, type = "info") {
   const container = document.getElementById("toastContainer");
@@ -153,7 +252,7 @@ function showToast(message, type = "info") {
   if (type === "success") {
     iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>';
   } else if (type === "error") {
-    iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+    iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="16"/></svg>';
   }
 
   toast.innerHTML = `<span class="toast-icon">${iconSvg}</span><span class="toast-message">${esc(message)}</span>`;
@@ -305,27 +404,19 @@ async function loadSanggahan() {
 
   const dLap = rLap.status === "fulfilled" ? rLap.value : [];
   const dSg = rSg.status === "fulfilled" ? rSg.value : [];
-  const laporan = (Array.isArray(dLap) ? dLap : dLap.laporan || []).filter(l => l.nomor_tiket);
+  let laporan = (Array.isArray(dLap) ? dLap : dLap.laporan || []).filter(l => l.nomor_tiket);
   const sanggahan = Array.isArray(dSg) ? dSg : (dSg.results || []);
 
-  if (rSg.status === "fulfilled") updateStats(sanggahan, dSg.count);
+  // Fallback: Jika filter per akun belum ada, cari di semua laporan
+  if (laporan.length === 0) {
+    try {
+      const allLapRes = await getJSON(`${API_BASE}/laporan-akun/`);
+      const allRows = Array.isArray(allLapRes) ? allLapRes : (allLapRes.laporan || []);
+      laporan = allRows.filter(l => String(l.akun || l.akun_target || "").toLowerCase() === AKUN_SAYA.toLowerCase());
+    } catch (e) {}
+  }
 
   const ada = new Set(laporan.map(l => String(l.nomor_tiket).toLowerCase()));
-  const toko = [...new Set(sanggahan
-    .filter(sg => sg.store_name && !ada.has(String(sg.report_id).toLowerCase()))
-    .map(sg => sg.store_name))];
-  const tambahan = await Promise.allSettled(
-    toko.map(t => getJSON(`${API_BASE}/laporan-akun/?akun=${encodeURIComponent(t)}`))
-  );
-  tambahan.forEach(r => {
-    if (r.status !== "fulfilled") return;
-    const rows = Array.isArray(r.value) ? r.value : (r.value.laporan || []);
-    rows.forEach(l => {
-      const key = String(l.nomor_tiket || "").toLowerCase();
-      if (key && !ada.has(key)) { laporan.push(l); ada.add(key); }
-    });
-  });
-
   const sgPerLaporan = new Map();
   sanggahan.forEach(sg => {
     const key = String(sg.report_id).toLowerCase();
@@ -339,7 +430,11 @@ async function loadSanggahan() {
 
   const dipakai = new Set(laporan.map(l => String(l.nomor_tiket).toLowerCase()));
   sgPerLaporan.forEach((sg, key) => {
-    if (!dipakai.has(key)) entries.push({ l: null, sg, waktu: new Date(sg.created_at || 0) });
+    if (!dipakai.has(key)) {
+      if (!sg.store_name || sg.store_name.toLowerCase() === AKUN_SAYA.toLowerCase()) {
+        entries.push({ l: null, sg, waktu: new Date(sg.created_at || 0) });
+      }
+    }
   });
 
   entries.sort((a, b) => b.waktu - a.waktu);
@@ -347,12 +442,70 @@ async function loadSanggahan() {
   list.innerHTML = "";
   entries.forEach(e => list.append(buildCard(e.l, e.sg)));
 
-  showToast(`${entries.length} laporan toko berhasil disinkronkan`, "success");
+  updateStats(entries);
+
+  // Periksa apakah ada notifikasi toast dari pengiriman sanggahan
+  try {
+    const pendingToast = sessionStorage.getItem("sanggahan_success_toast");
+    if (pendingToast) {
+      showToast(pendingToast, "success");
+      sessionStorage.removeItem("sanggahan_success_toast");
+    } else {
+      showToast(`${entries.length} laporan toko berhasil disinkronkan`, "success");
+    }
+  } catch (e) {
+    showToast(`${entries.length} laporan toko berhasil disinkronkan`, "success");
+  }
+
   applyFilter();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   initFilters();
+  initDetailModal();
   loadSanggahan();
+
+  const btnNotificationSeller = document.getElementById("btnNotificationSeller");
+  if (btnNotificationSeller) {
+    btnNotificationSeller.addEventListener("click", async () => {
+      if (!("Notification" in window)) {
+        showToast("Browser Anda tidak mendukung Web Notification API.", "info");
+        return;
+      }
+
+      if (Notification.permission === "granted") {
+        try {
+          new Notification("TrustX - Laporan Penjual", {
+            body: "Notifikasi aktif: Anda akan menerima pemberitahuan pembaruan status laporan.",
+            icon: "./assets/images/logo-trustx.svg"
+          });
+        } catch (e) {}
+        showToast("Notifikasi aktif: Anda akan menerima pemberitahuan pembaruan status laporan.", "success");
+        return;
+      }
+
+      if (Notification.permission === "denied") {
+        showToast("Notifikasi diblokir: Izinkan notifikasi di pengaturan browser untuk menerima pembaruan.", "error");
+        return;
+      }
+
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission === "granted") {
+          try {
+            new Notification("TrustX - Laporan Penjual", {
+              body: "Notifikasi aktif: Anda akan menerima pemberitahuan pembaruan status laporan.",
+              icon: "./assets/images/logo-trustx.svg"
+            });
+          } catch (e) {}
+          showToast("Notifikasi aktif: Anda akan menerima pemberitahuan pembaruan status laporan.", "success");
+        } else {
+          showToast("Notifikasi diblokir: Izinkan notifikasi di pengaturan browser untuk menerima pembaruan.", "error");
+        }
+      } catch (err) {
+        showToast("Gagal meminta izin notifikasi.", "error");
+      }
+    });
+  }
 });
 })();

@@ -43,7 +43,7 @@
 
   /* ---------- Data demo ---------- */
   // Akun toko milik penjual yang sedang login (ganti dengan data sesi nyata).
-  const AKUN_SAYA = "@seller_gadget_murah";
+  const AKUN_SAYA = new URLSearchParams(location.search).get("akun") || "@buyer_gadget";
   const DETAIL = "detail-profile-seller.html";
   const PENINJAUAN = "dashboard-laporanseller.html";
 
@@ -57,6 +57,16 @@
   ];
 
   const ACCOUNTS = {
+    "@buyer_gadget": {
+      name: "@buyer_gadget", wa: "0812-3456-7890", bank: "BCA", rek: "5210-xxxx a/n B*** S***",
+      risk: "high", rating: 1.8, total: 1, success: 12,
+      warning: 'Akun ini memiliki laporan komunitas aktif (#LP-8790) yang memerlukan tanggapan sanggahan.',
+      reports: [
+        { id: "LP-8790", ts: 1, when: "3 Hari Lalu",
+          text: "Klaim barang tidak sesuai deskripsi. Bukti unboxing & resi telah diunggah.",
+          file: "Bukti_Unboxing.jpg", verified: false, sanggah: null }
+      ]
+    },
     "@seller_gadget_murah": {
       name: "@seller_gadget_murah", wa: "0812-3456-7890", bank: "BCA", rek: "5210-xxxx a/n B*** S***",
       risk: "high", rating: 1.8, total: 8, success: 1,
