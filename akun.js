@@ -52,7 +52,9 @@
 
     async daftar(data) {
       const r = await api("/daftar/", { method: "POST", json: data });
-      if (r.ok) simpanSesi(r.data);
+      // Akun baru belum lolos OTP: simpan profilnya saja (dipakai verifikasi-otp.html),
+      // token baru disimpan setelah kode OTP terverifikasi.
+      if (r.ok && r.data.user) store.set(USER, r.data.user);
       return r;
     },
 
