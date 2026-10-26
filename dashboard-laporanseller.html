@@ -6,15 +6,16 @@
         <meta name="description" content="Beranda penjual TrustX: cek reputasi akun, ajukan sanggahan, dan pantau feed laporan komunitas.">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
-        <link rel="stylesheet" href="seller.css">
-        <script src="lapor.js" defer></script>
+        <link rel="stylesheet" href="./seller.css">
+        <script src="./seller.js" defer></script>
+        <script src="./reports.js" defer></script>
 
         <title>TrustX - Beranda Penjual</title>
     </head>
-    <body class="seller" data-page="home">
+    <body class="seller" data-page="report">
         <div class="wrap">
             <header class="top">
-                <a class="brand" href="index-seller.html">
+                <a class="brand" href="./index-seller.html">
                     <img src="./assets/images/logo-trustx.svg" alt="" width="44" height="44">
                     <span>
                         <strong>TrustX</strong>
@@ -22,13 +23,13 @@
                     </span>
                 </a>
                 <nav class="bnav" aria-label="Navigasi utama">
-                    <a href="index-seller.html" aria-current="page" data-ic="shield">Beranda</a>
-                    <a href="dashboard-laporanseller.html" data-ic="doc">Laporan</a>
-                    <a href="detail-profile-seller.html?q=@seller_gadget_murah" data-ic="store">Akun Toko</a>
+                    <a href="./index-seller.html" aria-current="page" data-ic="shield">Beranda</a>
+                    <a href="./dashboard-laporanseller.html" data-ic="doc">Laporan</a>
+                    <a href="./detail-profile-seller.html?q=@seller_gadget_murah" data-ic="store">Akun Toko</a>
                 </nav>
                 <div class="acts">
                     <button class="ib" type="button" aria-label="Notifikasi" data-ic="bell"></button>
-                    <a class="ib dark" href="profil.html" aria-label="Profil" data-ic="user"></a>
+                    <a class="ib dark" href="./profil.html" aria-label="Profil" data-ic="user"></a>
                 </div>
             </header>
     <main>
@@ -38,25 +39,26 @@
         <p>Pantau laporan komunitas, pelajari hasil peninjauan, dan sampaikan klarifikasi dengan bukti yang relevan.</p>
     </section>
 
+    
     <section class="sr-stats" aria-label="Ringkasan laporan">
         <article class="sr-stat">
             <span>Total laporan</span>
-            <strong>12</strong>
+            <strong data-stat="total">0</strong>
             <small>Seluruh laporan toko</small>
         </article>
         <article class="sr-stat">
             <span>Perlu tanggapan</span>
-            <strong>4</strong>
+            <strong data-stat="response">0</strong>
             <small>Perlu ditindaklanjuti</small>
         </article>
         <article class="sr-stat">
             <span>Sedang ditinjau</span>
-            <strong>3</strong>
+            <strong data-stat="review">0</strong>
             <small>Dalam pemeriksaan</small>
         </article>
         <article class="sr-stat">
             <span>Selesai ditinjau</span>
-            <strong>8</strong>
+            <strong data-stat="done">0</strong>
             <small>Hasil sudah tersedia</small>
         </article>
     </section>
@@ -78,123 +80,7 @@
 
         <div class="sr-report-list">
             <article class="sr-report" data-status="response">
-                <div class="sr-report-top">
-                    <span class="sr-badge response">Perlu Tanggapan</span>
-                    <span class="sr-id">LP-8821</span>
-                </div>
-                <h3>Resi belum terkonfirmasi</h3>
-                <p class="sr-meta">Pelapor: @buyer123 · 18 Oktober 2026</p>
-                <p>Pembeli melaporkan bahwa nomor resi belum dapat dikonfirmasi. Periksa bukti pengiriman sebelum menyampaikan klarifikasi.</p>
-
-                <div class="sr-actions">
-                    <button type="button" class="sr-btn sr-btn-secondary" data-detail="detail-8821" aria-expanded="false">
-                        Lihat detail
-                    </button>
-                    <a class="sr-btn sr-btn-primary"
-                    href="sanggahan.html?laporan=LP-8821">
-                        Ajukan Sanggahan
-                    </a>
-                </div>
-
-                <div class="sr-detail" id="detail-8821" hidden>
-                    <h4>Detail laporan LP-8821</h4>
-                    <div class="sr-detail-grid">
-                        <div><span>Akun terkait</span><strong>@seller_gadget_murah</strong></div>
-                        <div><span>Jenis pemeriksaan</span><strong>Verifikasi laporan</strong></div>
-                        <div><span>Status</span><strong>Menunggu tanggapan penjual</strong></div>
-                        <div><span>Petugas</span><strong>Tim Mediasi TrustX</strong></div>
-                    </div>
-                    <div class="sr-result-note">
-                        <h4>Informasi peninjauan</h4>
-                        <p>Laporan sedang menunggu bukti atau klarifikasi dari penjual. Belum ada keputusan akhir.</p>
-                    </div>
-                </div>
-            </article>
-
-            <article class="sr-report" data-status="review">
-                <div class="sr-report-top">
-                    <span class="sr-badge review">Sedang Ditinjau</span>
-                    <span class="sr-id">LP-8756</span>
-                </div>
-                <h3>Pesanan belum diterima</h3>
-                <p class="sr-meta">Pelapor: @pengguna456 · 15 Oktober 2026</p>
-                <p>Tim TrustX sedang memeriksa laporan dan bukti yang tersedia. Penjual dapat memantau perkembangan pemeriksaan.</p>
-
-                <div class="sr-actions">
-                    <button type="button" class="sr-btn sr-btn-secondary" data-detail="detail-8756" aria-expanded="false">
-                        Lihat hasil sementara
-                    </button>
-                </div>
-
-                <div class="sr-detail" id="detail-8756" hidden>
-                    <h4>Hasil peninjauan sementara</h4>
-                    <div class="sr-detail-grid">
-                        <div><span>ID laporan</span><strong>LP-8756</strong></div>
-                        <div><span>Jenis pemeriksaan</span><strong>Pemeriksaan laporan</strong></div>
-                        <div><span>Status</span><strong>Dalam proses</strong></div>
-                        <div><span>Petugas</span><strong>Tim Mediasi TrustX</strong></div>
-                    </div>
-                    <div class="sr-result-note">
-                        <h4>Tanggapan tim peninjau</h4>
-                        <p>Belum ada keputusan akhir. Hasil akan diperbarui setelah pemeriksaan bukti selesai.</p>
-                    </div>
-                </div>
-            </article>
-
-            <article class="sr-report" data-status="done">
-                <div class="sr-report-top">
-                    <span class="sr-badge done">Selesai Ditinjau</span>
-                    <span class="sr-id">LP-8823</span>
-                </div>
-                <h3>Klarifikasi telah ditinjau</h3>
-                <p class="sr-meta">Pelapor: @buyer789 · 12 Oktober 2026</p>
-                <p>Peninjauan laporan telah selesai. Baca ringkasan keputusan, alasan peninjauan, dan rekomendasi tindak lanjut.</p>
-
-                <div class="sr-actions">
-                    <button type="button" class="sr-btn sr-btn-secondary" data-detail="detail-8823" aria-expanded="false">
-                        Lihat hasil peninjauan
-                    </button>
-                    <button type="button" class="sr-btn sr-btn-primary" data-appeal="LP-8823">
-                        Ajukan klarifikasi
-                    </button>
-                </div>
-
-                <div class="sr-detail" id="detail-8823" hidden>
-                    <div class="sr-result-top">
-                        <div>
-                            <span class="sr-label">ID LAPORAN</span>
-                            <h4>LP-8823</h4>
-                        </div>
-                        <span class="sr-badge done">Peninjauan Selesai</span>
-                    </div>
-
-                    <div class="sr-detail-grid">
-                        <div><span>Akun terkait</span><strong>@seller_gadget_murah</strong></div>
-                        <div><span>Tanggal keputusan</span><strong>12 Oktober 2026</strong></div>
-                        <div><span>Jenis pemeriksaan</span><strong>Peninjauan laporan</strong></div>
-                        <div><span>Petugas</span><strong>Tim Mediasi TrustX</strong></div>
-                    </div>
-
-                    <div class="sr-result-note">
-                        <h4>Tanggapan tim peninjau</h4>
-                        <p>Tim telah menyelesaikan pemeriksaan terhadap informasi dan bukti yang tersedia.</p>
-                    </div>
-                    <div class="sr-result-note">
-                        <h4>Alasan atau dasar keputusan</h4>
-                        <p>Keputusan didasarkan pada hasil pemeriksaan bukti yang tersedia. Rincian akhir perlu disesuaikan dengan hasil verifikasi sebenarnya.</p>
-                    </div>
-                    <div class="sr-result-note">
-                        <h4>Rekomendasi tindak lanjut</h4>
-                        <p>Simpan bukti transaksi dan gunakan formulir klarifikasi jika terdapat informasi yang perlu diperbaiki.</p>
-                    </div>
-
-                    <h4>Riwayat peninjauan</h4>
-                    <ol class="sr-timeline">
-                        <li><strong>Laporan diterima</strong><span>12 Oktober 2026</span></li>
-                        <li><strong>Bukti diperiksa</strong><span>Dalam proses pemeriksaan</span></li>
-                        <li><strong>Hasil diterbitkan</strong><span>12 Oktober 2026</span></li>
-                    </ol>
-                </div>
+                
             </article>
         </div>
 

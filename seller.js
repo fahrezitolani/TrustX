@@ -45,7 +45,7 @@
   // Akun toko milik penjual yang sedang login (ganti dengan data sesi nyata).
   const AKUN_SAYA = "@seller_gadget_murah";
   const DETAIL = "detail-profile-seller.html";
-  const PENINJAUAN = "hasil_peninjauan.html";
+  const PENINJAUAN = "dashboard-laporanseller.html";
 
   const FEED = [
     { user: "@wts_photoc***", type: "red", label: "Laporan Tipu", icon: "alert",
@@ -95,6 +95,7 @@
   /* ---------- Beranda ---------- */
   function initHome() {
     const feed = document.getElementById("feed");
+    if (!feed) return;
     feed.innerHTML = FEED.map((f) => `
       <li class="fi"><header>
         <a class="who" href="${DETAIL}?q=${encodeURIComponent(f.user)}"><i class="av">@</i>${esc(f.user)}</a>
@@ -127,6 +128,10 @@
       location.href = DETAIL + "?m=" + mode + "&q=" + encodeURIComponent(v);
     });
   }
+
+
+
+
 
   /* ---------- Detail profil ---------- */
   function initDetail() {
@@ -197,10 +202,51 @@
     injectIcons();
   }
 
+  /* ---------- Dashboard laporan ---------- */
+function initReports() {
+  // Lihat detail / hasil peninjauan
+  document.querySelectorAll("[data-detail]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const panel = document.getElementById(btn.dataset.detail);
+      if (!panel) return;
+      const open = panel.hidden;
+      panel.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+    });
+  });
+
+  // Ajukan klarifikasi -> form sanggahan
+  document.querySelectorAll("[data-appeal]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      location.href = SANGGAHAN + "?id=" + encodeURIComponent(btn.dataset.appeal);
+    });
+  });
+
+  // Filter status (membaca kartu saat diklik, jadi kartu dari API ikut tersaring)
+  const filters = document.querySelectorAll(".sr-filter");
+  const empty = document.querySelector(".sr-empty");
+  filters.forEach((f) => {
+    f.addEventListener("click", () => {
+      filters.forEach((o) => {
+        o.classList.toggle("active", o === f);
+        o.setAttribute("aria-pressed", String(o === f));
+      });
+      let shown = 0;
+      document.querySelectorAll(".sr-report").forEach((card) => {
+        const ok = f.dataset.filter === "all" || card.dataset.status === f.dataset.filter;
+        card.style.display = ok ? "" : "none";
+        if (ok) shown++;
+      });
+      if (empty) empty.hidden = shown > 0;
+    });
+  });
+}
+
   document.addEventListener("DOMContentLoaded", () => {
     injectIcons();
     const page = document.body.dataset.page;
     if (page === "home") initHome();
+    if (page == "report") initReports();
     if (page === "detail-seller") initDetail();
   });
 })();

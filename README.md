@@ -29,7 +29,7 @@ TrustX dikembangkan untuk memberikan akses informasi reputasi akun secara lebih 
 ## Fitur Utama
 
 ### 1. Autentikasi dan Akun
-**Penanggung jawab: Siti Revalisa**
+**Penanggung jawab: Dwi Fisnilla**
 
 - Registrasi akun.
 - Login dan logout.
@@ -68,7 +68,7 @@ TrustX dikembangkan untuk memberikan akses informasi reputasi akun secara lebih 
 - Pelacakan status laporan.
 
 ### 5. Sanggahan
-**Penanggung jawab: Dwi Fisnilla**
+**Penanggung jawab: Siti Revalisa**
 
 - Form pengajuan sanggahan.
 - Input kronologi dan unggah bukti sanggahan.
