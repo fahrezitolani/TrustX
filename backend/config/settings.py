@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'laporan',
     'reputasi',
     'akun',
+    'sanggahan',
 ]
 
 AUTH_USER_MODEL = 'akun.User'  # model pengguna fitur Autentikasi & Akun
@@ -74,7 +75,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        "DIRS": [BASE_DIR.parent],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -134,8 +135,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "/static/"
 
+STATICFILES_DIRS = [
+    BASE_DIR.parent,
+]
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
@@ -149,6 +153,9 @@ MAILERS = {
 # Upload bukti laporan
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+# upload bukti sanggahan
+MEDIA_URL = "/media/"
+
 
 # Kredensial OAuth (isi di .env lalu restart). Kosong = fitur sosial login nonaktif.
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', '')
@@ -161,6 +168,13 @@ FRONTEND_BASE = os.getenv('FRONTEND_BASE', 'http://127.0.0.1:5501')
 
 # Frontend dibuka dari alamat lain (file / Live Server), jadi CORS dibuka saat development
 CORS_ALLOW_ALL_ORIGINS = DEBUG
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:5501",
+    "http://localhost:5501",
+]
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = "Lax"
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer'],
