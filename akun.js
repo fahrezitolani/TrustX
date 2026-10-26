@@ -87,7 +87,11 @@
 
     /* Arahkan ke halaman masuk kalau belum punya token (dipakai profil.html). */
     wajibMasuk() {
-      if (!store.get(TOKEN)) { location.replace("login.html"); return false; }
+      if (!store.get(TOKEN)) {
+        const next = encodeURIComponent(location.pathname.split("/").pop() + location.search);
+        location.replace("login.html?next=" + next);
+        return false;
+      }
       return true;
     },
 

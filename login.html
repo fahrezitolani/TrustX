@@ -71,7 +71,8 @@
             if (!Akun) return;
             try {
                 if (JSON.parse(localStorage.getItem("trustx_token"))) {
-                    location.replace(Akun.beranda());
+                    const n = new URLSearchParams(location.search).get("next");
+                    location.replace(n ? decodeURIComponent(n) : Akun.beranda());
                     return;
                 }
             } catch { /* token tidak valid, lanjut */ }
@@ -91,7 +92,11 @@
                 if (msg) msg.textContent = "";
                 const r = await Akun.masuk(email, password);
                 if (btn) btn.disabled = false;
-                if (r.ok) { location.replace(Akun.beranda(r.data.user)); return; }
+                if (r.ok) {
+                    const n = new URLSearchParams(location.search).get("next");
+                    location.replace(n ? decodeURIComponent(n) : Akun.beranda(r.data.user));
+                    return;
+                }
                 const text = Akun.pesan(r.data);
                 if (msg) {
                     msg.textContent = text;
