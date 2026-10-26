@@ -101,6 +101,14 @@
       return peran === "seller" ? "index-seller.html" : "index.html";
     },
 
+    /* Sapa pengguna dengan nama (first_name / username). */
+    sapaPengguna(user) {
+      const u = user || store.get(USER);
+      if (!u) return "Halo";
+      const nama = (u.first_name || u.username || "pengguna").toString().trim();
+      return `Halo, ${nama}`;
+    },
+
     /* Validasi token yang tersimpan; bersihkan jika tidak valid (401/403). */
     async validasiSesi() {
       const token = store.get(TOKEN);
@@ -137,7 +145,38 @@
     location.replace(Akun.beranda(r.ok ? r.data : null));
   }
 
+  /* ---------- Beranda: atur akses peran + sapa nama ---------- */
+  async function initBeranda() {
+    const halamanSekarang = location.pathname.split("/").pop();
+    const token = store.get(TOKEN);
+    let user = store.get(USER);
+
+    if (!token) {
+      try { sessionStorage.setItem("trustx_next", halamanSekarang); } catch {}
+      location.replace("login.html");
+      return;
+    }
+
+    const v = await Akun.validasiSesi();
+    if (!v.ok) {
+      try { sessionStorage.removeItem("trustx_next"); } catch {}
+      location.replace("login.html");
+      return;
+    }
+    user = v.user;
+
+    const target = Akun.beranda(user);
+    if (target !== halamanSekarang) {
+      location.replace(target);
+      return;
+    }
+
+    const sapa = document.getElementById("sapa");
+    if (sapa) sapa.textContent = Akun.sapaPengguna(user);
+  }
+
   window.TrustXAkun = Akun;
+  Akun.initBeranda = initBeranda;
 
   // Hanya login.html yang menerima ?oauth_token / ?oauth_error
   if (document.body.dataset.page === "login") tangkapOAuth();

@@ -13,7 +13,7 @@
 <h2 id="sapa">Halo, Dewi</h2>
 <p>Periksa rekam jejak seller sebelum transfer uang hari ini. Cek nomor rekening bank, e-wallet, WhatsApp, atau @Twitter.</p>
 <ul class="hero-points">
-<li data-ic="search">Nomor WA &amp; username X</li>
+<li data-ic="search">Nomor WA & username X</li>
 <li data-ic="users">Laporan komunitas</li>
 <li data-ic="check">Riwayat transaksi aman</li>
 </ul>
@@ -29,4 +29,8 @@
 <div class="feedhead"><h2>Feed Laporan Komunitas <span class="dot"></span></h2><span class="pill">Live Monitor</span></div>
 <ul class="feed" id="feed"></ul>
 </main>
-</div><script src="buyer-data.js"></script><script src="buyer.js"></script></body></html>
+</div><script src="akun.js"></script><script src="buyer-data.js"></script><script src="buyer.js"></script><script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (window.TrustXAkun && window.TrustXAkun.initBeranda) window.TrustXAkun.initBeranda();
+  });
+</script></body></html>
