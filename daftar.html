@@ -124,6 +124,50 @@
             btns.forEach((b, i) => b.addEventListener("click", () => setRole(i)));
             setRole(0);
         });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const A = window.TrustXAkun;
+            const form = document.getElementById("registerForm");
+            if (!A || !form) return;
+            const msg = document.getElementById("registerMessage");
+            const btn = form.querySelector('button[type="submit"]');
+            const nilai = (id) => (document.getElementById(id).value || "").trim();
+            const peran = [...document.querySelectorAll(".role-btn")];
+
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const nama = nilai("registerName");
+                const wa = nilai("registerWa");
+                const email = nilai("registerEmail");
+                const password = document.getElementById("registerPassword").value || "";
+                const confirmPassword = document.getElementById("confirmPassword").value || "";
+                const aktif = peran.findIndex((b) => b.getAttribute("aria-pressed") === "true");
+                const role = aktif === 1 ? "seller" : "buyer";
+                const tokoNama = role === "seller" ? nilai("tokoNama") : "";
+                const terms = document.getElementById("terms");
+
+                const salah = !nama ? "Nama lengkap wajib diisi."
+                    : !wa ? "Nomor WhatsApp wajib diisi."
+                    : !email ? "Alamat email wajib diisi."
+                    : password.length < 8 ? "Kata sandi minimal 8 karakter."
+                    : password !== confirmPassword ? "Konfirmasi kata sandi tidak sama."
+                    : role === "seller" && !tokoNama ? "Nama toko wajib diisi untuk penjual."
+                    : terms && !terms.checked ? "Setujui syarat & ketentuan terlebih dahulu."
+                    : "";
+                if (salah) { msg.textContent = salah; return; }
+
+                msg.textContent = "";
+                if (btn) btn.disabled = true;
+                const r = await A.daftar({ nama, wa, email, password, confirmPassword, role, toko_nama: tokoNama });
+                if (btn) btn.disabled = false;
+
+                if (!r.ok) { msg.textContent = A.pesan(r.data); return; }
+
+                // Akun dibuat -> lanjut verifikasi OTP (kode dicetak di terminal runserver)
+                A.emailMenunggu.set(email);
+                location.href = "verifikasi-otp.html";
+            });
+        });
     </script>
 </body>
 </html>
