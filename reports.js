@@ -1,4 +1,5 @@
-// HALAMAN DAHBOARD SANGGAHAN
+// HALAMAN FORM KLARIFIKASI PENJUAL (sanggahan)
+// ID laporan diambil dari URL (?id= / ?laporan=) dan harus sama dengan ID (nomor tiket) di database.
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -20,8 +21,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const history = document.getElementById("appealHistory");
     const storyCount = document.getElementById("storyCount");
     const fileList = document.getElementById("fileList");
-    const items = Array.isArray(data) ? data : (data.results || []);
-    updateStats(items);
+
+    // Pastikan elemen form tersedia.
+    if (
+        !reportId ||
+        !storeName ||
+        !reason ||
+        !story ||
+        !filesInput ||
+        !consent ||
+        !submitButton
+    ) {
+        console.error(
+            "Elemen form sanggahan tidak lengkap. Periksa ID elemen HTML."
+        );
+        return;
+    }
 
     let csrfToken = "";
 
@@ -40,6 +55,89 @@ document.addEventListener("DOMContentLoaded", () => {
         message.setAttribute("role", "status");
         message.setAttribute("aria-live", "polite");
     }
+
+    // ---------- Verifikasi ID laporan ke database ----------
+    // Keterangan status di bawah kolom ID laporan.
+    const idNote = document.createElement("small");
+    idNote.id = "reportIdStatus";
+    idNote.setAttribute("role", "status");
+    idNote.setAttribute("aria-live", "polite");
+    idNote.style.cssText = "display:block;margin-top:4px;font-size:13px";
+    reportId.insertAdjacentElement("afterend", idNote);
+    reportId.autocomplete = "off";
+    reportId.setAttribute("aria-describedby", "reportIdStatus");
+
+    let verifiedId = ""; // nomor tiket resmi dari database ("" = belum terverifikasi)
+    let checking = false;
+    let verifySeq = 0;
+    let verifyTimer;
+
+    function sayId(text, tone) {
+        idNote.textContent = text;
+        idNote.style.color =
+            tone === "ok" ? "#15803d" : tone === "err" ? "#b91c1c" : "#64748b";
+    }
+
+    // GET /api/laporan/<nomor_tiket>/ (hanya laporan berstatus terbit)
+    async function verifyReportId(raw) {
+        const id = String(raw || "").trim();
+        const n = ++verifySeq;
+        verifiedId = "";
+        storeName.readOnly = false;
+
+        if (!id) {
+            checking = false;
+            sayId("Isi ID laporan sesuai ID di dashboard (contoh: LP-2026-XXXX).", "info");
+            return;
+        }
+
+        checking = true;
+        sayId("Memeriksa ID laporan...", "info");
+
+        try {
+            const response = await fetch(
+                `${API}/api/laporan/${encodeURIComponent(id)}/`,
+                { headers: { Accept: "application/json" } }
+            );
+            if (n !== verifySeq) return; // jawaban lama, abaikan
+
+            if (response.status === 404) {
+                sayId(`ID laporan ${id} tidak ditemukan di database.`, "err");
+                return;
+            }
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const data = await response.json();
+            if (n !== verifySeq) return;
+
+            verifiedId = data.nomor_tiket || id;
+            reportId.value = verifiedId;
+
+            // Nama toko mengikuti akun yang dilaporkan di database.
+            if (data.akun_target) {
+                storeName.value = data.akun_target;
+                storeName.readOnly = true;
+            }
+            sayId("ID laporan cocok dengan database.", "ok");
+        } catch (error) {
+            if (n !== verifySeq) return;
+            console.error("Gagal memeriksa ID laporan:", error);
+            sayId("Tidak dapat memeriksa ID laporan. Pastikan server berjalan.", "err");
+        } finally {
+            if (n === verifySeq) checking = false;
+        }
+    }
+
+    // Diketik manual: periksa ulang setelah berhenti mengetik.
+    reportId.addEventListener("input", () => {
+        clearTimeout(verifyTimer);
+        verifySeq++;
+        verifiedId = "";
+        checking = true;
+        storeName.readOnly = false;
+        sayId("Memeriksa ID laporan...", "info");
+        verifyTimer = setTimeout(() => verifyReportId(reportId.value), 500);
+    });
 
     // Mengambil token CSRF dari Django.
     async function getCsrfToken() {
@@ -225,31 +323,93 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Isi ID laporan dari URL jika tersedia.
-    const params = new URLSearchParams(window.location.search);
-    const requestedId = params.get("laporan") || params.get("id");
-    if (
-        reportId &&
-        requestedId &&
-        /^LP-\d{4,}$/i.test(requestedId)
-    ) {
-        reportId.value = requestedId;
+    // ---------- Isi ID otomatis (kalau form dibuka tanpa ?id=) ----------
+    // Akun toko seller yang login. TODO: ganti dengan akun sesi nyata.
+    // Kosong = semua akun (sementara, selama belum ada login).
+    const AKUN_SAYA = "";
+
+    async function getJSON(url, options = {}) {
+        const response = await fetch(url, { headers: { Accept: "application/json" }, ...options });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
     }
 
-    // Pastikan elemen form tersedia.
-    if (
-        !reportId ||
-        !storeName ||
-        !reason ||
-        !story ||
-        !filesInput ||
-        !consent ||
-        !submitButton
-    ) {
-        console.error(
-            "Elemen form sanggahan tidak lengkap. Periksa ID elemen HTML."
-        );
-        return;
+    const isScam = value => /scam|tertipu|penipuan/i.test(String(value || ""));
+
+    // Pilih laporan scam terbaru yang belum punya sanggahan, lalu isi ID-nya.
+    async function autoFillReportId() {
+        sayId("Mencari laporan yang perlu ditanggapi...", "info");
+
+        try {
+            const lapUrl = `${API}/api/laporan-akun/` +
+                (AKUN_SAYA ? `?akun=${encodeURIComponent(AKUN_SAYA)}` : "");
+
+            const [rLap, rSg] = await Promise.allSettled([
+                getJSON(lapUrl),
+                getJSON(`${API}/api/sanggahan/`, { credentials: "include" }),
+            ]);
+            if (rLap.status !== "fulfilled") throw rLap.reason;
+
+            const dLap = rLap.value;
+            const laporan = Array.isArray(dLap) ? dLap : (dLap.laporan || dLap.results || []);
+
+            const dSg = rSg.status === "fulfilled" ? rSg.value : [];
+            const sanggahan = Array.isArray(dSg) ? dSg : (dSg.results || []);
+            const sudah = new Set(sanggahan.map(x => String(x.report_id).toLowerCase()));
+
+            const kandidat = laporan
+                .filter(l => l.nomor_tiket
+                    && isScam(l.statusTransaksi ?? l.status_transaksi)
+                    && !sudah.has(String(l.nomor_tiket).toLowerCase()))
+                .sort((a, b) => new Date(b.diterbitkan || 0) - new Date(a.diterbitkan || 0));
+
+            // Pengguna sudah mengetik sendiri selama menunggu: jangan ditimpa.
+            if (reportId.value.trim()) return;
+
+            if (!kandidat.length) {
+                sayId("Tidak ada laporan yang perlu disanggah. Isi ID laporan secara manual.", "info");
+                return;
+            }
+
+            // Daftar saran untuk laporan lain (muncul saat kolom ID diklik/dikosongkan).
+            let datalist = document.getElementById("reportIdOptions");
+            if (!datalist) {
+                datalist = document.createElement("datalist");
+                datalist.id = "reportIdOptions";
+                reportId.insertAdjacentElement("afterend", datalist);
+                reportId.setAttribute("list", "reportIdOptions");
+            }
+            datalist.replaceChildren(...kandidat.map(l => {
+                const option = document.createElement("option");
+                option.value = l.nomor_tiket;
+                option.label = l.akun || "";
+                return option;
+            }));
+
+            reportId.value = kandidat[0].nomor_tiket;
+            await verifyReportId(reportId.value);
+            if (verifiedId) {
+                sayId("ID terisi otomatis dari laporan terbaru yang belum disanggah, dan cocok dengan database.", "ok");
+            }
+        } catch (error) {
+            console.error("Gagal mengisi ID laporan otomatis:", error);
+            sayId("ID belum bisa terisi otomatis. Isi ID laporan secara manual.", "err");
+        }
+    }
+
+    // Isi ID laporan dari URL (format apa pun), lalu cocokkan dengan database.
+    const params = new URLSearchParams(window.location.search);
+    const requestedId = (params.get("laporan") || params.get("id") || "").trim();
+
+    if (requestedId) {
+        reportId.value = requestedId;
+        verifyReportId(requestedId).then(() => {
+            if (verifiedId) reportId.readOnly = true; // ID dari dashboard dikunci
+        });
+    } else if (reportId.value.trim()) {
+        verifyReportId(reportId.value);
+    } else {
+        autoFillReportId();
     }
 
     story.addEventListener("input", updateStoryCount);
@@ -267,6 +427,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!reportId.value.trim()) {
             showMessage("ID laporan wajib diisi.");
+            reportId.focus();
+            return;
+        }
+
+        if (checking) {
+            showMessage("Tunggu, ID laporan sedang diperiksa.");
+            reportId.focus();
+            return;
+        }
+
+        if (!verifiedId || reportId.value.trim() !== verifiedId) {
+            showMessage("ID laporan harus sesuai dengan laporan di database.");
             reportId.focus();
             return;
         }
@@ -307,7 +479,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const formData = new FormData();
 
-        formData.append("report_id", reportId.value.trim());
+        formData.append("report_id", verifiedId); // ID resmi dari database
         formData.append("store_name", storeName.value.trim());
         formData.append("reason", reason.value);
         formData.append("story", storyText);
@@ -318,6 +490,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         submitButton.disabled = true;
         submitButton.textContent = "Mengirim...";
+        let sent = false;
 
         try {
             // Ambil token baru setiap kali mengirim.
@@ -368,21 +541,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
             }
 
+            sent = true;
             showMessage(
-                setTimeout(() => {
-                    window.location.href = "./dashboard-laporanseller.html";
-                }, 1200)
                 `Sanggahan berhasil dikirim. ID: ${result.id}. ` +
                 `Status: ${result.status}.`,
                 true
             );
 
-            form.reset();
-            updateStoryCount();
-
-            if (fileList) {
-                fileList.replaceChildren();
-            }
+            // Kembali ke dashboard setelah pesan sempat terbaca.
+            setTimeout(() => {
+                window.location.href = "./dashboard-laporanseller.html";
+            }, 1200);
 
             await loadHistory();
 
@@ -390,145 +559,14 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Pengiriman sanggahan gagal:", error);
             showMessage(`Gagal mengirim sanggahan: ${error.message}`);
         } finally {
-            submitButton.disabled = false;
-            submitButton.textContent = "Kirim Sanggahan";
+            // Setelah berhasil, tombol tetap nonaktif supaya tidak terkirim dua kali.
+            if (!sent) {
+                submitButton.disabled = false;
+                submitButton.textContent = "Kirim Sanggahan";
+            }
         }
     });
 
     updateStoryCount();
     loadHistory();
 });
-
-
-// // ================================
-// ========== SAnggahan List ==============
-
-"use strict";
-
-const API = "http://127.0.0.1:8000/api/sanggahan/";
-
-// Pemetaan status database -> filter, badge, dan label di dashboard
-const STATUS = {
-  pending:   { filter: "response", badge: "response", label: "Menunggu Ditinjau" },
-  reviewing: { filter: "review",   badge: "review",   label: "Sedang Ditinjau" },
-  accepted:  { filter: "done",     badge: "done",     label: "Diterima" },
-  rejected:  { filter: "done",     badge: "done",     label: "Ditolak" },
-};
-
-const ALASAN = {
-  "informasi-tidak-sesuai": "Informasi laporan tidak sesuai",
-  "bukti-tambahan": "Memiliki bukti tambahan",
-  "masalah-sudah-selesai": "Masalah telah diselesaikan",
-  "kesalahan-identitas": "Kesalahan identitas akun",
-  "lainnya": "Alasan lainnya",
-};
-
-// Escape teks dari pengguna supaya tidak bisa menyisipkan HTML/script
-function esc(s) {
-  const d = document.createElement("div");
-  d.textContent = s ?? "";
-  return d.innerHTML;
-}
-
-function tanggal(iso) {
-  return new Date(iso).toLocaleDateString("id-ID", {
-    day: "numeric", month: "long", year: "numeric",
-  });
-}
-
-function buildCard(item) {
-  const st = STATUS[item.status] || STATUS.pending;
-  const alasan = ALASAN[item.reason] || item.reason;
-  const detailId = `detail-sg-${item.id}`;
-
-  const bukti = (item.bukti || [])
-    .map(b => `<a href="${esc(b.file)}" target="_blank" rel="noopener">${esc(b.nama_asli)}</a>`)
-    .join(", ") || "-";
-
-  const card = document.createElement("article");
-  card.className = "sr-report";
-  card.dataset.status = st.filter;
-  card.dataset.dynamic = "true";
-  card.innerHTML = `
-    <div class="sr-report-top">
-      <span class="sr-badge ${st.badge}">${esc(st.label)}</span>
-      <span class="sr-id">${esc(item.report_id)}</span>
-    </div>
-    <h3>Sanggahan: ${esc(alasan)}</h3>
-    <p class="sr-meta">Toko: ${esc(item.store_name)} · ${tanggal(item.created_at)}</p>
-    <p>${esc(item.story)}</p>
-
-    <div class="sr-actions">
-      <button type="button" class="sr-btn sr-btn-secondary" aria-expanded="false">
-        Lihat sanggahan
-      </button>
-    </div>
-
-    <div class="sr-detail" id="${detailId}" hidden>
-      <h4>Detail sanggahan ${esc(item.report_id)}</h4>
-      <div class="sr-detail-grid">
-        <div><span>Nama toko</span><strong>${esc(item.store_name)}</strong></div>
-        <div><span>Alasan</span><strong>${esc(alasan)}</strong></div>
-        <div><span>Status</span><strong>${esc(st.label)}</strong></div>
-        <div><span>Dikirim</span><strong>${tanggal(item.created_at)}</strong></div>
-      </div>
-      <div class="sr-result-note">
-        <h4>Kronologi</h4>
-        <p>${esc(item.story)}</p>
-      </div>
-      <div class="sr-result-note">
-        <h4>Bukti pendukung</h4>
-        <p>${bukti}</p>
-      </div>
-      ${item.admin_response ? `
-      <div class="sr-result-note">
-        <h4>Tanggapan tim peninjau</h4>
-        <p>${esc(item.admin_response)}</p>
-      </div>` : ""}
-    </div>`;
-
-  const btn = card.querySelector("button");
-  const panel = card.querySelector(".sr-detail");
-  btn.addEventListener("click", () => {
-    const open = panel.hidden;
-    panel.hidden = !open;
-    btn.setAttribute("aria-expanded", String(open));
-  });
-
-  return card;
-}
-
-// Mengisi angka ringkasan sesuai data database
-function updateStats(items, total) {
-  const c = { total: total ?? items.length, response: 0, review: 0, done: 0 };
-  items.forEach(i => {
-    c[(STATUS[i.status] || STATUS.pending).filter]++;
-  });
-  Object.entries(c).forEach(([key, val]) => {
-    const el = document.querySelector(`[data-stat="${key}"]`);
-    if (el) el.textContent = val;
-  });
-}
-
-async function loadSanggahan() {
-  const list = document.querySelector(".sr-report-list");
-  if (!list) return;
-
-  try {
-    const res = await fetch(API, { headers: { Accept: "application/json" } });
-    if (!res.ok) throw new Error("Status " + res.status);
-
-    const data = await res.json();
-    const items = Array.isArray(data) ? data : (data.results || []);
-
-    updateStats(items, data.count);
-
-    list.querySelectorAll("[data-dynamic]").forEach(n => n.remove());
-    // API mengurutkan terbaru dulu; dibalik lalu di-prepend agar urutannya tetap terbaru di atas
-    items.slice().reverse().forEach(item => list.prepend(buildCard(item)));
-  } catch (err) {
-    console.error("Gagal memuat sanggahan:", err);
-  }
-}
-
-document.addEventListener("DOMContentLoaded", loadSanggahan);
