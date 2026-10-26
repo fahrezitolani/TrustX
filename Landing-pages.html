@@ -393,9 +393,16 @@
         document.addEventListener("DOMContentLoaded", () => {
             const Akun = window.TrustXAkun;
             if (!Akun) return;
-            let href = "login.html";
-            try { if (JSON.parse(localStorage.getItem("trustx_token"))) href = Akun.beranda(); } catch { /* biarkan login.html */ }
-            document.querySelectorAll(".landing-login").forEach((a) => { a.href = href; });
+            (async () => {
+                const v = await Akun.validasiSesi();
+                if (v.ok) {
+                    let href = Akun.beranda(v.user);
+                    try { if (JSON.parse(localStorage.getItem("trustx_token"))) {} } catch {}
+                    document.querySelectorAll(".landing-login").forEach((a) => { a.href = href; });
+                } else {
+                    document.querySelectorAll(".landing-login").forEach((a) => { a.href = "login.html"; });
+                }
+            })();
         });
     </script>
 </body>

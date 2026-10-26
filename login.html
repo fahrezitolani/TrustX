@@ -71,11 +71,15 @@
             if (!Akun) return;
             try {
                 if (JSON.parse(localStorage.getItem("trustx_token"))) {
-                    const n = new URLSearchParams(location.search).get("next");
-                    location.replace(n ? decodeURIComponent(n) : Akun.beranda());
-                    return;
+                    const v = await Akun.validasiSesi();
+                    if (v.ok) {
+                        const n = new URLSearchParams(location.search).get("next");
+                        location.replace(n ? decodeURIComponent(n) : Akun.beranda(v.user));
+                        return;
+                    }
                 }
             } catch { /* token tidak valid, lanjut */ }
+            // handler submit tetap terpasang apa pun hasilnya di bawah
             const form = document.getElementById("loginForm");
             const msg = document.getElementById("loginMessage");
             const btn = form ? form.querySelector('button[type="submit"]') : null;
@@ -94,7 +98,9 @@
                 if (btn) btn.disabled = false;
                 if (r.ok) {
                     const n = new URLSearchParams(location.search).get("next");
-                    location.replace(n ? decodeURIComponent(n) : Akun.beranda(r.data.user));
+                    const nextTarget = n ? decodeURIComponent(n) : sessionStorage.getItem("trustx_next");
+                    try { sessionStorage.removeItem("trustx_next"); } catch {}
+                    location.replace(nextTarget || Akun.beranda(r.data.user));
                     return;
                 }
                 const text = Akun.pesan(r.data);
