@@ -2,10 +2,13 @@
 import secrets
 from datetime import timedelta
 
+from django.conf import settings
 from django.contrib.auth.hashers import check_password, make_password
 from django.utils import timezone
 
-MASA_BERLAKU = timedelta(minutes=5)      # kode hangus setelah 5 menit
+# Kode hangus setelah 5 menit. Saat DEBUG, dilonggarkan jadi 30 menit karena
+# kode simulasi harus dibaca manual dari terminal.
+MASA_BERLAKU = timedelta(minutes=30 if settings.DEBUG else 5)
 JEDA_KIRIM_ULANG = timedelta(seconds=45)  # sama dengan hitungan mundur di frontend
 MAKS_PERCOBAAN = 5
 
@@ -17,7 +20,8 @@ class OTPError(Exception):
 def kirim_wa(nomor, kode):
     # TODO: ganti dengan API WhatsApp sungguhan (mis. Fonnte / Twilio).
     # Untuk sekarang kode hanya dicetak di terminal tempat `runserver` berjalan.
-    print(f'[OTP SIMULASI] kirim ke {nomor}: {kode}')
+    # flush=True: tanpa ini keluaran tertahan buffer saat stdout di-redirect ke file.
+    print(f'[OTP SIMULASI] kirim ke {nomor}: {kode}', flush=True)
 
 
 def buat_dan_kirim(pemilik, nomor):
