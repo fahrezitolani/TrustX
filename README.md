@@ -14,6 +14,8 @@ TrustX dikembangkan untuk memberikan akses informasi reputasi akun secara lebih 
 ## Daftar Isi
 
 - [Fitur Utama](#fitur-utama)
+- [Panduan Halaman & Form untuk Mentor](#panduan-halaman--form-untuk-mentor)
+- [Sumber Data & Layanan Form](#sumber-data--layanan-form)
 - [Teknologi yang Digunakan](#teknologi-yang-digunakan)
 - [Cara Menjalankan Aplikasi](#cara-menjalankan-aplikasi)
 - [Desain UI/UX](#desain-uiux)
@@ -75,6 +77,114 @@ TrustX dikembangkan untuk memberikan akses informasi reputasi akun secara lebih 
 - Daftar sanggahan.
 - Status sanggahan.
 - Tampilan tanggapan atau hasil peninjauan laporan.
+
+---
+
+## Panduan Halaman & Form untuk Mentor
+
+Berikut adalah daftar halaman dan form yang dapat dicoba oleh mentor untuk mengevaluasi fitur TrustX:
+
+| No | Halaman / File | Fungsi | Form yang Tersedia |
+|----|----------------|--------|-------------------|
+| 1 | [`index.html`](index.html) | Landing page & pencarian reputasi | Form pencarian akun (Nomor WA atau Username X) |
+| 2 | [`Landing-pages.html`](Landing-pages.html) | Halaman landing alternatif | Navigasi ke fitur utama |
+| 3 | [`daftar.html`](daftar.html) | Registrasi akun baru | Form pendaftaran (nama, WA, email, kata sandi, peran pembeli/penjual, nama toko) |
+| 4 | [`login.html`](login.html) | Masuk ke akun | Form login (email, kata sandi), tombol OAuth (X, Google) |
+| 5 | [`confirm-otp.html`](confirm-otp.html) / [`verifikasi-otp.html`](verifikasi-otp.html) | Verifikasi OTP | Form input kode OTP yang dikirim via WhatsApp |
+| 6 | [`lapor.html`](lapor.html) | Pelaporan transaksi | Form laporan (identitas lawan transaksi, status transaksi, kronologi, unggah bukti, pernyataan kebenaran) |
+| 7 | [`hasil.html`](hasil.html) | Hasil pencarian reputasi | Tampilan hasil pencarian akun |
+| 8 | [`detail-profile.html`](detail-profile.html) | Detail reputasi akun | Informasi detail akun, riwayat laporan, transaksi aman |
+| 9 | [`dashboard-laporan.html`](dashboard-laporan.html) | Dashboard laporan pembeli | Daftar laporan komunitas, filter status, statistik |
+| 10 | [`dashboard-laporanseller.html`](dashboard-laporanseller.html) | Dashboard laporan penjual | Daftar laporan terkait toko penjual |
+| 11 | [`sanggahan.html`](sanggahan.html) | Form klarifikasi penjual | Form sanggahan (ID laporan, nama toko, alasan, kronologi, bukti pendukung) |
+| 12 | [`profil.html`](profil.html) | Profil pengguna | Tampilan profil dan pengaturan akun |
+| 13 | [`pengaturan-toko.html`](pengaturan-toko.html) | Pengaturan toko | Form pengaturan profil toko penjual |
+| 14 | [`keamanan-akun.html`](keamanan-akun.html) | Keamanan akun | Pengaturan keamanan dan verifikasi akun |
+| 15 | [`bantuan.html`](bantuan.html) | Halaman bantuan | Informasi panduan penggunaan |
+| 16 | [`success.html`](success.html) | Halaman sukses | Konfirmasi tindakan berhasil |
+| 17 | [`index-seller.html`](index-seller.html) | Beranda penjual | Halaman utama untuk role penjual |
+
+### Cara Mencoba Setiap Form
+
+1. **Pencarian Reputasi** — Buka [`index.html`](index.html), masukkan nomor WhatsApp atau username X, lalu klik "CEK REPUTASI".
+2. **Registrasi** — Buka [`daftar.html`](daftar.html), isi formulir pendaftaran, pilih peran (pembeli/penjual), lalu daftar.
+3. **Login** — Buka [`login.html`](login.html), masukkan email dan kata sandi, atau gunakan tombol OAuth (X/Google).
+4. **Laporan Transaksi** — Buka [`lapor.html`](lapor.html), isi identitas lawan transaksi, pilih status (scam/aman), tulis kronologi, unggah bukti, centang pernyataan, lalu lanjutkan ke verifikasi OTP.
+5. **Sanggahan Penjual** — Buka [`sanggahan.html`](sanggahan.html), isi ID laporan, nama toko, pilih alasan sanggahan, tulis kronologi, dan unggah bukti pendukung.
+6. **Dashboard Laporan** — Buka [`dashboard-laporan.html`](dashboard-laporan.html) untuk melihat daftar laporan komunitas dan filter berdasarkan status.
+
+---
+
+## Sumber Data & Layanan Form
+
+### Sumber Data (Backend & Database)
+
+TrustX menggunakan backend **Django** dengan **Django REST Framework** dan basis data **SQLite** (default Django). Data disimpan dalam beberapa aplikasi Django:
+
+| Aplikasi | Model | Deskripsi |
+|----------|-------|-----------|
+| [`akun`](backend/akun/models.py) | `User` | Data pengguna (pembeli/penjual), nomor WhatsApp, role, verifikasi status, identitas sosial (Google/X). |
+| [`akun`](backend/akun/models.py) | `KodeOTP` | Kode OTP untuk verifikasi pengguna (disimpan sebagai hash). |
+| [`laporan`](backend/laporan/models.py) | `Laporan` | Data laporan transaksi (target akun, WA, bank, rekening, status transaksi, kronologi, nomor pelapor, status laporan). |
+| [`laporan`](backend/laporan/models.py) | `BuktiLaporan` | Berkas bukti transaksi yang diunggah pelapor. |
+| [`laporan`](backend/laporan/models.py) | `KodeOTP` | Kode OTP untuk verifikasi laporan sebelum diterbitkan. |
+| [`reputasi`](backend/reputasi/models.py) | `Akun` | Data akun media sosial (username X, nomor WA, platform, rating, transaksi aman, deskripsi). |
+| [`reputasi`](backend/reputasi/models.py) | `LaporanReputasi` | Riwayat laporan terkait satu akun (nomor tiket, status, kronologi, bukti, verifikasi). |
+| [`reputasi`](backend/reputasi/models.py) | `TransaksiAman` | Riwayat transaksi aman yang dilaporkan komunitas. |
+| [`sanggahan`](backend/sanggahan/models.py) | `Sanggahan` | Data pengajuan sanggahan penjual (ID laporan, nama toko, alasan, kronologi, status, tanggapan admin). |
+| [`sanggahan`](backend/sanggahan/models.py) | `BuktiSanggahan` | Berkas bukti pendukung sanggahan. |
+
+### Endpoint API Utama
+
+| Endpoint | Method | Deskripsi |
+|----------|--------|-----------|
+| `/api/akun/daftar/` | POST | Registrasi akun baru + pengiriman OTP verifikasi. |
+| `/api/akun/masuk/` | POST | Login dengan email & kata sandi, menghasilkan token autentikasi. |
+| `/api/akun/?q=` | GET | Pencarian akun reputasi berdasarkan username X atau nomor WA. |
+| `/api/laporan/` | POST | Buat laporan transaksi baru (multipart/form-data untuk bukti). |
+| `/api/otp/kirim/` | POST | Kirim ulang kode OTP untuk laporan yang menunggu verifikasi. |
+| `/api/otp/verifikasi/` | POST | Verifikasi kode OTP dan terbitkan laporan. |
+| `/api/akun/oauth/x/start/` | GET | OAuth login melalui X (Twitter). |
+| `/api/akun/oauth/google/start/` | GET | OAuth login melalui Google. |
+
+### Layanan Form yang Digunakan
+
+1. **Form Pencarian Reputasi** (`index.html`)
+   - Input: Nomor WhatsApp atau Username X
+   - Layanan: API pencarian akun (`/api/akun/?q=`)
+   - Frontend: Vanilla JavaScript (`buyer.js`, `buyer-data.js`)
+
+2. **Form Pendaftaran** (`daftar.html`)
+   - Input: Nama lengkap, nomor WhatsApp, email, kata sandi, peran, nama toko (opsional)
+   - Layanan: API registrasi (`/api/akun/daftar/`) + OTP via WhatsApp
+   - Frontend: `akun.js`, `script.js`
+
+3. **Form Login** (`login.html`)
+   - Input: Email, kata sandi; tombol OAuth (X, Google)
+   - Layanan: API login (`/api/akun/masuk/`), OAuth X & Google
+   - Frontend: `akun.js`, `script.js`
+
+4. **Form Laporan Transaksi** (`lapor.html`)
+   - Input: Identitas lawan transaksi, status transaksi, kronologi, berkas bukti (maks. 3 file, PNG/JPG hingga 5MB), pernyataan kebenaran
+   - Layanan: API buat laporan (`/api/laporan/`), OTP verifikasi (`/api/otp/kirim/`, `/api/otp/verifikasi/`)
+   - Frontend: `lapor.js`
+
+5. **Form Sanggahan Penjual** (`sanggahan.html`)
+   - Input: ID laporan, nama toko, alasan sanggahan, kronologi, bukti pendukung
+   - Layanan: API sanggahan (backend `sanggahan`)
+   - Frontend: `reports.js`
+
+6. **Verifikasi OTP** (`confirm-otp.html`, `verifikasi-otp.html`)
+   - Input: Kode OTP 6 digit
+   - Layanan: API verifikasi OTP (`/api/otp/verifikasi/`)
+   - Frontend: `akun.js`
+
+### Catatan Pengembangan
+
+- Saat ini proyek berfokus pada implementasi frontend (HTML5, CSS3, JavaScript) dengan backend Django yang tersedia sebagai API.
+- Fitur autentikasi, verifikasi OTP, dan penyimpanan data laporan menggunakan backend Django dengan Django REST Framework.
+- Data sampel untuk reputasi akun dapat di-seed menggunakan perintah `seed_reputasi` di aplikasi `reputasi`.
+- Semua form menggunakan validasi sisi klien (HTML5 `required`, `novalidate` dengan JS) dan validasi sisi server (Django serializers).
 
 ---
 

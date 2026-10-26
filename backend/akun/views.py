@@ -178,12 +178,11 @@ def verifikasi_otp(request):
     if user is not None:
         try:
             otp.verifikasi(user, kode)
-        except otp.OTPError:
-            pass
-        else:
-            user.terverifikasi = True
-            user.save(update_fields=["terverifikasi"])
-            return _hasil(user, "Akun berhasil diverifikasi.")
+        except otp.OTPError as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        user.terverifikasi = True
+        user.save(update_fields=["terverifikasi"])
+        return _hasil(user, "Akun berhasil diverifikasi.")
     return Response({"detail": "Kode OTP tidak ditemukan. Minta kode baru."},
                     status=status.HTTP_400_BAD_REQUEST)
 

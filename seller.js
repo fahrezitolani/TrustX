@@ -46,6 +46,7 @@
   const AKUN_SAYA = new URLSearchParams(location.search).get("akun") || "@buyer_gadget";
   const DETAIL = "detail-profile-seller.html";
   const PENINJAUAN = "dashboard-laporanseller.html";
+  const SANGGAHAN = "sanggahan.html";
 
   const FEED = [
     { user: "@wts_photoc***", type: "red", label: "Laporan Tipu", icon: "alert",
@@ -233,23 +234,9 @@ function initReports() {
   });
 
   // Filter status (membaca kartu saat diklik, jadi kartu dari API ikut tersaring)
-  const filters = document.querySelectorAll(".sr-filter");
-  const empty = document.querySelector(".sr-empty");
-  filters.forEach((f) => {
-    f.addEventListener("click", () => {
-      filters.forEach((o) => {
-        o.classList.toggle("active", o === f);
-        o.setAttribute("aria-pressed", String(o === f));
-      });
-      let shown = 0;
-      document.querySelectorAll(".sr-report").forEach((card) => {
-        const ok = f.dataset.filter === "all" || card.dataset.status === f.dataset.filter;
-        card.style.display = ok ? "" : "none";
-        if (ok) shown++;
-      });
-      if (empty) empty.hidden = shown > 0;
-    });
-  });
+  // Filter dipertahankan di sanggahan.js (initFilters) agar kartu dinamis ikut tersaring.
+  // Blok ini sengaja dinonaktifkan untuk menghindari listener ganda pada .sr-filter.
+  return;
 }
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -258,6 +245,22 @@ function initReports() {
     if (page === "home") initHome();
     if (page == "report") initReports();
     if (page === "detail-seller") initDetail();
+    // R6: tombol lonceng -> toast jujur
+    document.querySelectorAll('button[aria-label="Notifikasi"]').forEach((b) => {
+      b.addEventListener("click", () => {
+        let t = document.getElementById("trustx-toast");
+        if (!t) {
+          t = document.createElement("div");
+          t.id = "trustx-toast";
+          t.style.cssText = "position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:8px;z-index:9999;font-size:14px;opacity:0;transition:opacity .2s;";
+          document.body.appendChild(t);
+        }
+        t.textContent = "Notifikasi belum tersedia";
+        t.style.opacity = "1";
+        clearTimeout(t._t);
+        t._t = setTimeout(() => { t.style.opacity = "0"; }, 2000);
+      });
+    });
   });
 })();
 

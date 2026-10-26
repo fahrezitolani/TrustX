@@ -64,5 +64,59 @@
             </p>
         </div>
     </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            if (document.body.dataset.page !== "login") return;
+            const Akun = window.TrustXAkun;
+            if (!Akun) return;
+            try {
+                if (JSON.parse(localStorage.getItem("trustx_token"))) {
+                    const v = await Akun.validasiSesi();
+                    if (v.ok) {
+                        const n = new URLSearchParams(location.search).get("next");
+                        location.replace(n ? decodeURIComponent(n) : Akun.beranda(v.user));
+                        return;
+                    }
+                }
+            } catch { /* token tidak valid, lanjut */ }
+            // handler submit tetap terpasang apa pun hasilnya di bawah
+            const form = document.getElementById("loginForm");
+            const msg = document.getElementById("loginMessage");
+            const btn = form ? form.querySelector('button[type="submit"]') : null;
+            if (!form) return;
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const email = (document.getElementById("loginEmail").value || "").trim();
+                const password = document.getElementById("loginPassword").value || "";
+                if (!email || !password) {
+                    if (msg) msg.textContent = "Email dan kata sandi wajib diisi.";
+                    return;
+                }
+                if (btn) btn.disabled = true;
+                if (msg) msg.textContent = "";
+                const r = await Akun.masuk(email, password);
+                if (btn) btn.disabled = false;
+                if (r.ok) {
+                    const n = new URLSearchParams(location.search).get("next");
+                    const nextTarget = n ? decodeURIComponent(n) : sessionStorage.getItem("trustx_next");
+                    try { sessionStorage.removeItem("trustx_next"); } catch {}
+                    location.replace(nextTarget || Akun.beranda(r.data.user));
+                    return;
+                }
+                const text = Akun.pesan(r.data);
+                if (msg) {
+                    msg.textContent = text;
+                    if (/belum diverifikasi/i.test(text)) {
+                        Akun.emailMenunggu.set(email);
+                        msg.appendChild(document.createTextNode(" "));
+                        const a = document.createElement("a");
+                        a.href = "verifikasi-otp.html";
+                        a.textContent = "Verifikasi OTP";
+                        msg.appendChild(a);
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>

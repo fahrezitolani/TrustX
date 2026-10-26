@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="seller.css"><link rel="stylesheet" href="seller-extra.css"><title>TrustX - Beranda Penjual</title></head>
 <body class="seller" data-page="home"><div class="wrap">
 <header class="top"><a class="brand" href="index-seller.html"><img src="./assets/images/logo-trustx.svg" alt="" width="44" height="44"><span><strong>TrustX</strong><small>Cek Dulu</small></span></a>
-    <nav class="bnav" aria-label="Navigasi utama"><a href="index-seller.html" aria-current="page" data-ic="shield">Beranda</a><a href="dashboard-laporanseller.html" data-ic="doc">Laporan</a><a href="detail-profile-seller.html?q=@seller_gadget_murah" data-ic="store">Akun Toko</a></nav>
+<nav class="bnav" aria-label="Navigasi utama"><a href="index-seller.html" aria-current="page" data-ic="shield">Beranda</a><a href="dashboard-laporanseller.html" data-ic="doc">Laporan</a><a href="detail-profile-seller.html?q=@seller_gadget_murah" data-ic="store">Akun Toko</a></nav>
 <div class="acts"><button class="ib" type="button" aria-label="Notifikasi" data-ic="bell"></button><a class="ib dark" href="profil.html" aria-label="Profil" data-ic="user"></a></div></header>
 <main>
 <section class="hero" aria-labelledby="sapa">
@@ -14,7 +14,7 @@
 <h2 id="sapa">Cek Reputasi Sebelum Transaksi</h2>
 <p>Pastikan akun penjual di X terpercaya, hindari penipuan, dan belanja dengan aman.</p>
 <ul class="hero-points">
-<li data-ic="search">Nomor WA &amp; username X</li>
+<li data-ic="search">Nomor WA & username X</li>
 <li data-ic="users">Laporan komunitas</li>
 <li data-ic="check">Riwayat transaksi aman</li>
 </ul>
@@ -34,11 +34,15 @@
 <a class="btn" href="detail-profile-seller.html?q=@seller_gadget_murah">Ajukan Sanggahan <span data-ic="arrow"></span></a></section>
 
 <section class="laporbox" aria-labelledby="lp-t"><span data-ic="handshake"></span>
-<div><h3 id="lp-t">Kena Tipu atau Transaksi Sukses?</h3><p>Bantu komunitas pembeli &amp; penjual tetap aman.</p></div>
+<div><h3 id="lp-t">Kena Tipu atau Transaksi Sukses?</h3><p>Bantu komunitas pembeli & penjual tetap aman.</p></div>
 <a class="btn" href="lapor.html"><span data-ic="plus"></span>Lapor</a></section>
 </div>
 
 <div class="feedhead"><h2>Feed Laporan Komunitas <span class="dot"></span></h2><span class="pill">Live Monitor</span></div>
 <ul class="feed" id="feed"></ul>
 </main>
-</div><script src="seller.js"></script></body></html>
+</div><script src="akun.js"></script><script src="seller.js"></script><script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (window.TrustXAkun && window.TrustXAkun.initBeranda) window.TrustXAkun.initBeranda();
+  });
+</script></body></html>
