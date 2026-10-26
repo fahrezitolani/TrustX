@@ -112,5 +112,18 @@
             </div>
         </div>
     </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            if (document.body.dataset.page !== "register") return;
+            const btns = document.querySelectorAll(".role-btn");
+            const toko = document.getElementById("tokoField");
+            function setRole(i) {
+                btns.forEach((b, j) => b.setAttribute("aria-pressed", String(j === i)));
+                if (toko) toko.hidden = (i !== 1);
+            }
+            btns.forEach((b, i) => b.addEventListener("click", () => setRole(i)));
+            setRole(0);
+        });
+    </script>
 </body>
 </html>

@@ -87,7 +87,11 @@
 
     /* Arahkan ke halaman masuk kalau belum punya token (dipakai profil.html). */
     wajibMasuk() {
-      if (!store.get(TOKEN)) { location.replace("login.html"); return false; }
+      if (!store.get(TOKEN)) {
+        try { sessionStorage.setItem("trustx_next", location.pathname.split("/").pop() + location.search); } catch {}
+        location.replace("login.html");
+        return false;
+      }
       return true;
     },
 
@@ -95,6 +99,16 @@
     beranda(user) {
       const peran = (user && user.role) || (store.get(USER) || {}).role || "buyer";
       return peran === "seller" ? "index-seller.html" : "index.html";
+    },
+
+    /* Validasi token yang tersimpan; bersihkan jika tidak valid (401/403). */
+    async validasiSesi() {
+      const token = store.get(TOKEN);
+      if (!token) return { ok: false, status: 0, user: null };
+      const r = await api("/saya/");
+      if (r.ok) { store.set(USER, r.data); return { ok: true, status: r.status, user: r.data }; }
+      if (r.status === 401 || r.status === 403) { store.del(TOKEN); store.del(USER); }
+      return { ok: false, status: r.status, user: null };
     }
   };
 

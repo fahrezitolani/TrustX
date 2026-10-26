@@ -13,6 +13,7 @@
     <title>TrustX - Cek Dulu Sebelum Transaksi</title>
 
     <link rel="stylesheet" href="style1.css">
+    <script src="akun.js" defer></script>
 </head>
 
 <body class="index" data-page="home">
@@ -388,5 +389,21 @@
     </main>
 
     <script src="script.js" defer></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const Akun = window.TrustXAkun;
+            if (!Akun) return;
+            (async () => {
+                const v = await Akun.validasiSesi();
+                if (v.ok) {
+                    let href = Akun.beranda(v.user);
+                    try { if (JSON.parse(localStorage.getItem("trustx_token"))) {} } catch {}
+                    document.querySelectorAll(".landing-login").forEach((a) => { a.href = href; });
+                } else {
+                    document.querySelectorAll(".landing-login").forEach((a) => { a.href = "login.html"; });
+                }
+            })();
+        });
+    </script>
 </body>
 </html>
