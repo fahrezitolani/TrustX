@@ -47,6 +47,7 @@
   const DETAIL = "detail-profile-seller.html";
   const PENINJAUAN = "dashboard-laporanseller.html";
   const SANGGAHAN = "sanggahan.html";
+  const API = "http://127.0.0.1:8000/api";
 
   const FEED = [
     { user: "@wts_photoc***", type: "red", label: "Laporan Tipu", icon: "alert",
@@ -145,10 +146,65 @@
 
 
   /* ---------- Detail profil ---------- */
-  function initDetail() {
+  async function initDetail() {
     const params = new URLSearchParams(location.search);
     const query = (params.get("q") || AKUN_SAYA).trim();
-    const acc = findAccount(query);
+    const m = params.get("m") === "wa" ? "wa" : "x";
+
+    /* Ambil data dari backend API; fallback ke data dummy jika gagal. */
+    let acc = null;
+    try {
+      const res = await fetch(`${API}/akun/cari/?m=${m}&q=${encodeURIComponent(query)}`);
+      if (res.ok) {
+        const d = await res.json();
+        if (d.ditemukan) {
+          const stMap = {
+            high: { risk: "high", label: "Status: Berisiko Tinggi", icon: "alert" },
+            warn: { risk: "high", label: "Status: Perlu Diwaspadai", icon: "alert" },
+            safe: { risk: "safe", label: "Status: Aman", icon: "check" },
+            none: { risk: "none", label: "Status: Belum Ada Laporan", icon: "search" }
+          };
+          const st = stMap[d.status.kode] || stMap.none;
+          acc = {
+            _fromApi: true,
+            name: d.nama,
+            wa: d.wa || "",
+            bank: "",
+            rek: "",
+            risk: st.risk,
+            rating: d.rating || 0,
+            total: (d.laporan || []).length,
+            success: d.aman || 0,
+            warning: d.status.kode === "safe"
+              ? "Belum ada laporan yang masuk. Tetap gunakan rekber untuk transaksi bernilai besar."
+              : d.status.kode === "none"
+              ? "Belum ada data statistik untuk akun ini."
+              : `Identitas ini memiliki ${(d.laporan || []).length} laporan.`,
+            reports: (d.laporan || []).map((r, i) => ({
+              id: r[0],
+              ts: r[1],
+              when: r[1] === 0 ? "Hari ini" : r[1] === 1 ? "Kemarin" : `${r[1]} Hari Lalu`,
+              text: r[2],
+              file: r[3] || `Bukti_${i + 1}.jpg`,
+              verified: r[4],
+              sanggah: null
+            }))
+          };
+        }
+      }
+    } catch { /* abaikan, pakai fallback */ }
+    if (!acc) { acc = findAccount(query); }
+
+    /* Indikator sumber data: server atau cadangan (offline). */
+    if (acc._fromApi) {
+      const el = document.createElement('div');
+      el.className = 'info';
+      el.style.cssText = 'font-size:12px;color:var(--muted);margin-top:8px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#f4f6fa';
+      el.innerHTML = '<strong>Data dari server TrustX</strong> — laporan baru akan muncul di sini setelah diverifikasi.';
+      const content = document.getElementById('content');
+      if (content) content.insertAdjacentElement('beforebegin', el);
+    }
+
     const own = isOwn(acc);
     document.getElementById("kw").textContent = acc ? acc.name : query;
     const content = document.getElementById("content");
@@ -184,7 +240,8 @@
 
     const reportsSection = `<section aria-labelledby="rh"><div class="sechead"><h2 id="rh">Riwayat Laporan Korban <span class="cnt">${acc.reports.length}</span></h2>
       <select id="sort" aria-label="Urutkan laporan"><option value="new">Terbaru</option><option value="old">Terlama</option></select></div>
-      <ul class="rep" id="rep"></ul></section>`;
+      <ul class="rep" id="rep"></ul></section>
+      <section class="card"><h2>Riwayat Transaksi Aman</h2><div id="aman"></div></section>`;
 
     content.innerHTML = `<div class="col-side">${banner}${profile}</div><div class="col-main">${reportsSection}</div>`;
 
@@ -207,9 +264,14 @@
     document.getElementById("sort").addEventListener("change", renderReports);
     renderReports();
 
+    const amanEl = document.getElementById("aman");
+    amanEl.innerHTML = acc.transaksi && acc.transaksi.length
+      ? `<ul class="rep">${acc.transaksi.map(t => `<li><p style="margin:0">${svg("check")} ${esc(t)}</p></li>`).join("")}</ul>`
+      : `<p class="safe">${acc.success ? `${acc.success} transaksi aman tercatat (rincian belum tersedia).` : "Belum ada riwayat transaksi aman yang dilaporkan."}</p>`;
+
     actbar.innerHTML = own
-      ? `<a class="btn dark" href="${toReview}">${svg("shieldcheck")}Sanggah Laporan</a><a class="btn out" href="lapor.html">${svg("flag")}Lapor Transaksi</a>`
-      : `<a class="btn pri" href="index-seller.html">Cari Akun Lain</a><a class="btn out" href="lapor.html">${svg("flag")}Lapor Transaksi</a>`;
+      ? `<a class="btn dark" href="${toReview}">${svg("shieldcheck")}Sanggah Laporan</a><a class="btn out" href="lapor.html?akun=${encodeURIComponent(acc.name)}">${svg("flag")}Lapor Transaksi</a>`
+      : `<a class="btn pri" href="index-seller.html">Cari Akun Lain</a><a class="btn out" href="lapor.html?akun=${encodeURIComponent(acc.name)}">${svg("flag")}Lapor Transaksi</a>`;
     injectIcons();
   }
 

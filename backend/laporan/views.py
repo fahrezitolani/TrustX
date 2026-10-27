@@ -78,6 +78,43 @@ def verifikasi_otp(request):
     except otp.OTPError as e:
         return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     laporan.terbitkan()
+
+    # Buat entri LaporanReputasi agar laporan muncul di halaman detail reputasi.
+    from reputasi.models import Akun, LaporanReputasi
+    username = laporan.akun_target.lstrip('@').lower()
+    platform = 'X (Twitter)' if laporan.akun_target.startswith('@') else 'WhatsApp'
+    akun, _ = Akun.objects.get_or_create(
+        username=username,
+        defaults={
+            'nomor_wa': laporan.whatsapp_target or '',
+            'platform': platform,
+            'rating': None,
+            'transaksi_aman': 0,
+            'deskripsi': '',
+        }
+    )
+    bukti_count = laporan.bukti.count()
+    LaporanReputasi.objects.create(
+        akun=akun,
+        nomor_tiket=laporan.nomor_tiket,
+        status_trans=laporan.status_transaksi,
+        kronologi=laporan.kronologi,
+        hari_lalu=0,
+        bukti_count=bukti_count,
+        terverifikasi=True,
+    )
+
+    # Jika status aman, buat entri TransaksiAman dan increment counter
+    if laporan.status_transaksi == Laporan.StatusTransaksi.AMAN:
+        from reputasi.models import TransaksiAman
+        TransaksiAman.objects.create(
+            akun=akun,
+            deskripsi=laporan.kronologi,
+            dilaporkan_oleh=laporan.nomor_pelapor,
+        )
+        akun.transaksi_aman = (akun.transaksi_aman or 0) + 1
+        akun.save()
+
     return Response(TiketSerializer(laporan).data)
 
 
