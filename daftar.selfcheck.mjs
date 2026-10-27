@@ -20,7 +20,7 @@ kotak.registerForm.onsubmit = null;
 
 let dikirim = null, pindah = "";
 globalThis.window = { TrustXAkun: {
-  daftar(d) { dikirim = d; return fetch("http://127.0.0.1:8000/api/akun/daftar/",
+  daftar(d) { dikirim = d; return fetch("https://fahrezitolani.pythonanywhere.com/api/akun/daftar/",
     { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d) })
     .then((r) => r.json().then((j) => ({ ok: r.ok, status: r.status, data: j }))); },
   pesan: (d) => JSON.stringify(d), emailMenunggu: { set() {} }, beranda: () => "index.html" } };

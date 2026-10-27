@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Jalankan hanya pada halaman sanggahan.
     if (!form) return;
 
-    const API = "http://127.0.0.1:8000";
+    const API = "https://fahrezitolani.pythonanywhere.com";
 
     const reportId = document.getElementById("reportId");
     const storeName = document.getElementById("storeName");

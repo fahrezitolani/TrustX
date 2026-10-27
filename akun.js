@@ -2,7 +2,7 @@
 /* Fitur Autentikasi & Akun (daftar.html, login.html, verifikasi-otp.html, profil.html).
    Terhubung ke backend Django (folder backend/). Jalankan dulu: python manage.py runserver */
 (() => {
-  const API = "http://127.0.0.1:8000/api/akun";
+  const API = "https://fahrezitolani.pythonanywhere.com/api/akun";
   const TOKEN = "trustx_token", USER = "trustx_user";
   const PESAN_GAGAL = "Tidak dapat terhubung ke server. Pastikan backend berjalan, lalu coba lagi.";
 

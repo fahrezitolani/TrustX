@@ -169,10 +169,12 @@ OAUTH_CALLBACK_BASE = os.getenv('OAUTH_CALLBACK_BASE', 'http://localhost:8000')
 FRONTEND_BASE = os.getenv('FRONTEND_BASE', 'http://127.0.0.1:5501')
 
 # Frontend dibuka dari alamat lain (file / Live Server), jadi CORS dibuka saat development
-CORS_ALLOW_ALL_ORIGINS = DEBUG
+CORS_ALLOW_ALL_ORIGINS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5501",
     "http://localhost:5501",
+    "https://*.railway.app",
+    "https://*.vercel.app",
 ]
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_HTTPONLY = False

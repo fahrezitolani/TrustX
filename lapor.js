@@ -15,7 +15,7 @@
    Terhubung ke backend Django. Jalankan dulu: python manage.py runserver
    ===================================================================== */
 (() => {
-  const API = "http://127.0.0.1:8000/api"; // ganti saat backend sudah di-deploy
+  const API = "https://fahrezitolani.pythonanywhere.com/api"; // ganti saat backend sudah di-deploy
   const KEY = "trustx_draft", TIKET = "trustx_tiket";
   // TODO: ambil dari akun yang login (fitur 1). Sementara memakai nomor tetap.
   const PELAPOR = "081246817890";
@@ -644,7 +644,7 @@
   const list = document.querySelector(".laporan-list");
   if (!list) return;
 
-  const API_BASE = "http://127.0.0.1:8000/api";
+  const API_BASE = "https://fahrezitolani.pythonanywhere.com/api";
   const emptyState = document.getElementById("laporanEmptyState");
   const emptyTitle = document.getElementById("emptyTitle");
   const emptyText = document.getElementById("emptyText");
@@ -995,7 +995,7 @@
       if (errorState) {
         errorState.hidden = false;
         if (errorStateText) {
-          errorStateText.textContent = `Koneksi ke endpoint ${url} gagal. Pesan: ${err.message}. Pastikan server backend Django berjalan di http://127.0.0.1:8000.`;
+          errorStateText.textContent = `Koneksi ke endpoint ${url} gagal. Pesan: ${err.message}. Pastikan server backend Django berjalan di https://fahrezitolani.pythonanywhere.com.`;
         }
       }
       showToast("Gagal terhubung ke server backend Django", "error");

@@ -7,7 +7,7 @@
 
 (() => { // SANGGAHAN_IIFE: dibungkus agar tidak bentrok dengan variabel global lain
 
-const API_BASE = "http://127.0.0.1:8000/api";
+const API_BASE = "https://fahrezitolani.pythonanywhere.com/api";
 // Sesi aktif seller: @buyer_gadget (atau dari query param ?akun=)
 const AKUN_SAYA = new URLSearchParams(location.search).get("akun") || "@buyer_gadget";
 const AJUKAN_SANGGAHAN = "sanggahan.html";
@@ -394,7 +394,7 @@ async function loadSanggahan() {
     if (emptyState) emptyState.hidden = true;
     if (errorEl) {
       errorEl.hidden = false;
-      if (errorTextEl) errorTextEl.textContent = "Tidak dapat terhubung ke server Django di http://127.0.0.1:8000. Pastikan server backend sedang aktif.";
+      if (errorTextEl) errorTextEl.textContent = "Tidak dapat terhubung ke server Django di https://fahrezitolani.pythonanywhere.com. Pastikan server backend sedang aktif.";
     }
     showToast("Gagal terhubung ke server backend", "error");
     return;
