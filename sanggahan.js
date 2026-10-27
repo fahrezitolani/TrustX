@@ -7,7 +7,7 @@
 
 (() => { // SANGGAHAN_IIFE: dibungkus agar tidak bentrok dengan variabel global lain
 
-const API_BASE = "http://127.0.0.1:8000/api";
+const API_BASE = "https://fahrezitolani.pythonanywhere.com/api";
 // Sesi aktif seller: dari query param ?akun= (kosong = tampilkan semua laporan toko)
 const AKUN_SAYA = new URLSearchParams(location.search).get("akun") || "";
 const AJUKAN_SANGGAHAN = "sanggahan.html";

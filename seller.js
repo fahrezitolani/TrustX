@@ -47,7 +47,7 @@
   const DETAIL = "detail-profile-seller.html";
   const PENINJAUAN = "dashboard-laporanseller.html";
   const SANGGAHAN = "sanggahan.html";
-  const API = "http://127.0.0.1:8000/api";
+  const API = "https://fahrezitolani.pythonanywhere.com/api";
 
   const FEED = [
     { user: "@wts_photoc***", type: "red", label: "Laporan Tipu", icon: "alert",

@@ -23,7 +23,7 @@ const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const qs = (m, q) => `m=${m}&q=${encodeURIComponent(q)}`;
 const waktu = d => d === 0 ? "Hari ini" : d === 1 ? "Kemarin" : `${d} hari lalu`;
-const API = "http://127.0.0.1:8000/api";
+const API = "https://fahrezitolani.pythonanywhere.com/api";
 
 /* ---------- Home ---------- */
 function initHome() {
