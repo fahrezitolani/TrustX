@@ -32,7 +32,13 @@ def cari_akun_obj(m, q):
     k = normalisasi(m, q)
     if m == 'wa':
         return Akun.objects.filter(nomor_wa=k).first()
-    return Akun.objects.filter(username__iexact=k).first()
+    # Coba exact match dulu, baru contains match sebagai fallback
+    # agar pencarian dengan query yang tidak lengkap (mis. tanpa suffix ***)
+    # tetap dapat menemukan akun.
+    akun = Akun.objects.filter(username__iexact=k).first()
+    if akun:
+        return akun
+    return Akun.objects.filter(username__icontains=k).first()
 
 
 def _samarkan_wa(nomor):
@@ -45,7 +51,7 @@ def _samarkan_wa(nomor):
 
 def _bangun_response(akun):
     """Bangun response sesuai frontend buyer.js fungsi cari()."""
-    laporans = akun.laporan_reputasi.all().order_by('-dibuat')
+    laporans = akun.laporan_reputasi.exclude(status_trans='aman').order_by('-dibuat')
     return {
         'ditemukan': True,
         'id': akun.id,
