@@ -23,6 +23,7 @@ const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const qs = (m, q) => `m=${m}&q=${encodeURIComponent(q)}`;
 const waktu = d => d === 0 ? "Hari ini" : d === 1 ? "Kemarin" : `${d} hari lalu`;
+const API = "http://127.0.0.1:8000/api";
 
 /* ---------- Home ---------- */
 function initHome() {
@@ -93,11 +94,35 @@ function initHasil() {
 }
 
 /* ---------- Detail Profile Buyer ---------- */
-function initDetail() {
+async function initDetail() {
   const k = ambilKonteks(); if (!k) return;
-  const { a, ctx } = k;
-  if (!a) { location.replace(`${ROUTE.hasil}?${ctx}`); return; }
+  const { m, q, ctx } = k;
   $("back").href = `${ROUTE.hasil}?${ctx}`;
+
+  /* Ambil data dari backend API; fallback ke data dummy jika gagal. */
+  let a = null;
+  try {
+    const res = await fetch(`${API}/akun/cari/?m=${m}&q=${encodeURIComponent(q)}`);
+    if (res.ok) { const d = await res.json(); if (d.ditemukan) { a = d; a._fromApi = true; } }
+  } catch { /* abaikan, pakai fallback */ }
+  if (!a) { a = cari(m, q); }
+  if (!a) { location.replace(`${ROUTE.hasil}?${ctx}`); return; }
+
+  /* Indikator sumber data: server atau cadangan (offline). */
+  const fromApi = a._fromApi;
+  if (fromApi) {
+    const el = document.createElement('div');
+    el.className = 'info';
+    el.style.cssText = 'font-size:12px;color:var(--muted);margin-top:8px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#f4f6fa';
+    el.innerHTML = '<strong>Data dari server TrustX</strong> — laporan baru akan muncul di sini setelah diverifikasi.';
+    const content = document.getElementById('content');
+    if (content) content.insertAdjacentElement('beforebegin', el);
+  }
+
+  /* Arahkan tombol Lapor Transaksi ke formulir dengan akun yang sedang dilihat. */
+  const laporBtn = document.querySelector('.actbar .btn.out[data-ic="flag"]');
+  if (laporBtn) laporBtn.href = `lapor.html?akun=${encodeURIComponent(a.nama)}`;
+
   const s = a.status, n = a.laporan.length, v = a.laporan.filter(r => r[4]).length;
   const cls = { high: "s-high", warn: "s-warn", safe: "s-safe", none: "s-none" }[s.kode];
   const ikon = s.kode === "safe" ? "check" : s.kode === "none" ? "search" : "alert";
