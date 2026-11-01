@@ -42,21 +42,17 @@
   }
 
   /* ---------- Data demo ---------- */
-  // Akun toko milik penjual yang sedang login (ganti dengan data sesi nyata).
-  const AKUN_SAYA = new URLSearchParams(location.search).get("akun") || "@buyer_gadget";
+  // Akun toko milik penjual yang sedang login: "@" + nama toko tanpa spasi
+  // (mis. "Toko Maju Jaya" -> "@tokomajujaya"). Parameter ?akun= tetap bisa menimpa.
+  const slugToko = (nama) => String(nama || "").toLowerCase().replace(/[^a-z0-9_]/g, "");
+  const PENGGUNA = (() => { try { return JSON.parse(localStorage.getItem("trustx_user")) || {}; } catch { return {}; } })();
+  const AKUN_SAYA = new URLSearchParams(location.search).get("akun")
+    || (slugToko(PENGGUNA.toko_nama) ? "@" + slugToko(PENGGUNA.toko_nama) : "@buyer_gadget");
   const DETAIL = "detail-profile-seller.html";
   const PENINJAUAN = "dashboard-laporanseller.html";
   const SANGGAHAN = "sanggahan.html";
   const API = "https://fahrezitolani.pythonanywhere.com/api";
 
-  const FEED = [
-    { user: "@wts_photoc***", type: "red", label: "Laporan Tipu", icon: "alert",
-      text: "No. WA: 0813-9821-xxxx • DP tiket konser ditransfer tapi tiket fisik tidak dikirim & kontak langsung diblokir.",
-      time: "12 menit lalu", meta: "4 korban melapor", metaIcon: "userx", metaClass: "red" },
-    { user: "@trustedseller_id", type: "green", label: "Terverifikasi Aman", icon: "check",
-      text: "Pembelian album sealed tiba aman packing tebal bubble wrap kardus double wall. Fast respon rekber TrustX disetujui.",
-      time: "1 jam lalu", meta: "38 testimoni positif", metaIcon: "thumb" }
-  ];
 
   const ACCOUNTS = {
     "@buyer_gadget": {
@@ -104,17 +100,51 @@
   }
   const isOwn = (acc) => !!acc && normUser(acc.name) === normUser(AKUN_SAYA);
 
+  /* ---------- Feed Laporan Komunitas (data asli dari database) ---------- */
+  const relatif = (iso) => {
+    const menit = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+    if (menit < 1) return "Baru saja";
+    if (menit < 60) return `${menit} menit lalu`;
+    const jam = Math.round(menit / 60);
+    if (jam < 24) return `${jam} jam lalu`;
+    return `${Math.round(jam / 24)} hari lalu`;
+  };
+  async function muatFeed(feed) {
+    const pesan = (t) => { feed.innerHTML = `<li class="fi"><p style="margin:0;color:var(--muted)">${t}</p></li>`; };
+    pesan("Memuat laporan komunitas...");
+    let daftar;
+    try {
+      const res = await fetch(`${API}/laporan-akun/`);
+      if (!res.ok) throw new Error(res.status);
+      daftar = (await res.json()).laporan || [];
+    } catch {
+      pesan("Feed belum bisa dimuat. Periksa koneksi lalu muat ulang halaman."); return;
+    }
+    if (!daftar.length) { pesan("Belum ada laporan dari komunitas."); return; }
+    const kunci = (l) => `${String(l.akun).toLowerCase()}|${l.statusTransaksi}`;
+    const hitung = {};
+    daftar.forEach((l) => { hitung[kunci(l)] = (hitung[kunci(l)] || 0) + 1; });
+    feed.innerHTML = daftar.slice(0, 10).map((l) => {
+      const tipu = l.statusTransaksi === "scam";
+      const n = hitung[kunci(l)];
+      const nomor = /^[0-9+][0-9\s-]{7,}$/.test(String(l.akun).trim());
+      const href = `${DETAIL}?m=${nomor ? "wa" : "x"}&q=${encodeURIComponent(l.akun)}`;
+      const teks = (l.whatsapp ? `No. WA: ${l.whatsapp} • ` : "") + l.kronologi;
+      return `
+      <li class="fi"><header>
+        <a class="who" href="${href}"><i class="av">@</i>${esc(l.akun)}</a>
+        <span class="badge b-${tipu ? "red" : "green"}">${svg(tipu ? "alert" : "check")}${tipu ? "Laporan Tipu" : "Transaksi Aman"}</span></header>
+        <blockquote>${esc(teks)}</blockquote>
+        <footer><span>${svg("clock")}${esc(l.diterbitkan ? relatif(l.diterbitkan) : "")}</span>
+        <span style="color:var(--${tipu ? "red" : "navy"});font-weight:700">${svg(tipu ? "userx" : "thumb")}${n} ${tipu ? "laporan tipu" : "transaksi aman"}</span></footer></li>`;
+    }).join("");
+  }
+
   /* ---------- Beranda ---------- */
   function initHome() {
     const feed = document.getElementById("feed");
     if (!feed) return;
-    feed.innerHTML = FEED.map((f) => `
-      <li class="fi"><header>
-        <a class="who" href="${DETAIL}?q=${encodeURIComponent(f.user)}"><i class="av">@</i>${esc(f.user)}</a>
-        <span class="badge b-${f.type}">${svg(f.icon)}${esc(f.label)}</span></header>
-        <blockquote>${esc(f.text)}</blockquote>
-        <footer><span>${svg("clock")}${esc(f.time)}</span>
-        <span${f.metaClass === "red" ? ' style="color:var(--red);font-weight:700"' : ' style="color:var(--navy);font-weight:700"'}>${svg(f.metaIcon)}${esc(f.meta)}</span></footer></li>`).join("");
+    muatFeed(feed);
 
     const tabs = document.querySelectorAll(".tab");
     const q = document.getElementById("q");
@@ -151,12 +181,13 @@
     const query = (params.get("q") || AKUN_SAYA).trim();
     const m = params.get("m") === "wa" ? "wa" : "x";
 
-    /* Ambil data dari backend API; fallback ke data dummy jika gagal. */
-    let acc = null;
+    /* Ambil data dari backend API; data contoh hanya dipakai kalau server tidak terjangkau. */
+    let acc = null, serverOk = false;
     try {
       const res = await fetch(`${API}/akun/cari/?m=${m}&q=${encodeURIComponent(query)}`);
       if (res.ok) {
         const d = await res.json();
+        serverOk = true;
         if (d.ditemukan) {
           const stMap = {
             high: { risk: "high", label: "Status: Berisiko Tinggi", icon: "alert" },
@@ -175,6 +206,7 @@
             rating: d.rating || 0,
             total: (d.laporan || []).length,
             success: d.aman || 0,
+            transaksi: d.transaksi || [],
             warning: d.status.kode === "safe"
               ? "Belum ada laporan yang masuk. Tetap gunakan rekber untuk transaksi bernilai besar."
               : d.status.kode === "none"
@@ -193,10 +225,10 @@
         }
       }
     } catch { /* abaikan, pakai fallback */ }
-    if (!acc) { acc = findAccount(query); }
+    if (!acc && !serverOk) { acc = findAccount(query); }
 
     /* Indikator sumber data: server atau cadangan (offline). */
-    if (acc._fromApi) {
+    if (acc && acc._fromApi) {
       const el = document.createElement('div');
       el.className = 'info';
       el.style.cssText = 'font-size:12px;color:var(--muted);margin-top:8px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#f4f6fa';
@@ -220,7 +252,8 @@
 
     const firstSanggah = acc.reports.find((r) => r.sanggah) || acc.reports[0];
     const toReview = PENINJAUAN + (firstSanggah ? "?id=" + encodeURIComponent(firstSanggah.id) : "");
-    const risk = { high: ["s-high", "Status: Berisiko Tinggi", "alert"], safe: ["s-safe", "Status: Aman", "check"] }[acc.risk];
+    const risk = { high: ["s-high", "Status: Berisiko Tinggi", "alert"], safe: ["s-safe", "Status: Aman", "check"],
+      none: ["s-safe", "Status: Belum Ada Laporan", "search"] }[acc.risk] || ["s-safe", "Status: Belum Ada Laporan", "search"];
 
     const banner = own ? `<section class="sg-banner" aria-label="Hak sanggah penjual"><span>${svg("shieldcheck")}</span>
         <div><b>Ini Akun Toko Kamu?</b><small>Gunakan hak sanggah</small></div>
@@ -301,8 +334,18 @@ function initReports() {
   return;
 }
 
+  /* Tautan "Akun Toko" / "Ajukan Sanggahan" di HTML masih berisi akun contoh;
+     arahkan ke akun toko milik penjual yang sedang login. */
+  function arahkanTautanToko() {
+    if (!slugToko(PENGGUNA.toko_nama)) return;
+    document.querySelectorAll('a[href*="detail-profile-seller.html?q="]').forEach((a) => {
+      a.href = `${DETAIL}?m=x&q=${encodeURIComponent(AKUN_SAYA)}`;
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     injectIcons();
+    arahkanTautanToko();
     const page = document.body.dataset.page;
     if (page === "home") initHome();
     if (page == "report") initReports();

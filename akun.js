@@ -175,6 +175,17 @@
 
     const sapa = document.getElementById("sapa");
     if (sapa) sapa.textContent = Akun.sapaPengguna(user);
+    tandaiClarity(user);
+  }
+
+  /* Microsoft Clarity: beri label akun & peran pada rekaman, supaya sesi tiap penguji
+     usability testing mudah dipisahkan (filter "Custom ID" / tag "peran" di dashboard). */
+  function tandaiClarity(user) {
+    if (!user || typeof window.clarity !== "function") return;
+    try {
+      window.clarity("identify", String(user.email || user.username), undefined, undefined, String(user.first_name || user.username || ""));
+      window.clarity("set", "peran", user.role === "seller" ? "penjual" : "pembeli");
+    } catch { /* Clarity diblokir (mis. ad blocker) */ }
   }
 
   window.TrustXAkun = Akun;

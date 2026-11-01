@@ -1,6 +1,7 @@
 """View: satu fungsi = satu endpoint API."""
 from datetime import timedelta
 
+from django.conf import settings
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -9,6 +10,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from . import otp
+from .layanan import terbitkan_dan_sinkron
 from .models import Laporan
 from .serializers import LaporanBaruSerializer, TiketSerializer, samarkan
 
@@ -39,15 +41,24 @@ def cek_akun(request):
 
 @api_view(['POST'])
 def buat_laporan(request):
-    """POST /api/laporan/ (multipart) -> simpan laporan, lalu kirim OTP"""
+    """POST /api/laporan/ (multipart) -> simpan laporan.
+
+    - LAPORAN_PERLU_OTP mati (default): laporan langsung terbit, respons berisi nomor_tiket.
+    - LAPORAN_PERLU_OTP nyala: kirim OTP, laporan terbit setelah /api/otp/verifikasi/.
+    """
     serializer = LaporanBaruSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     laporan = serializer.save()
+    data = {'laporan_id': laporan.id, 'nomor_pelapor': samarkan(laporan.nomor_pelapor)}
+
+    if not getattr(settings, 'LAPORAN_PERLU_OTP', False):
+        terbitkan_dan_sinkron(laporan)
+        data.update({'perlu_otp': False, 'nomor_tiket': laporan.nomor_tiket})
+        return Response(data, status=status.HTTP_201_CREATED)
+
     otp.buat_dan_kirim(laporan, laporan.nomor_pelapor)
-    return Response(
-        {'laporan_id': laporan.id, 'nomor_pelapor': samarkan(laporan.nomor_pelapor)},
-        status=status.HTTP_201_CREATED,
-    )
+    data['perlu_otp'] = True
+    return Response(data, status=status.HTTP_201_CREATED)
 
 
 def _laporan_menunggu(raw_id):
@@ -77,44 +88,7 @@ def verifikasi_otp(request):
         otp.verifikasi(laporan, str(request.data.get('kode', '')))
     except otp.OTPError as e:
         return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    laporan.terbitkan()
-
-    # Buat entri LaporanReputasi agar laporan muncul di halaman detail reputasi.
-    from reputasi.models import Akun, LaporanReputasi
-    username = laporan.akun_target.lstrip('@').lower()
-    platform = 'X (Twitter)' if laporan.akun_target.startswith('@') else 'WhatsApp'
-    akun, _ = Akun.objects.get_or_create(
-        username=username,
-        defaults={
-            'nomor_wa': laporan.whatsapp_target or '',
-            'platform': platform,
-            'rating': None,
-            'transaksi_aman': 0,
-            'deskripsi': '',
-        }
-    )
-    bukti_count = laporan.bukti.count()
-    LaporanReputasi.objects.create(
-        akun=akun,
-        nomor_tiket=laporan.nomor_tiket,
-        status_trans=laporan.status_transaksi,
-        kronologi=laporan.kronologi,
-        hari_lalu=0,
-        bukti_count=bukti_count,
-        terverifikasi=True,
-    )
-
-    # Jika status aman, buat entri TransaksiAman dan increment counter
-    if laporan.status_transaksi == Laporan.StatusTransaksi.AMAN:
-        from reputasi.models import TransaksiAman
-        TransaksiAman.objects.create(
-            akun=akun,
-            deskripsi=laporan.kronologi,
-            dilaporkan_oleh=laporan.nomor_pelapor,
-        )
-        akun.transaksi_aman = (akun.transaksi_aman or 0) + 1
-        akun.save()
-
+    terbitkan_dan_sinkron(laporan)
     return Response(TiketSerializer(laporan).data)
 
 
@@ -146,6 +120,7 @@ def laporan_akun(request):
     return Response({'laporan': [{
         'nomor_tiket': l.nomor_tiket,
         'akun': l.akun_target,
+        'whatsapp': samarkan(l.whatsapp_target) if l.whatsapp_target else '',
         'statusTransaksi': l.status_transaksi,
         'kronologi': l.kronologi,
         'jumlahBukti': _jumlah_bukti(l),

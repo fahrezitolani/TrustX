@@ -168,6 +168,12 @@ OAUTH_CALLBACK_BASE = os.getenv('OAUTH_CALLBACK_BASE', 'http://localhost:8000')
 # Alamat frontend statis (Live Server). Dipakai callback OAuth untuk redirect balik.
 FRONTEND_BASE = os.getenv('FRONTEND_BASE', 'http://127.0.0.1:5501')
 
+# OTP saat membuat laporan. Default MATI: kode OTP simulasi hanya muncul di terminal
+# server, jadi pengguna (mis. saat usability testing) tidak bisa melihatnya.
+# Laporan langsung terbit. Isi LAPORAN_PERLU_OTP=1 di .env untuk menyalakan lagi.
+# OTP saat daftar akun tidak terpengaruh setting ini.
+LAPORAN_PERLU_OTP = os.getenv('LAPORAN_PERLU_OTP', '0').strip().lower() in ('1', 'true', 'yes', 'ya')
+
 # Frontend dibuka dari alamat lain (file / Live Server), jadi CORS dibuka saat development
 CORS_ALLOW_ALL_ORIGINS = True
 CSRF_TRUSTED_ORIGINS = [

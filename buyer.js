@@ -48,14 +48,66 @@ function initHome() {
     setTimeout(() => { location.href = `${ROUTE.hasil}?${qs(mode, input.value.trim())}`; }, 600);
   });
   addEventListener("pageshow", () => { btn.disabled = false; btn.innerHTML = label; });
-  $("feed").innerHTML = FEED.map(f => {
-    const tipu = f.tipe === "tipu";
-    const href = `${ROUTE.detail}?${qs("x", f.id)}`;
-    return `<li class="fi"><header><a class="who" href="${href}" aria-label="Lihat detail reputasi ${esc(f.akun)}"><i class="av">${esc(f.akun.replace("@", "")[0])}</i>${esc(f.akun)}</a>
-      <span class="badge ${tipu ? "b-red" : "b-green"}">${svg(tipu ? "alert" : "check")}${tipu ? "Laporan Tipu" : "Terverifikasi Aman"}</span></header>
-      <blockquote>${esc(f.teks)}</blockquote>
-      <footer><span>${svg("clock")}${esc(f.waktu)}</span><span>${svg(tipu ? "users" : "check")}${esc(f.info)}</span></footer></li>`;
+  muatFeed();
+}
+
+
+/* ---------- Feed Laporan Komunitas (data asli dari database) ---------- */
+const relatif = iso => {
+  const menit = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+  if (menit < 1) return "Baru saja";
+  if (menit < 60) return `${menit} menit lalu`;
+  const jam = Math.round(menit / 60);
+  if (jam < 24) return `${jam} jam lalu`;
+  return `${Math.round(jam / 24)} hari lalu`;
+};
+/* Tautan detail: username X -> m=x, nomor -> m=wa. Kosong kalau format tidak dikenali. */
+function tautanAkun(akun) {
+  const a = String(akun || "").trim();
+  if (!validasi("x", a)) return `${ROUTE.detail}?${qs("x", a)}`;
+  if (!validasi("wa", a)) return `${ROUTE.detail}?${qs("wa", a)}`;
+  return "";
+}
+async function muatFeed() {
+  const feed = $("feed");
+  feed.innerHTML = `<li class="fi"><p class="safe" style="margin:0">Memuat laporan komunitas...</p></li>`;
+  let daftar;
+  try {
+    const res = await fetch(`${API}/laporan-akun/`);
+    if (!res.ok) throw new Error(res.status);
+    daftar = (await res.json()).laporan || [];
+  } catch {
+    feed.innerHTML = `<li class="fi"><p class="safe" style="margin:0">Feed belum bisa dimuat. Periksa koneksi lalu muat ulang halaman.</p></li>`;
+    return;
+  }
+  if (!daftar.length) {
+    feed.innerHTML = `<li class="fi"><p class="safe" style="margin:0">Belum ada laporan dari komunitas. Jadilah yang pertama melapor.</p></li>`;
+    return;
+  }
+  const hitung = {};
+  daftar.forEach(l => { const k = `${String(l.akun).toLowerCase()}|${l.statusTransaksi}`; hitung[k] = (hitung[k] || 0) + 1; });
+  feed.innerHTML = daftar.slice(0, 10).map(l => {
+    const tipu = l.statusTransaksi === "scam";
+    const n = hitung[`${String(l.akun).toLowerCase()}|${l.statusTransaksi}`];
+    const href = tautanAkun(l.akun);
+    const nama = esc(l.akun), huruf = esc(String(l.akun).replace("@", "")[0] || "?").toUpperCase();
+    const who = href ? `<a class="who" href="${href}" aria-label="Lihat detail reputasi ${nama}"><i class="av">${huruf}</i>${nama}</a>`
+      : `<span class="who"><i class="av">${huruf}</i>${nama}</span>`;
+    const teks = (l.whatsapp ? `No. WA: ${l.whatsapp} • ` : "") + l.kronologi;
+    return `<li class="fi"><header>${who}
+      <span class="badge ${tipu ? "b-red" : "b-green"}">${svg(tipu ? "alert" : "check")}${tipu ? "Laporan Tipu" : "Transaksi Aman"}</span></header>
+      <blockquote>${esc(teks)}</blockquote>
+      <footer><span>${svg("clock")}${esc(l.diterbitkan ? relatif(l.diterbitkan) : "")}</span><span>${svg(tipu ? "users" : "check")}${n} ${tipu ? "laporan tipu" : "transaksi aman"}</span></footer></li>`;
   }).join("");
+}
+
+/* Ambil data akun dari server. Cadangan data contoh hanya dipakai kalau server tidak bisa dihubungi. */
+async function ambilAkun(m, q) {
+  try {
+    const res = await fetch(`${API}/akun/cari/?m=${m}&q=${encodeURIComponent(q)}`);
+    if (res.ok) { const d = await res.json(); return d.ditemukan ? { ...d, _fromApi: true } : null; }
+  } catch { /* server tidak terjangkau */ }
+  return cari(m, q);
 }
 
 /* ---------- Konteks pencarian (dipakai Hasil & Detail) ---------- */
@@ -65,7 +117,7 @@ function ambilKonteks() {
   const ctx = qs(m, q);
   $("kw").textContent = q;
   $("ubah").href = `${ROUTE.home}?${ctx}`;
-  return { m, q, ctx, a: cari(m, q) };
+  return { m, q, ctx };
 }
 const tipsCard = () => `<section class="card tips"><h3>Tips aman transaksi medsos:</h3><ul>${TIPS.map(t => `<li>${esc(t)}</li>`).join("")}</ul></section>`;
 const aksi = (lapor = true) => `<div class="stack">${lapor ? `<a class="btn pri dark" href="${ROUTE.lapor}">+ LAPORKAN PENGALAMAN TRANSAKSI</a>` : ""}<a class="btn sec" href="${ROUTE.home}">Cari Akun Lain (Reset Pencarian)</a></div>`;
@@ -73,9 +125,11 @@ const emptyState = (badge, judul, teks) => `<section class="empty"><div class="i
   <span class="badge b-gray">${badge}</span><h2>${judul}</h2><p>${teks}</p></section>`;
 
 /* ---------- Hasil ---------- */
-function initHasil() {
+async function initHasil() {
   const k = ambilKonteks(); if (!k) return;
-  const { a, ctx } = k, out = $("content");
+  const { ctx } = k, out = $("content");
+  out.innerHTML = `<section class="card"><p class="safe" style="margin:0">Memeriksa database TrustX...</p></section>`;
+  const a = await ambilAkun(k.m, k.q);
   if (!a) {
     out.innerHTML = emptyState("TIDAK DITEMUKAN", "Identitas Tidak Ditemukan", "Identitas ini tidak ada di database TrustX. Periksa kembali penulisan atau coba pencarian lain. Tidak adanya data bukan berarti akun aman.") + tipsCard() + aksi(false);
   } else if (a.status.kode === "none") {
@@ -99,13 +153,8 @@ async function initDetail() {
   const { m, q, ctx } = k;
   $("back").href = `${ROUTE.hasil}?${ctx}`;
 
-  /* Ambil data dari backend API; fallback ke data dummy jika gagal. */
-  let a = null;
-  try {
-    const res = await fetch(`${API}/akun/cari/?m=${m}&q=${encodeURIComponent(q)}`);
-    if (res.ok) { const d = await res.json(); if (d.ditemukan) { a = d; a._fromApi = true; } }
-  } catch { /* abaikan, pakai fallback */ }
-  if (!a) { a = cari(m, q); }
+  /* Ambil data dari backend API (cadangan data contoh hanya saat server tidak terjangkau). */
+  const a = await ambilAkun(m, q);
   if (!a) { location.replace(`${ROUTE.hasil}?${ctx}`); return; }
 
   /* Indikator sumber data: server atau cadangan (offline). */
@@ -145,12 +194,12 @@ async function initDetail() {
     if (!n) { rep.innerHTML = `<li class="safe">Belum ada laporan untuk akun ini.</li>`; return; }
     const d = [...a.laporan].sort((x, y) => urut === "lama" ? y[1] - x[1] : x[1] - y[1]);
     rep.innerHTML = d.map(r => `<li><header><span><span class="dot" style="margin:0 8px 2px 0"></span>Laporan #${esc(r[0])}</span><time>${waktu(r[1])}</time></header>
-      <p>“${esc(r[2])}”</p><div class="chips"><span class="chip">${svg("image")}${esc(r[3])}</span>
+      <p>“${esc(r[2])}”</p><div class="chips">${r[3] ? `<span class="chip">${svg("image")}${esc(r[3])}</span>` : ""}
       <span class="chip">${svg(r[4] ? "check" : "clock")}${r[4] ? "Terverifikasi Admin" : "Menunggu Verifikasi"}</span></div></li>`).join("");
   };
   tampil("baru");
   if ($("urut")) $("urut").addEventListener("change", e => tampil(e.target.value));
-  $("aman").innerHTML = a.transaksi ? `<ul class="rep">${a.transaksi.map(t => `<li><p style="margin:0">${svg("check")} ${esc(t)}</p></li>`).join("")}</ul>`
+  $("aman").innerHTML = a.transaksi && a.transaksi.length ? `<ul class="rep">${a.transaksi.map(t => `<li><p style="margin:0">${svg("check")} ${esc(t)}</p></li>`).join("")}</ul>`
     : `<p class="safe">${a.aman ? `${a.aman} transaksi aman tercatat (rincian belum tersedia).` : "Belum ada riwayat transaksi aman yang dilaporkan."}</p>`;
 }
 

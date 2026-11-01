@@ -13,13 +13,14 @@
             t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
         })(window, document, "clarity", "script", "z5u4zp3oz8");
+        try { var u = JSON.parse(localStorage.getItem("trustx_user")); if (u) { clarity("identify", String(u.email || u.username), undefined, undefined, String(u.first_name || u.username || "")); clarity("set", "peran", u.role === "seller" ? "penjual" : "pembeli"); } } catch (e) {}
     </script>
 </head>
 <body class="lapor" data-page="sukses">
   <header class="top sx"><span></span><h1>Status Laporan</h1><a href="index.html">Tutup</a></header>
   <main>
     <div class="ok-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
-    <div class="sx-t"><h2>Laporan Berhasil Diterbitkan!</h2><p id="otp-status">Verifikasi OTP valid. Laporan Anda telah tayang di database.</p></div>
+    <div class="sx-t"><h2>Laporan Berhasil Diterbitkan!</h2><p id="otp-status">Laporan Anda telah tayang di database.</p></div>
     <article class="card tk" aria-label="Detail laporan">
       <div class="tk-h"><div><small>Nomor Tiket Laporan (ID)</small><strong id="t-id">#LP-2026-X992</strong></div><span class="pill">Terverifikasi Publik</span></div>
       <dl>

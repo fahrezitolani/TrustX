@@ -13,6 +13,7 @@
             t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
         })(window, document, "clarity", "script", "z5u4zp3oz8");
+        try { var u = JSON.parse(localStorage.getItem("trustx_user")); if (u) { clarity("identify", String(u.email || u.username), undefined, undefined, String(u.first_name || u.username || "")); clarity("set", "peran", u.role === "seller" ? "penjual" : "pembeli"); } } catch (e) {}
     </script>
 </head>
 <body class="lapor" data-page="lapor">
@@ -97,7 +98,7 @@
       </section>
 
       <p class="err" id="err-form" role="alert"></p>
-      <button class="btn" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>Lanjutkan ke Verifikasi OTP</button>
+      <button class="btn" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>Kirim Laporan</button>
     </form>
   </main>
   <script src="lapor.js"></script>

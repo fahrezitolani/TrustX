@@ -17,8 +17,11 @@
 (() => {
   const API = "https://fahrezitolani.pythonanywhere.com/api"; // ganti saat backend sudah di-deploy
   const KEY = "trustx_draft", TIKET = "trustx_tiket";
-  // TODO: ambil dari akun yang login (fitur 1). Sementara memakai nomor tetap.
-  const PELAPOR = "081246817890";
+  // Nomor pelapor diambil dari akun yang sedang login; nomor tetap hanya cadangan.
+  const PELAPOR = (() => {
+    try { const u = JSON.parse(localStorage.getItem("trustx_user")); if (u && u.nomor_whatsapp) return u.nomor_whatsapp; } catch { /* abaikan */ }
+    return "081246817890";
+  })();
   const KOSONG = { whatsapp: "", bank: "", rekening: "", scam: false, jumlah_scam_7_hari: 0 };
   const $ = (s) => document.querySelector(s);
   const store = {
@@ -159,6 +162,13 @@
         if (!ada) setErr("form", r.data.detail || "Laporan gagal dikirim. Coba lagi.");
         return;
       }
+      // OTP laporan dimatikan di server -> laporan langsung terbit, langsung ke halaman sukses.
+      if (r.data.nomor_tiket) {
+        store.set(TIKET, r.data.nomor_tiket);
+        sessionStorage.removeItem(KEY);
+        location.href = "success.html";
+        return;
+      }
       store.set(KEY, { laporanId: r.data.laporan_id, pelapor: r.data.nomor_pelapor });
       location.href = "confirm-otp.html";
     });
@@ -223,7 +233,7 @@
     if (!r.ok) { status.textContent = r.status === 404 ? "Laporan tidak ditemukan." : PESAN_GAGAL; return; }
     const t = r.data;
     $("#t-id").textContent = "#" + t.nomor_tiket; $("#t-akun").textContent = t.akun_target;
-    status.textContent = "Verifikasi OTP valid. Laporan " + t.nomor_tiket + " telah tayang di database.";
+    status.textContent = "Laporan " + t.nomor_tiket + " telah tayang di database.";
     $("#t-kat").textContent = t.kategori;
     const p = Object.fromEntries(new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Asia/Jakarta" }).formatToParts(new Date(t.diterbitkan)).map((x) => [x.type, x.value]));
     $("#t-waktu").textContent = p.day + " " + p.month + " " + p.year + ", " + p.hour + ":" + p.minute + " WIB";
