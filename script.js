@@ -1,5 +1,33 @@
 
     // =========================
+    // Toggle password visibility
+    // =========================
+    document.addEventListener("click", (e) => {
+        const btn = e.target.closest(".password-toggle");
+        if (!btn) return;
+        const targetId = btn.getAttribute("data-toggle-password");
+        let input = null;
+        if (targetId) {
+            input = document.getElementById(targetId);
+        } else {
+            input = btn.previousElementSibling;
+            while (input && input.tagName !== "INPUT") {
+                input = input.previousElementSibling;
+            }
+        }
+        if (!input || input.tagName !== "INPUT") return;
+        if (input.type === "password") {
+            input.type = "text";
+            btn.textContent = "Sembunyi";
+            btn.setAttribute("aria-label", "Sembunyikan kata sandi");
+        } else {
+            input.type = "password";
+            btn.textContent = "Lihat";
+            btn.setAttribute("aria-label", "Tampilkan kata sandi");
+        }
+    });
+
+    // =========================
     // 2. Cek reputasi akun
     // =========================
     let mode = "wa";
