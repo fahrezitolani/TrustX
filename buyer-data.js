@@ -1,6 +1,7 @@
 "use strict";
-/* Data dummy + logika pencarian Buyer. Ganti isi cari() dengan fetch ke API Flask nanti:
-   fetch(`/api/akun?m=${m}&q=${q}`) -> kembalikan objek dengan bentuk yang sama seperti AKUN[id]. */
+/* Data contoh + logika pencarian Buyer.
+   Data utama diambil dari API (buyer.js: ambilAkun, muatFeed). AKUN di bawah hanya
+   cadangan saat server tidak bisa dihubungi. */
 const ROUTE = { home: "index.html", hasil: "hasil.html", detail: "detail-profile.html", lapor: "lapor.html", bantuan: "bantuan.html" };
 
 // laporan: [id, hariLalu, kronologi, bukti, terverifikasi]
@@ -19,10 +20,6 @@ const AKUN = {
   toko_jersey_ori: { nama: "@toko_jersey_ori", platform: "X (Twitter)", wa: "", aman: 0, laporan: [] }
 };
 const WA_INDEX = { "081398217788": "wts_photoc", "081234567890": "seller_gadget_murah" };
-const FEED = [
-  { id: "wts_photoc", akun: "@wts_photoc***", tipe: "tipu", teks: "No. WA: 0813-9821-xxxx • DP tiket konser ditransfer tapi tiket fisik tidak dikirim & kontak langsung diblokir.", waktu: "12 menit lalu", info: "4 korban melapor" },
-  { id: "trustedseller_id", akun: "@trustedseller_id", tipe: "aman", teks: "Pembelian album sealed tiba aman, packing tebal bubble wrap kardus double wall. Fast respon, rekber TrustX disetujui.", waktu: "1 jam lalu", info: "78 testimoni positif" }
-];
 const TIPS = ["Cek umur akun Twitter penjual (hindari akun dibuat < 3 bulan).", "Jangan tergiur harga jauh di bawah pasaran wajar.", "Tolak jika penjual buru-buru mendesak transfer langsung.", "Utamakan COD di tempat ramai jika berada di kota yang sama."];
 
 function validasi(m, q) {
