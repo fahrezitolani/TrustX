@@ -1011,6 +1011,8 @@ body.laporan-page {
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
+  /* Jarak ke tombol filter; samakan dengan halaman seller (.sr-filters margin-top 22px) */
+  margin-bottom: 22px;
 }
 
 .buyer-report-page .sr-panel-heading .min-w-0 {
@@ -1062,9 +1064,34 @@ body.laporan-page {
     flex-direction: column;
     align-items: stretch;
     gap: 14px;
+    margin-bottom: 17px;
   }
   .buyer-report-page .sr-panel-heading .laporan-button {
     width: 100%;
     text-align: center;
+  }
+  /* Tiga filter dibagi rata selebar panel, supaya "Riwayat" tidak terpotong
+     dan tidak muncul scrollbar horizontal di HP. */
+  .buyer-report-page .laporan-filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: visible;
+  }
+  .buyer-report-page .laporan-filter {
+    justify-content: center;
+    min-width: 0;
+    padding: 8px 6px;
+  }
+}
+
+/* HP layar sangat kecil (mis. 320px): filter sedikit dirapatkan agar tetap muat. */
+@media (max-width: 360px) {
+  .buyer-report-page .laporan-filters {
+    gap: 6px;
+  }
+  .buyer-report-page .laporan-filter {
+    gap: 4px;
+    padding: 8px 4px;
+    font-size: 12px;
   }
 }
